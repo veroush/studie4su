@@ -69,8 +69,8 @@ We appreciate your understanding.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Veroush/Studie4SU.git
-cd Studie4SU
+git clone https://github.com/Veroush/studie4su.git
+cd studie4su
 ```
 
 ### 2. Install dependencies
@@ -94,7 +94,7 @@ SMTP_PORT=587
 SMTP_SECURE=false
 SMTP_USER="your_smtp_user"
 SMTP_PASS="your_smtp_password"
-SMTP_FROM="Studie4SU <no-reply@example.com>"
+SMTP_FROM="studiesu <no-reply@example.com>"
 ```
 
 ### 4. Set up the database
@@ -168,7 +168,7 @@ The Express app exposes route groups for:
 ## Project Structure
 
 ```text
-Studie4SU/
+studie4su/
 ├── controllers/        # Auth, favorites, open house, and admin settings handlers
 ├── middleware/         # JWT auth and admin access middleware
 ├── prisma/             # Prisma schema, migrations, and seed script
