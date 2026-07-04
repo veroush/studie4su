@@ -36,6 +36,7 @@
     "@tanstack/react-start": "latest",
     "@tanstack/router-plugin": "^1.132.0",
     "better-auth": "^1.5.3",
+    "hono": "^4.12.27",
     "lucide-react": "^0.545.0",
     "prisma": "^7.4.2",
     "react": "^19.2.0",
