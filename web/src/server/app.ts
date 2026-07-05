@@ -2,14 +2,13 @@ import { Hono } from "hono";
 import { serveStatic } from "hono/cloudflare-workers";
 
 import aboutRoutes from "./routes/about";
+import authRoutes from "./routes/auth";
 
 const app = new Hono();
 
 app.use("/*", serveStatic({ root: "./public" }));
 
-// TODO: migrate auth routes to Hono
-// import authRoutes from "./routes/auth";
-// app.route("/auth", authRoutes);
+app.route("/auth", authRoutes);
 
 // TODO: migrate quiz routes to Hono
 // import quizRoutes from "./routes/quiz";
