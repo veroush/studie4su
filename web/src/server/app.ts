@@ -3,6 +3,7 @@ import { serveStatic } from "hono/cloudflare-workers";
 
 import aboutRoutes from "./routes/about";
 import authRoutes from "./routes/auth";
+import programRoutes from "./routes/programs";
 import schoolRoutes from "./routes/schools";
 
 const app = new Hono();
@@ -31,9 +32,7 @@ app.route("/auth", authRoutes);
 
 app.route("/schools", schoolRoutes);
 
-// TODO: migrate program routes to Hono
-// import programRoutes from "./routes/programs";
-// app.route("/programs", programRoutes);
+app.route("/programs", programRoutes);
 
 // TODO: migrate favorites routes to Hono
 // import favoritesRoutes from "./routes/favorites";
