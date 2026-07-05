@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/cloudflare-workers";
 
+import aboutRoutes from "./routes/about";
+
 const app = new Hono();
 
 app.use("/*", serveStatic({ root: "./public" }));
@@ -39,15 +41,7 @@ app.use("/*", serveStatic({ root: "./public" }));
 // import favoritesRoutes from "./routes/favorites";
 // app.route("/favorites", favoritesRoutes);
 
-app.get("/api/about", (c) =>
-	c.json(
-		{
-			error:
-				"About content is unavailable until AdminSettings persistence is migrated to the TanStack Start app.",
-		},
-		501,
-	),
-);
+app.route("/api/about", aboutRoutes);
 
 app.onError((error, c) => {
 	console.error(error);
