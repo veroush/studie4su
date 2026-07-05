@@ -3,6 +3,7 @@ import { serveStatic } from "hono/cloudflare-workers";
 
 import aboutRoutes from "./routes/about";
 import authRoutes from "./routes/auth";
+import favoritesRoutes from "./routes/favorites";
 import programRoutes from "./routes/programs";
 import schoolRoutes from "./routes/schools";
 
@@ -34,9 +35,7 @@ app.route("/schools", schoolRoutes);
 
 app.route("/programs", programRoutes);
 
-// TODO: migrate favorites routes to Hono
-// import favoritesRoutes from "./routes/favorites";
-// app.route("/favorites", favoritesRoutes);
+app.route("/favorites", favoritesRoutes);
 
 app.route("/api/about", aboutRoutes);
 
