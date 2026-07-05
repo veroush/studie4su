@@ -5,6 +5,7 @@ import aboutRoutes from "./routes/about";
 import authRoutes from "./routes/auth";
 import favoritesRoutes from "./routes/favorites";
 import programRoutes from "./routes/programs";
+import quizRoutes from "./routes/quiz";
 import schoolRoutes from "./routes/schools";
 
 const app = new Hono();
@@ -13,9 +14,7 @@ app.use("/*", serveStatic({ root: "./public" }));
 
 app.route("/auth", authRoutes);
 
-// TODO: migrate quiz routes to Hono
-// import quizRoutes from "./routes/quiz";
-// app.route("/api/quiz", quizRoutes);
+app.route("/api/quiz", quizRoutes);
 
 // TODO: migrate requireAuth and adminOnly middleware to Hono before mounting admin routes
 // TODO: migrate admin routes to Hono
