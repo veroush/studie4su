@@ -1,41 +1,38 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/cloudflare-workers";
 
+import { adminOnly, optionalAuth, requireAuth } from "./middleware/auth";
+import type { AuthVariables } from "./middleware/auth";
 import aboutRoutes from "./routes/about";
+import adminRoutes from "./routes/admin";
+import adminSettingsRoutes from "./routes/admin-settings";
 import authRoutes from "./routes/auth";
 import favoritesRoutes from "./routes/favorites";
+import openHouseRoutes from "./routes/open-houses";
 import programRoutes from "./routes/programs";
 import quizRoutes from "./routes/quiz";
 import schoolRoutes from "./routes/schools";
 
-const app = new Hono();
+const app = new Hono<{ Variables: AuthVariables }>();
 
 app.use("/*", serveStatic({ root: "./public" }));
 
 app.route("/auth", authRoutes);
-
 app.route("/api/quiz", quizRoutes);
 
-// TODO: migrate requireAuth and adminOnly middleware to Hono before mounting admin routes
-// TODO: migrate admin routes to Hono
-// import adminRoutes from "./routes/admin";
-// app.route("/admin", adminRoutes);
+app.use("/admin/*", requireAuth, adminOnly);
+app.route("/admin", adminRoutes);
+app.route("/admin/settings", adminSettingsRoutes);
 
-// TODO: migrate admin settings routes to Hono
-// import adminSettingsRoutes from "./routes/admin-settings";
-// app.route("/admin/settings", adminSettingsRoutes);
-
-// TODO: migrate open house routes to Hono
-// import openHouseRoutes from "./routes/open-houses";
-// app.route("/openhouses", openHouseRoutes);
-// app.route("/admin/openhouses", openHouseRoutes);
+app.use("/openhouses", optionalAuth);
+app.use("/openhouses/:id", optionalAuth);
+app.use("/openhouses/:id/register", requireAuth);
+app.route("/openhouses", openHouseRoutes);
+app.route("/admin/openhouses", openHouseRoutes);
 
 app.route("/schools", schoolRoutes);
-
 app.route("/programs", programRoutes);
-
 app.route("/favorites", favoritesRoutes);
-
 app.route("/api/about", aboutRoutes);
 
 app.onError((error, c) => {
