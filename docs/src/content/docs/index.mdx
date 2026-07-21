@@ -1,40 +1,23 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
-hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
-  actions:
-    - text: Example Guide
-      link: /guides/example/
-      icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
-      variant: minimal
+title: Project Overview & Architecture
+description: A high-level overview of the Studie4SU platform and its technical architecture.
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+## Inleiding / Introduction
 
-## Next steps
+Studie4SU is a comprehensive web application designed to help Surinamese students navigate their educational options. The platform allows users to explore various schools, attend virtual open houses, review academic programs, and utilize an interactive quiz to aid in their decision-making process.
 
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
-</CardGrid>
+## Technical Architecture
+
+The application is currently undergoing a structural modernization to improve performance, scalability, and maintainability. The updated architecture consists of three main pillars:
+
+*   **Frontend (User Interface):** Built with **TanStack Start UI** and styled using **Tailwind CSS**. This ensures a highly responsive and fast user experience across desktop and mobile devices.
+*   **Backend (API Layer):** Powered by **Hono**, replacing the legacy Express.js framework to provide a faster, more lightweight routing system for our endpoints (`/schools`, `/users`, `/auth`).
+*   **Database & Authentication:** Managed via **PostgreSQL** and accessed through **Prisma ORM**. Authentication flows and route protection are handled securely by **Better Auth**.
+
+## Team Responsibilities
+*   **Valentino Amasaleh:** Backend + Architecture Lead (Hono + Prisma)
+*   **Manish Bhawan:** Frontend Lead (TanStack Start UI)
+*   **Veroushka Ramjiawan:** UI/UX + Styling (Tailwind + Design System)
+*   **Raksha Doerga:** Database + Auth Engineer (Prisma + Better Auth)
+*   **[Your Name]:** Documentation + QA Engineer (Astro + Testing)
