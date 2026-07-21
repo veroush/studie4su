@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: studie4su-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: studie4su
+      POSTGRES_PASSWORD: studie4su
+      POSTGRES_DB: studie4su
+    ports:
+      - "5432:5432"
+    volumes:
+      - studie4su_pgdata:/var/lib/postgresql/data
+
+volumes:
+  studie4su_pgdata:

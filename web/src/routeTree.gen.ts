@@ -9,36 +9,36 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiSplatRouteImport } from './routes/api/$'
-import { Route as AdminStudentsRouteImport } from './routes/admin/students'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminStudentsRouteImport } from './routes/admin/students'
+import { Route as ApiSplatRouteImport } from './routes/api/$'
 
-const AdminRouteRoute = AdminRouteRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSplatRoute = ApiSplatRouteImport.update({
-  id: '/api/$',
-  path: '/api/$',
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminStudentsRoute = AdminStudentsRouteImport.update({
   id: '/students',
   path: '/students',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AdminRouteRoute,
+const ApiSplatRoute = ApiSplatRouteImport.update({
+  id: '/api/$',
+  path: '/api/$',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -85,13 +85,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -99,12 +92,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/$': {
-      id: '/api/$'
-      path: '/api/$'
-      fullPath: '/api/$'
-      preLoaderRoute: typeof ApiSplatRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/students': {
       id: '/admin/students'
@@ -113,12 +113,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStudentsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
-      parentRoute: typeof AdminRouteRoute
+    '/api/$': {
+      id: '/api/$'
+      path: '/api/$'
+      fullPath: '/api/$'
+      preLoaderRoute: typeof ApiSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }

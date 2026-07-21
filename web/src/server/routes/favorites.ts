@@ -1,38 +1,26 @@
-import { createRequire } from "node:module";
-
 import { Hono } from "hono";
 import type { Context } from "hono";
 
 import { prisma } from "../../db";
-
-const require = createRequire(import.meta.url);
-
-interface JsonWebTokenModule {
-	verify(token: string, secretOrPublicKey: string | undefined): string | JwtUser;
-}
-
-interface JwtUser {
-	id: string | number;
-	[key: string]: unknown;
-}
+import type { AuthVariables } from "../middleware/session";
 
 interface FavoriteSchoolRecord {
-	id?: string | number;
-	userId: string | number;
+	id?: string;
+	userId: string;
 	schoolId: string;
 	[key: string]: unknown;
 }
 
 interface FavoriteProgramRecord {
-	id?: string | number;
-	userId: string | number;
+	id?: string;
+	userId: string;
 	programId: string;
 	[key: string]: unknown;
 }
 
 interface FavoriteOpenHouseRecord {
-	id?: string | number;
-	userId: string | number;
+	id?: string;
+	userId: string;
 	openHouseId: string;
 	[key: string]: unknown;
 }
@@ -43,61 +31,55 @@ interface PrismaErrorWithCode {
 
 interface FavoriteSchoolDelegate {
 	findMany(args: {
-		where: { userId: string | number };
+		where: { userId: string };
 		select: { schoolId: true };
 	}): Promise<Array<{ schoolId: string }>>;
 	findUnique(args: {
-		where: { userId_schoolId: { userId: string | number; schoolId: string } };
+		where: { userId_schoolId: { userId: string; schoolId: string } };
 	}): Promise<FavoriteSchoolRecord | null>;
 	upsert(args: {
-		where: { userId_schoolId: { userId: string | number; schoolId: string } };
-		create: { userId: string | number; schoolId: string };
+		where: { userId_schoolId: { userId: string; schoolId: string } };
+		create: { userId: string; schoolId: string };
 		update: Record<string, never>;
 	}): Promise<FavoriteSchoolRecord>;
 	delete(args: {
-		where: { userId_schoolId: { userId: string | number; schoolId: string } };
+		where: { userId_schoolId: { userId: string; schoolId: string } };
 	}): Promise<FavoriteSchoolRecord>;
 }
 
 interface FavoriteProgramDelegate {
 	findMany(args: {
-		where: { userId: string | number };
+		where: { userId: string };
 		select: { programId: true };
 	}): Promise<Array<{ programId: string }>>;
 	findUnique(args: {
-		where: { userId_programId: { userId: string | number; programId: string } };
+		where: { userId_programId: { userId: string; programId: string } };
 	}): Promise<FavoriteProgramRecord | null>;
 	upsert(args: {
-		where: { userId_programId: { userId: string | number; programId: string } };
-		create: { userId: string | number; programId: string };
+		where: { userId_programId: { userId: string; programId: string } };
+		create: { userId: string; programId: string };
 		update: Record<string, never>;
 	}): Promise<FavoriteProgramRecord>;
 	delete(args: {
-		where: { userId_programId: { userId: string | number; programId: string } };
+		where: { userId_programId: { userId: string; programId: string } };
 	}): Promise<FavoriteProgramRecord>;
 }
 
 interface FavoriteOpenHouseDelegate {
 	findMany(args: {
-		where: { userId: string | number };
+		where: { userId: string };
 		select: { openHouseId: true };
 	}): Promise<Array<{ openHouseId: string }>>;
 	findUnique(args: {
-		where: {
-			userId_openHouseId: { userId: string | number; openHouseId: string };
-		};
+		where: { userId_openHouseId: { userId: string; openHouseId: string } };
 	}): Promise<FavoriteOpenHouseRecord | null>;
 	upsert(args: {
-		where: {
-			userId_openHouseId: { userId: string | number; openHouseId: string };
-		};
-		create: { userId: string | number; openHouseId: string };
+		where: { userId_openHouseId: { userId: string; openHouseId: string } };
+		create: { userId: string; openHouseId: string };
 		update: Record<string, never>;
 	}): Promise<FavoriteOpenHouseRecord>;
 	delete(args: {
-		where: {
-			userId_openHouseId: { userId: string | number; openHouseId: string };
-		};
+		where: { userId_openHouseId: { userId: string; openHouseId: string } };
 	}): Promise<FavoriteOpenHouseRecord>;
 }
 
@@ -113,25 +95,17 @@ interface FavoriteRequestBody {
 	openHouseId?: string;
 }
 
-const jwt = require("jsonwebtoken") as JsonWebTokenModule;
 const db = prisma as unknown as FavoritesDatabase;
-const favoritesRoutes = new Hono();
+const favoritesRoutes = new Hono<{ Variables: AuthVariables }>();
 
 const readBody = async (c: Context) =>
 	(await c.req.json().catch(() => ({}))) as FavoriteRequestBody;
 
-const getUserFromToken = (c: Context): JwtUser | null => {
-	const authHeader = c.req.header("authorization") || "";
-	const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
-	if (!token) return null;
-
-	try {
-		const user = jwt.verify(token, process.env.JWT_SECRET);
-		return typeof user === "string" ? null : user;
-	} catch {
-		return null;
-	}
-};
+// Reads the Better Auth session user attached by the global
+// `attachSession` middleware (mounted in app.ts) — no JWT decoding
+// needed here anymore, and no `jsonwebtoken` import, which can't
+// load on the Cloudflare Workers runtime this project targets.
+const getUser = (c: Context) => c.get("user") as { id: string } | null;
 
 const isPrismaErrorCode = (error: unknown, code: string) =>
 	typeof error === "object" &&
@@ -139,7 +113,7 @@ const isPrismaErrorCode = (error: unknown, code: string) =>
 	(error as PrismaErrorWithCode).code === code;
 
 favoritesRoutes.get("/me", async (c) => {
-	const user = getUserFromToken(c);
+	const user = getUser(c);
 	if (!user) return c.json({ error: "Not authenticated" }, 401);
 
 	try {
@@ -170,7 +144,7 @@ favoritesRoutes.get("/me", async (c) => {
 });
 
 favoritesRoutes.post("/schools", async (c) => {
-	const user = getUserFromToken(c);
+	const user = getUser(c);
 	if (!user) return c.json({ error: "Not authenticated" }, 401);
 
 	const { schoolId } = await readBody(c);
@@ -196,7 +170,7 @@ favoritesRoutes.post("/schools", async (c) => {
 });
 
 favoritesRoutes.delete("/schools/:schoolId", async (c) => {
-	const user = getUserFromToken(c);
+	const user = getUser(c);
 	if (!user) return c.json({ error: "Not authenticated" }, 401);
 
 	try {
@@ -214,7 +188,7 @@ favoritesRoutes.delete("/schools/:schoolId", async (c) => {
 });
 
 favoritesRoutes.post("/programs", async (c) => {
-	const user = getUserFromToken(c);
+	const user = getUser(c);
 	if (!user) return c.json({ error: "Not authenticated" }, 401);
 
 	const { programId } = await readBody(c);
@@ -240,7 +214,7 @@ favoritesRoutes.post("/programs", async (c) => {
 });
 
 favoritesRoutes.delete("/programs/:programId", async (c) => {
-	const user = getUserFromToken(c);
+	const user = getUser(c);
 	if (!user) return c.json({ error: "Not authenticated" }, 401);
 
 	try {
@@ -258,7 +232,7 @@ favoritesRoutes.delete("/programs/:programId", async (c) => {
 });
 
 favoritesRoutes.post("/openhouses", async (c) => {
-	const user = getUserFromToken(c);
+	const user = getUser(c);
 	if (!user) return c.json({ error: "Not authenticated" }, 401);
 
 	const { openHouseId } = await readBody(c);
@@ -284,7 +258,7 @@ favoritesRoutes.post("/openhouses", async (c) => {
 });
 
 favoritesRoutes.delete("/openhouses/:openHouseId", async (c) => {
-	const user = getUserFromToken(c);
+	const user = getUser(c);
 	if (!user) return c.json({ error: "Not authenticated" }, 401);
 
 	try {
