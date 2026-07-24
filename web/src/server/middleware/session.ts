@@ -39,7 +39,7 @@ export const requireAuth: AuthMiddleware = async (c, next) => {
 // Continues as a guest — actual session lookup happens in
 // attachSession (mounted globally); this is just a passthrough
 // marker kept for parity with the old middleware's route wiring.
-export const optionalAuth: AuthMiddleware = async (c, next) => {
+export const optionalAuth: AuthMiddleware = async (_c, next) => {
 	await next();
 };
 
