@@ -5,13 +5,21 @@
   box-sizing: border-box;
 }
 
-html,
-body,
-#app {
-  min-height: 100%;
+:root {
+  --green-accent: #2d7a4f;
+  --gold: #e8b84b;
+  --bg-dark: #0d2b1f;
+  --card-bg: #122b1e;
+  --card-border: rgba(255, 255, 255, 0.07);
+  --text-muted: #8aab96;
 }
 
 body {
-  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-dark);
+  color: #f0ebe0;
 }
 
+.font-display {
+  font-family: 'Playfair Display', serif;
+}
