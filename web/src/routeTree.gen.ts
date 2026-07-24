@@ -9,43 +9,61 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SchoolsIndexRouteImport } from './routes/schools/index'
-import { Route as ApiSplatRouteImport } from './routes/api/$'
-import { Route as AdminStudentsRouteImport } from './routes/admin/students'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminStudentsRouteImport } from './routes/admin/students'
+import { Route as ApiSplatRouteImport } from './routes/api/$'
+import { Route as OpenHousesIndexRouteImport } from './routes/open-houses/index'
+import { Route as ProgramCompareIndexRouteImport } from './routes/program-compare/index'
+import { Route as QuizIndexRouteImport } from './routes/quiz/index'
+import { Route as SchoolsIndexRouteImport } from './routes/schools/index'
 import { Route as SchoolsSchoolIdIndexRouteImport } from './routes/schools/$schoolId/index'
 
-const AdminRouteRoute = AdminRouteRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SchoolsIndexRoute = SchoolsIndexRouteImport.update({
-  id: '/schools/',
-  path: '/schools/',
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSplatRoute = ApiSplatRouteImport.update({
-  id: '/api/$',
-  path: '/api/$',
-  getParentRoute: () => rootRouteImport,
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminStudentsRoute = AdminStudentsRouteImport.update({
   id: '/students',
   path: '/students',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AdminRouteRoute,
+const ApiSplatRoute = ApiSplatRouteImport.update({
+  id: '/api/$',
+  path: '/api/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpenHousesIndexRoute = OpenHousesIndexRouteImport.update({
+  id: '/open-houses/',
+  path: '/open-houses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgramCompareIndexRoute = ProgramCompareIndexRouteImport.update({
+  id: '/program-compare/',
+  path: '/program-compare/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizIndexRoute = QuizIndexRouteImport.update({
+  id: '/quiz/',
+  path: '/quiz/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SchoolsIndexRoute = SchoolsIndexRouteImport.update({
+  id: '/schools/',
+  path: '/schools/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SchoolsSchoolIdIndexRoute = SchoolsSchoolIdIndexRouteImport.update({
   id: '/schools/$schoolId/',
@@ -59,6 +77,9 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/students': typeof AdminStudentsRoute
   '/api/$': typeof ApiSplatRoute
+  '/open-houses/': typeof OpenHousesIndexRoute
+  '/program-compare/': typeof ProgramCompareIndexRoute
+  '/quiz/': typeof QuizIndexRoute
   '/schools/': typeof SchoolsIndexRoute
   '/schools/$schoolId/': typeof SchoolsSchoolIdIndexRoute
 }
@@ -68,6 +89,9 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/students': typeof AdminStudentsRoute
   '/api/$': typeof ApiSplatRoute
+  '/open-houses': typeof OpenHousesIndexRoute
+  '/program-compare': typeof ProgramCompareIndexRoute
+  '/quiz': typeof QuizIndexRoute
   '/schools': typeof SchoolsIndexRoute
   '/schools/$schoolId': typeof SchoolsSchoolIdIndexRoute
 }
@@ -78,6 +102,9 @@ export interface FileRoutesById {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/students': typeof AdminStudentsRoute
   '/api/$': typeof ApiSplatRoute
+  '/open-houses/': typeof OpenHousesIndexRoute
+  '/program-compare/': typeof ProgramCompareIndexRoute
+  '/quiz/': typeof QuizIndexRoute
   '/schools/': typeof SchoolsIndexRoute
   '/schools/$schoolId/': typeof SchoolsSchoolIdIndexRoute
 }
@@ -89,6 +116,9 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/students'
     | '/api/$'
+    | '/open-houses/'
+    | '/program-compare/'
+    | '/quiz/'
     | '/schools/'
     | '/schools/$schoolId/'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +128,9 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/students'
     | '/api/$'
+    | '/open-houses'
+    | '/program-compare'
+    | '/quiz'
     | '/schools'
     | '/schools/$schoolId'
   id:
@@ -107,6 +140,9 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/students'
     | '/api/$'
+    | '/open-houses/'
+    | '/program-compare/'
+    | '/quiz/'
     | '/schools/'
     | '/schools/$schoolId/'
   fileRoutesById: FileRoutesById
@@ -115,19 +151,15 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   ApiSplatRoute: typeof ApiSplatRoute
+  OpenHousesIndexRoute: typeof OpenHousesIndexRoute
+  ProgramCompareIndexRoute: typeof ProgramCompareIndexRoute
+  QuizIndexRoute: typeof QuizIndexRoute
   SchoolsIndexRoute: typeof SchoolsIndexRoute
   SchoolsSchoolIdIndexRoute: typeof SchoolsSchoolIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -135,19 +167,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/schools/': {
-      id: '/schools/'
-      path: '/schools'
-      fullPath: '/schools/'
-      preLoaderRoute: typeof SchoolsIndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/$': {
-      id: '/api/$'
-      path: '/api/$'
-      fullPath: '/api/$'
-      preLoaderRoute: typeof ApiSplatRouteImport
-      parentRoute: typeof rootRouteImport
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/students': {
       id: '/admin/students'
@@ -156,12 +188,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStudentsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
-      parentRoute: typeof AdminRouteRoute
+    '/api/$': {
+      id: '/api/$'
+      path: '/api/$'
+      fullPath: '/api/$'
+      preLoaderRoute: typeof ApiSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/open-houses/': {
+      id: '/open-houses/'
+      path: '/open-houses'
+      fullPath: '/open-houses/'
+      preLoaderRoute: typeof OpenHousesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/program-compare/': {
+      id: '/program-compare/'
+      path: '/program-compare'
+      fullPath: '/program-compare/'
+      preLoaderRoute: typeof ProgramCompareIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz/': {
+      id: '/quiz/'
+      path: '/quiz'
+      fullPath: '/quiz/'
+      preLoaderRoute: typeof QuizIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/schools/': {
+      id: '/schools/'
+      path: '/schools'
+      fullPath: '/schools/'
+      preLoaderRoute: typeof SchoolsIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/schools/$schoolId/': {
       id: '/schools/$schoolId/'
@@ -191,9 +251,21 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   ApiSplatRoute: ApiSplatRoute,
+  OpenHousesIndexRoute: OpenHousesIndexRoute,
+  ProgramCompareIndexRoute: ProgramCompareIndexRoute,
+  QuizIndexRoute: QuizIndexRoute,
   SchoolsIndexRoute: SchoolsIndexRoute,
   SchoolsSchoolIdIndexRoute: SchoolsSchoolIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
