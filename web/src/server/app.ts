@@ -12,12 +12,12 @@ import programRoutes from "./routes/programs";
 import quizRoutes from "./routes/quiz";
 import schoolRoutes from "./routes/schools";
 
-const app = new Hono<{ Variables: AuthVariables }>();
+const app = new Hono<{ Variables: AuthVariables }>().basePath('/api')
 
 app.use("*", attachSession);
-app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+app.on(["GET", "POST"], "/auth/*", (c) => auth.handler(c.req.raw));
 
-app.route("/api/quiz", quizRoutes);
+app.route("/quiz", quizRoutes);
 
 app.use("/admin/*", requireAuth, adminOnly);
 app.route("/admin", adminRoutes);
@@ -32,7 +32,7 @@ app.route("/admin/openhouses", openHouseRoutes);
 app.route("/schools", schoolRoutes);
 app.route("/programs", programRoutes);
 app.route("/favorites", favoritesRoutes);
-app.route("/api/about", aboutRoutes);
+app.route("/about", aboutRoutes);
 
 app.use("/*", serveStatic({ root: "./public" }));
 
