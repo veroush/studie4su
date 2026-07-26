@@ -19,19 +19,19 @@ app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.route("/api/quiz", quizRoutes);
 
-app.use("/admin/*", requireAuth, adminOnly);
-app.route("/admin", adminRoutes);
-app.route("/admin/settings", adminSettingsRoutes);
+app.use("/api/admin/*", requireAuth, adminOnly);
+app.route("/api/admin", adminRoutes);
+app.route("/api/admin/settings", adminSettingsRoutes);
 
-app.use("/openhouses", optionalAuth);
-app.use("/openhouses/:id", optionalAuth);
-app.use("/openhouses/:id/register", requireAuth);
-app.route("/openhouses", openHouseRoutes);
-app.route("/admin/openhouses", openHouseRoutes);
+app.use("/api/openhouses", optionalAuth);
+app.use("/api/openhouses/:id", optionalAuth);
+app.use("/api/openhouses/:id/register", requireAuth);
+app.route("/api/openhouses", openHouseRoutes);
+app.route("/api/admin/openhouses", openHouseRoutes);
 
-app.route("/schools", schoolRoutes);
-app.route("/programs", programRoutes);
-app.route("/favorites", favoritesRoutes);
+app.route("/api/schools", schoolRoutes);
+app.route("/api/programs", programRoutes);
+app.route("/api/favorites", favoritesRoutes);
 app.route("/api/about", aboutRoutes);
 
 app.use("/*", serveStatic({ root: "./public" }));
