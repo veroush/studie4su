@@ -175,7 +175,7 @@ function ProgramComparePage() {
     <div>
       <Navbar />
 
-      <section className="py-16">
+      <section className="py-16 bg-gradient-to-br from-green-50 via-white to-green-50/40">
         <div className="max-w-[1100px] mx-auto px-6">
             <ComparisonPageHeader />
 

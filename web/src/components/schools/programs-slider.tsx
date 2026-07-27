@@ -1,5 +1,6 @@
 ﻿import { useCallback, useEffect, useRef, useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Link } from "@tanstack/react-router"
 import { useProgramCompare } from "@/hooks/use-program-compare"
 
 interface Program {
@@ -161,7 +162,11 @@ export function ProgramsSlider({ programs }: ProgramsSliderProps) {
                   className="flex-shrink-0 px-2.5 box-border"
                   style={{ width: cardWidth || `${100 / visibleCount}%` }}
                 >
-                  <div className="relative rounded-[18px] overflow-hidden h-full flex flex-col shadow-lg hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-250 group">
+                  <Link
+                    to="/programs/$programId"
+                    params={{ programId: p.id }}
+                    className="relative rounded-[18px] overflow-hidden h-full flex flex-col shadow-lg hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-250 group"
+                  >
                     <div className="h-[5px] w-full" style={{ background: accent }} />
                     <div className="bg-white/[0.07] border border-white/10 border-t-0 rounded-b-[18px] p-5 flex flex-col gap-2.5 flex-1 group-hover:bg-white/[0.11] group-hover:border-white/[0.18] transition-colors">
                       <span className="inline-flex w-fit items-center gap-1.5 text-[0.68rem] font-bold tracking-wide uppercase px-2.5 py-[3px] rounded-full bg-white/10 text-white/75">
@@ -202,14 +207,18 @@ export function ProgramsSlider({ programs }: ProgramsSliderProps) {
                       </div>
                       <div className="overflow-hidden max-h-0 opacity-0 group-hover:max-h-[60px] group-hover:opacity-100 transition-all duration-300">
                         <button
-                          onClick={() => addProgram(p.id)}
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            addProgram(p.id)
+                          }}
                           className="mt-2 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#0d2b1f] bg-[#e8b84b] hover:opacity-90 px-4 py-2 rounded-lg transition-opacity"
                         >
                           Vergelijk opleiding
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               )
             })}

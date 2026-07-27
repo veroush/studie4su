@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminStudentsRouteImport } from './routes/admin/students'
 import { Route as ApiSplatRouteImport } from './routes/api/$'
@@ -18,6 +19,7 @@ import { Route as OpenHousesIndexRouteImport } from './routes/open-houses/index'
 import { Route as ProgramCompareIndexRouteImport } from './routes/program-compare/index'
 import { Route as QuizIndexRouteImport } from './routes/quiz/index'
 import { Route as SchoolsIndexRouteImport } from './routes/schools/index'
+import { Route as ProgramsProgramIdIndexRouteImport } from './routes/programs/$programId/index'
 import { Route as SchoolsSchoolIdIndexRouteImport } from './routes/schools/$schoolId/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -28,6 +30,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutIndexRoute = AboutIndexRouteImport.update({
+  id: '/about/',
+  path: '/about/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
@@ -65,6 +72,11 @@ const SchoolsIndexRoute = SchoolsIndexRouteImport.update({
   path: '/schools/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProgramsProgramIdIndexRoute = ProgramsProgramIdIndexRouteImport.update({
+  id: '/programs/$programId/',
+  path: '/programs/$programId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SchoolsSchoolIdIndexRoute = SchoolsSchoolIdIndexRouteImport.update({
   id: '/schools/$schoolId/',
   path: '/schools/$schoolId/',
@@ -77,10 +89,12 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/students': typeof AdminStudentsRoute
   '/api/$': typeof ApiSplatRoute
+  '/about/': typeof AboutIndexRoute
   '/open-houses/': typeof OpenHousesIndexRoute
   '/program-compare/': typeof ProgramCompareIndexRoute
   '/quiz/': typeof QuizIndexRoute
   '/schools/': typeof SchoolsIndexRoute
+  '/programs/$programId/': typeof ProgramsProgramIdIndexRoute
   '/schools/$schoolId/': typeof SchoolsSchoolIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -89,10 +103,12 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/students': typeof AdminStudentsRoute
   '/api/$': typeof ApiSplatRoute
+  '/about': typeof AboutIndexRoute
   '/open-houses': typeof OpenHousesIndexRoute
   '/program-compare': typeof ProgramCompareIndexRoute
   '/quiz': typeof QuizIndexRoute
   '/schools': typeof SchoolsIndexRoute
+  '/programs/$programId': typeof ProgramsProgramIdIndexRoute
   '/schools/$schoolId': typeof SchoolsSchoolIdIndexRoute
 }
 export interface FileRoutesById {
@@ -102,10 +118,12 @@ export interface FileRoutesById {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/students': typeof AdminStudentsRoute
   '/api/$': typeof ApiSplatRoute
+  '/about/': typeof AboutIndexRoute
   '/open-houses/': typeof OpenHousesIndexRoute
   '/program-compare/': typeof ProgramCompareIndexRoute
   '/quiz/': typeof QuizIndexRoute
   '/schools/': typeof SchoolsIndexRoute
+  '/programs/$programId/': typeof ProgramsProgramIdIndexRoute
   '/schools/$schoolId/': typeof SchoolsSchoolIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -116,10 +134,12 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/students'
     | '/api/$'
+    | '/about/'
     | '/open-houses/'
     | '/program-compare/'
     | '/quiz/'
     | '/schools/'
+    | '/programs/$programId/'
     | '/schools/$schoolId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,10 +148,12 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/students'
     | '/api/$'
+    | '/about'
     | '/open-houses'
     | '/program-compare'
     | '/quiz'
     | '/schools'
+    | '/programs/$programId'
     | '/schools/$schoolId'
   id:
     | '__root__'
@@ -140,10 +162,12 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/students'
     | '/api/$'
+    | '/about/'
     | '/open-houses/'
     | '/program-compare/'
     | '/quiz/'
     | '/schools/'
+    | '/programs/$programId/'
     | '/schools/$schoolId/'
   fileRoutesById: FileRoutesById
 }
@@ -151,10 +175,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   ApiSplatRoute: typeof ApiSplatRoute
+  AboutIndexRoute: typeof AboutIndexRoute
   OpenHousesIndexRoute: typeof OpenHousesIndexRoute
   ProgramCompareIndexRoute: typeof ProgramCompareIndexRoute
   QuizIndexRoute: typeof QuizIndexRoute
   SchoolsIndexRoute: typeof SchoolsIndexRoute
+  ProgramsProgramIdIndexRoute: typeof ProgramsProgramIdIndexRoute
   SchoolsSchoolIdIndexRoute: typeof SchoolsSchoolIdIndexRoute
 }
 
@@ -172,6 +198,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about/': {
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/dashboard': {
@@ -223,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SchoolsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/programs/$programId/': {
+      id: '/programs/$programId/'
+      path: '/programs/$programId'
+      fullPath: '/programs/$programId/'
+      preLoaderRoute: typeof ProgramsProgramIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/schools/$schoolId/': {
       id: '/schools/$schoolId/'
       path: '/schools/$schoolId'
@@ -251,10 +291,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   ApiSplatRoute: ApiSplatRoute,
+  AboutIndexRoute: AboutIndexRoute,
   OpenHousesIndexRoute: OpenHousesIndexRoute,
   ProgramCompareIndexRoute: ProgramCompareIndexRoute,
   QuizIndexRoute: QuizIndexRoute,
   SchoolsIndexRoute: SchoolsIndexRoute,
+  ProgramsProgramIdIndexRoute: ProgramsProgramIdIndexRoute,
   SchoolsSchoolIdIndexRoute: SchoolsSchoolIdIndexRoute,
 }
 export const routeTree = rootRouteImport
