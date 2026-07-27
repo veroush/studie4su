@@ -140,11 +140,6 @@ function ProgramComparePage() {
     navigate({ search: nextIds.length > 0 ? { ids: nextIds.join(',') } : {} })
   }
 
-  function handleAddSlot() {
-    // No in-app program picker exists yet — send to browse, same as v1.
-    navigate({ to: '/schools' })
-  }
-
   function handleReset() {
     writeStoredIds([])
     updateIds([])
@@ -182,16 +177,7 @@ function ProgramComparePage() {
 
       <section className="py-16">
         <div className="max-w-[1100px] mx-auto px-6">
-          <div
-            className="text-center mb-10
-              [&_a:first-child]:inline-flex [&_a:first-child]:items-center [&_a:first-child]:gap-1.5
-              [&_a:first-child]:text-sm [&_a:first-child]:text-[#8aab96] [&_a:first-child]:hover:text-[#e8b84b]
-              [&_a:first-child]:mb-4 [&_a:first-child]:transition-colors
-              [&_h1]:font-display [&_h1]:text-4xl [&_h1]:md:text-5xl [&_h1]:font-bold [&_h1]:text-[#faf6ee] [&_h1]:mt-2
-              [&_[aria-hidden]]:hidden"
-          >
             <ComparisonPageHeader />
-          </div>
 
           {urlIds.length === 0 && <NoProgramsEmptyState />}
 
@@ -201,23 +187,16 @@ function ProgramComparePage() {
             <ReplaceBanner onCancel={handleCancelReplace} />
           )}
 
-          {!isLoading && comparePrograms.length === 1 && <OneProgramPrompt />}
+          {!isLoading && comparePrograms.length === 1 && (
+            <OneProgramPrompt program={{ name: comparePrograms[0].name, school: comparePrograms[0].school }} />
+          )}
 
           {!isLoading && comparePrograms.length >= 2 && (
             <>
-              <div
-                className="hidden md:block overflow-x-auto bg-[#122b1e] border border-white/[0.07] rounded-2xl p-2
-                  [&_table]:w-full [&_table]:border-collapse
-                  [&_th]:p-4 [&_th]:text-left [&_th]:align-top [&_th]:text-[#8aab96] [&_th]:text-sm [&_th]:font-medium
-                  [&_td]:p-4 [&_td]:align-top [&_td]:text-sm [&_td]:text-[#faf6ee] [&_td]:border-t [&_td]:border-white/[0.06]
-                  [&_tbody_tr:first-child_td]:border-t-0
-                  [&_button]:inline-flex [&_button]:items-center [&_button]:gap-1 [&_button]:text-xs
-                  [&_button]:text-[#e8b84b] [&_button]:mt-1.5 [&_button]:hover:text-white [&_button]:transition-colors"
-              >
+              <div className="hidden md:block overflow-x-auto bg-white rounded-2xl shadow-lg">
                 <ComparisonTable
-                  programs={comparePrograms.length < MAX_SLOTS ? [...comparePrograms, null] : comparePrograms}
+                  programs={comparePrograms}
                   onRemove={handleRemoveOrSwap}
-                  onAddSlot={handleAddSlot}
                 />
               </div>
 
@@ -229,7 +208,7 @@ function ProgramComparePage() {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="rounded-lg border-2 border-white/10 bg-transparent px-6 py-2.5 text-sm font-medium text-[#8aab96] hover:border-[#e8b84b]/40 hover:text-[#e8b84b] transition-colors"
+                  className="rounded-lg border-2 border-gray-200 bg-white px-6 py-2.5 text-sm font-medium text-gray-500 hover:border-[#15803d]/40 hover:text-[#15803d] transition-colors"
                 >
                   Vergelijking wissen
                 </button>
