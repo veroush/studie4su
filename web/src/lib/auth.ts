@@ -28,6 +28,36 @@ export const auth = betterAuth({
         defaultValue: 'student',
         input: false, // clients can't set their own role on sign-up
       },
+      avatar: {
+        type: 'string',
+        defaultValue: 'graduate',
+        input: true,
+      },
+      emailAnnouncements: {
+        type: 'boolean',
+        defaultValue: false,
+        input: true,
+      },
+      emailResources: {
+        type: 'boolean',
+        defaultValue: false,
+        input: true,
+      },
+      emailImportant: {
+        type: 'boolean',
+        defaultValue: true,
+        input: true,
+      },
+      platformUpdates: {
+        type: 'boolean',
+        defaultValue: false,
+        input: true,
+      },
+      platformAlerts: {
+        type: 'boolean',
+        defaultValue: true,
+        input: true,
+      },
     },
   },
 

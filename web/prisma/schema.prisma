@@ -29,6 +29,13 @@ model User {
 
   role String @default("student")
 
+  avatar              String  @default("graduate")
+  emailAnnouncements  Boolean @default(false)
+  emailResources      Boolean @default(false)
+  emailImportant      Boolean @default(true)
+  platformUpdates     Boolean @default(false)
+  platformAlerts      Boolean @default(true)
+
   sessions Session[]
   accounts Account[]
 
