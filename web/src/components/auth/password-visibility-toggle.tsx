@@ -12,8 +12,13 @@ export function PasswordVisibilityToggle({ visible, onToggle }: PasswordVisibili
       onClick={onToggle}
       aria-label={visible ? 'Verberg wachtwoord' : 'Toon wachtwoord'}
       aria-pressed={visible}
+      className="text-[#6b7280] hover:text-[#2fa84f] transition-colors"
     >
-      {visible ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+      {visible ? (
+        <EyeOff className="h-[18px] w-[18px]" aria-hidden="true" />
+      ) : (
+        <Eye className="h-[18px] w-[18px]" aria-hidden="true" />
+      )}
     </button>
   )
 }
