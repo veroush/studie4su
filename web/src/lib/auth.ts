@@ -59,6 +59,9 @@ export const auth = betterAuth({
         input: true,
       },
     },
+    deleteUser: {
+      enabled: true,
+    },
   },
 
   // rrd added 217
