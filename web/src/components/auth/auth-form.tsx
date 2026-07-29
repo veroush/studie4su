@@ -65,7 +65,7 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
                   autoComplete="name"
                   placeholder="Naam"
                   required
-                  className="w-full border-0 bg-transparent text-[1rem] outline-none"
+                  className="w-full border-0 bg-transparent text-[1rem] text-[#111827] outline-none"
                 />
               </div>
             </label>
@@ -82,7 +82,7 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
                 autoComplete="email"
                 placeholder="Email"
                 required
-                className="w-full border-0 bg-transparent text-[1rem] outline-none"
+                className="w-full border-0 bg-transparent text-[1rem] text-[#111827] outline-none"
               />
             </div>
           </label>
@@ -98,7 +98,7 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
                 autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                 placeholder="Wachtwoord"
                 required
-                className="w-full border-0 bg-transparent text-[1rem] outline-none"
+                className="w-full border-0 bg-transparent text-[1rem] text-[#111827] outline-none"
               />
               <PasswordVisibilityToggle visible={visible} onToggle={() => setVisible(!visible)} />
             </div>
