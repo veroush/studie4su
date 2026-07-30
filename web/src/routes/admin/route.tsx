@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useState } from 'react'
 import { getSession } from '@/lib/get-session'
 import { authClient } from '@/lib/auth-client'
@@ -133,6 +133,9 @@ function RouteComponent() {
   const { user } = Route.useRouteContext()
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const currentLabel =
+    NAV_SECTIONS.flatMap((s) => s.items).find((item) => pathname.startsWith(item.to))?.label ?? 'Dashboard'
 
   async function handleLogout() {
     if (!confirm('Are you sure you want to logout?')) return
@@ -190,7 +193,7 @@ function RouteComponent() {
                 <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             </button>
-            <h1 className="page-title">Dashboard</h1>
+            <h1 className="page-title">{currentLabel}</h1>
           </div>
 
           <div className="header-actions">
