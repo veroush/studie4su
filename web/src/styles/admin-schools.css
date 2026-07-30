@@ -1,0 +1,13 @@
+.school-name-cell { font-weight: 500; color: var(--admin-gray-800); }
+.school-id { font-size: var(--admin-text-xs); color: var(--admin-gray-400); margin-top: 2px; }
+
+.type-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: var(--admin-text-xs); font-weight: 500; }
+.type-University { background: #dbeafe; color: #1d4ed8; }
+.type-HBO { background: #dcfce7; color: #15803d; }
+.type-MBO { background: #fef3c7; color: #b45309; }
+
+.program-count { display: inline-flex; align-items: center; gap: 4px; font-size: var(--admin-text-sm); color: var(--admin-gray-600); }
+
+.website-link { color: var(--admin-green-600); text-decoration: none; font-size: var(--admin-text-xs); word-break: break-all; }
+.website-link:hover { color: var(--admin-green-700); text-decoration: underline; }
+.no-website { color: var(--admin-gray-300); font-size: var(--admin-text-xs); }

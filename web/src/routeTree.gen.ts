@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminSchoolsRouteImport } from './routes/admin/schools'
 import { Route as AdminStudentsRouteImport } from './routes/admin/students'
 import { Route as ApiSplatRouteImport } from './routes/api/$'
 import { Route as OpenHousesIndexRouteImport } from './routes/open-houses/index'
@@ -52,6 +53,11 @@ const AboutIndexRoute = AboutIndexRouteImport.update({
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSchoolsRoute = AdminSchoolsRouteImport.update({
+  id: '/schools',
+  path: '/schools',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminStudentsRoute = AdminStudentsRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/schools': typeof AdminSchoolsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/api/$': typeof ApiSplatRoute
   '/about/': typeof AboutIndexRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/schools': typeof AdminSchoolsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/api/$': typeof ApiSplatRoute
   '/about': typeof AboutIndexRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/schools': typeof AdminSchoolsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/api/$': typeof ApiSplatRoute
   '/about/': typeof AboutIndexRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/admin/dashboard'
+    | '/admin/schools'
     | '/admin/students'
     | '/api/$'
     | '/about/'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/admin/dashboard'
+    | '/admin/schools'
     | '/admin/students'
     | '/api/$'
     | '/about'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/admin/dashboard'
+    | '/admin/schools'
     | '/admin/students'
     | '/api/$'
     | '/about/'
@@ -254,6 +266,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/schools': {
+      id: '/admin/schools'
+      path: '/schools'
+      fullPath: '/admin/schools'
+      preLoaderRoute: typeof AdminSchoolsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/students': {
       id: '/admin/students'
       path: '/students'
@@ -315,11 +334,13 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminSchoolsRoute: typeof AdminSchoolsRoute
   AdminStudentsRoute: typeof AdminStudentsRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminSchoolsRoute: AdminSchoolsRoute,
   AdminStudentsRoute: AdminStudentsRoute,
 }
 
