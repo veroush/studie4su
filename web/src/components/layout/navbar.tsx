@@ -17,9 +17,9 @@ export function Navbar() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-[100] bg-[#0d2b1f] border-b border-[#e8b84b]/20">
+    <header className="sticky top-0 z-[100] bg-[var(--bg-dark)] border-b border-[var(--gold)]/20">
       <div className="max-w-[1280px] mx-auto px-6 h-[68px] flex items-center justify-between gap-4 relative">
-        <Link to="/" className="font-display text-2xl text-[#e8b84b] whitespace-nowrap">
+        <Link to="/" className="font-display text-2xl text-[var(--gold)] whitespace-nowrap">
           Studie<span className="text-white">4SU</span>
         </Link>
 
@@ -29,7 +29,7 @@ export function Navbar() {
               key={link.to}
               to={link.to}
               className="px-3.5 py-2 rounded-lg text-sm font-medium text-white/75 hover:text-white hover:bg-white/8 transition-colors"
-              activeProps={{ className: 'text-[#e8b84b]' }}
+              activeProps={{ className: 'text-[var(--gold)]' }}
             >
               {link.label}
             </Link>
@@ -41,7 +41,7 @@ export function Navbar() {
             type="button"
             onClick={() => setLang(lang === 'nl' ? 'en' : 'nl')}
             aria-label="Toggle language"
-            className="border border-white/25 text-white/75 hover:border-[#e8b84b] hover:text-[#e8b84b] rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors"
+            className="border border-white/25 text-white/75 hover:border-[var(--gold)] hover:text-[var(--gold)] rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors"
           >
             {lang.toUpperCase()}
           </button>
@@ -51,7 +51,7 @@ export function Navbar() {
           ) : (
             <Link
               to="/login"
-              className="bg-[#e8b84b] text-[#0d2b1f] rounded-lg px-4.5 py-2 text-sm font-semibold hover:opacity-85 transition-opacity"
+              className="bg-[var(--gold)] text-[var(--bg-dark)] rounded-lg px-4.5 py-2 text-sm font-semibold hover:opacity-85 transition-opacity"
             >
               Inloggen
             </Link>
