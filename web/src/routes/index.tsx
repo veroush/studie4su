@@ -12,6 +12,8 @@ import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { FeatureCard } from '@/components/home/feature-card'
 
+import { FloatingIconsBackground } from '@/components/home/floating-icons-background'
+
 export const Route = createFileRoute('/')({ component: Home })
 
 // Same 3 pinned schools as v1's homepage, with the same Unsplash images.
@@ -71,6 +73,9 @@ function Home() {
 
   return (
     <div>
+      <FloatingIconsBackground />
+
+      <div className="relative z-10">
       <Navbar />
 
       <Hero
@@ -188,6 +193,7 @@ function Home() {
       </section>
 
       <Footer />
+      </div>
     </div>
   )
 }
