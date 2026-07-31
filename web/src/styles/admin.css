@@ -209,15 +209,15 @@
 
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; display: flex; align-items: center; justify-content: center; animation: admin-fade-in 150ms ease; }
 @keyframes admin-fade-in { from { opacity: 0; } to { opacity: 1; } }
-.modal { background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); width: 100%; max-width: 420px; margin: 24px; animation: admin-slide-up 150ms ease; }
+.modal { background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); width: 100%; max-width: 420px; margin: 24px; animation: admin-slide-up 150ms ease; max-height: 90vh; display: flex; flex-direction: column; } 
 .modal-lg { max-width: 620px; }
 @keyframes admin-slide-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--admin-gray-200); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--admin-gray-200); flex-shrink: 0; }
 .modal-title { font-size: var(--admin-text-lg); font-weight: 500; color: var(--admin-gray-800); }
 .modal-close { background: none; border: none; font-size: 1.1rem; color: var(--admin-gray-400); cursor: pointer; padding: 4px 6px; border-radius: 4px; line-height: 1; transition: background var(--admin-transition); }
 .modal-close:hover { background: var(--admin-gray-100); color: var(--admin-gray-700); }
-.modal-body { padding: 20px 24px; color: var(--admin-gray-700); line-height: 1.6; font-size: var(--admin-text-sm); }
-.modal-footer { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid var(--admin-gray-200); }
+.modal-body { padding: 20px 24px; color: var(--admin-gray-700); line-height: 1.6; font-size: var(--admin-text-sm); overflow-y: auto; flex: 1; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid var(--admin-gray-200); flex-shrink: 0; }
 .btn-cancel { padding: 8px 18px; background: #fff; border: 1px solid var(--admin-gray-300); border-radius: 8px; font-size: var(--admin-text-sm); font-weight: 500; color: var(--admin-gray-700); cursor: pointer; font-family: inherit; transition: background var(--admin-transition); }
 .btn-cancel:hover { background: var(--admin-gray-100); }
 .btn-delete-confirm { padding: 8px 18px; background: var(--admin-red-600); color: #fff; border: none; border-radius: 8px; font-size: var(--admin-text-sm); font-weight: 500; cursor: pointer; font-family: inherit; transition: background var(--admin-transition); }
