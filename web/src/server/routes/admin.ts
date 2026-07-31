@@ -21,7 +21,7 @@ interface AdminDatabase {
 			select: { id: true; name: true; email: true; role: true; createdAt: true };
 			orderBy: { createdAt: "asc" };
 		}): Promise<unknown[]>;
-		update(args: { where: { id: number }; data: { role: string } }): Promise<unknown>;
+		update(args: { where: { id: string }; data: { role: string } }): Promise<unknown>;
 	};
 	school: {
 		findMany(args: { orderBy: { createdAt: "desc" }; include: { _count: { select: { programs: true } } } }): Promise<unknown[]>;
