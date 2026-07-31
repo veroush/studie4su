@@ -254,7 +254,7 @@ adminRoutes.put("/users/:id", async (c) => {
 	const { role } = await readJsonBody<{ role?: string }>(c);
 	if (!role || !["admin", "student"].includes(role)) return c.json({ message: "Invalid role" }, 400);
 	try {
-		return c.json(await db.user.update({ where: { id: Number.parseInt(c.req.param("id"), 10) }, data: { role } }));
+		return c.json(await db.user.update({ where: { id: c.req.param("id") }, data: { role } }));
 	} catch {
 		return c.json({ message: "Failed to update user" }, 500);
 	}
