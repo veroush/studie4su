@@ -28,7 +28,8 @@ type OpenHouseListItem = {
 	location: string | null;
 	isOnline: boolean;
 	registrationUrl: string | null;
-	school: SchoolSummary | null;
+	isActive: boolean;
+	school: School | null;
 	OpenHouseRegistration: RegistrationSummary[];
 };
 
@@ -70,7 +71,7 @@ type UpdateOpenHouseData = Partial<CreateOpenHouseData>;
 
 type OpenHouseDelegate = {
 	findMany(args: {
-		where: { isActive: true; schoolId?: string };
+		where: { isActive?: boolean; schoolId?: string };
 		orderBy: { date: "asc" };
 		include: {
 			school: { select: { id: true; name: true; shortName: true; type: true } };
@@ -124,10 +125,11 @@ const parseBody = async (c: Context<{ Variables: Variables }>) =>
 openHouseRoutes.get("/", async (c) => {
 	try {
 		const schoolId = c.req.query("schoolId");
+		const includeInactive = c.req.query("includeInactive") === "true";
 
 		const openHouses = await db.openHouse.findMany({
 			where: {
-				isActive: true,
+				...(includeInactive ? {} : { isActive: true }),
 				...(schoolId && { schoolId }),
 			},
 			orderBy: { date: "asc" },
@@ -148,8 +150,11 @@ openHouseRoutes.get("/", async (c) => {
 			location: openHouse.location,
 			isOnline: openHouse.isOnline,
 			registrationUrl: openHouse.registrationUrl,
-			school:
-				openHouse.school?.shortName || openHouse.school?.name || openHouse.title,
+			isActive: openHouse.isActive,
+			schoolId: openHouse.school?.id ?? null,
+			school: includeInactive
+				? openHouse.school
+				: (openHouse.school?.shortName || openHouse.school?.name || openHouse.title),
 			registered: userId
 				? openHouse.OpenHouseRegistration.some(
 						(registration) => registration.userId === userId,
