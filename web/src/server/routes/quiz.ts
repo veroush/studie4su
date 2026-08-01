@@ -6,14 +6,9 @@ type Cluster = "TECH" | "MED" | "BUS" | "SOC" | "EDU" | "SCI" | "LAW";
 type ClusterScores = Record<Cluster, number>;
 type ClusterWeights = Partial<ClusterScores>;
 type JsonObject = Record<string, unknown>;
-type QuizAnswers = {
-	interests?: string[];
-	subjectStrengths?: string[];
-	certificates?: string[];
-	preferredField?: string;
-	careerDirection?: string;
-	learningStyle?: string;
-};
+
+//rrd removed type QuizAnzwers 1 aug 6pm
+
 type ProgramWithSchool = {
 	id: string;
 	name: string;
@@ -33,6 +28,9 @@ type QuizDatabase = {
 	};
 	quizResult: { create(args: unknown): Promise<{ id: string }> };
 	question: { findMany(args: unknown): Promise<QuestionWithOptions[]> };
+	answerOption: {
+		findMany(args: unknown): Promise<{ id: string; weights: unknown }[]>;
+	};
 };
 
 const db = prisma as unknown as QuizDatabase;
@@ -44,25 +42,7 @@ const isCluster = (value: string): value is Cluster =>
 const readJsonBody = async (c: Context) =>
 	(await c.req.json().catch(() => ({}))) as JsonObject;
 
-const toStringArray = (value: unknown): string[] =>
-	Array.isArray(value)
-		? value.filter((item): item is string => typeof item === "string")
-		: [];
-
-const toQuizAnswers = (value: unknown): QuizAnswers => {
-	const input = (value && typeof value === "object" ? value : {}) as JsonObject;
-	return {
-		interests: toStringArray(input.interests),
-		subjectStrengths: toStringArray(input.subjectStrengths),
-		certificates: toStringArray(input.certificates),
-		preferredField:
-			typeof input.preferredField === "string" ? input.preferredField : "",
-		careerDirection:
-			typeof input.careerDirection === "string" ? input.careerDirection : "",
-		learningStyle:
-			typeof input.learningStyle === "string" ? input.learningStyle : "",
-	};
-};
+//rrd removed const toStringArray and const toQuizAnswer 1 aug 6pm
 
 const asJsonObject = (value: unknown): JsonObject =>
 	value && typeof value === "object" && !Array.isArray(value)
@@ -287,127 +267,7 @@ quizRoutes.post("/submit-profile", async (c) => {
    Returns: top 5 programs from DB with match % and reasons
 ============================================================= */
 
-// Maps each answer value to cluster point weights.
-// Every question contributes to one or more clusters.
-// CHANGED: removed all hardcoded program data — scoring is now
-// driven purely by cluster weights against real DB programs.
-const ANSWER_WEIGHTS: Record<string, ClusterWeights> = {
-	// ── interests ──────────────────────────────────────────────
-	// NL
-	"Technologie en computers": { TECH: 3 },
-	"Gezondheidszorg en medisch": { MED: 3 },
-	"Economie en business": { BUS: 3 },
-	"Onderwijs en jongeren": { EDU: 3 },
-	"Natuur en milieu": { SCI: 3 },
-	"Recht en bestuur": { LAW: 3 },
-	"Kunst en creatief": { SOC: 2 },
-	"Landbouw en biologie": { SCI: 2, TECH: 1 },
-	"Sociale wetenschappen en hulpverlening": { SOC: 3 },
-	// EN
-	"Technology and computers": { TECH: 3 },
-	"Healthcare and medical": { MED: 3 },
-	"Economics and business": { BUS: 3 },
-	"Education and youth": { EDU: 3 },
-	"Nature and environment": { SCI: 3 },
-	"Law and governance": { LAW: 3 },
-	"Art and creative work": { SOC: 2 },
-	"Agriculture and biology": { SCI: 2, TECH: 1 },
-	"Social sciences and welfare": { SOC: 3 },
-
-	// ── subjectStrengths ───────────────────────────────────────
-	// NL
-	Wiskunde: { TECH: 2, SCI: 2, BUS: 1 },
-	"Informatica / Computer Science": { TECH: 3 },
-	Biologie: { MED: 2, SCI: 3 },
-	Scheikunde: { SCI: 3, MED: 1 },
-	"Natuur- en Scheikunde": { TECH: 2, SCI: 2 },
-	Economie: { BUS: 3 },
-	Geschiedenis: { SOC: 2, LAW: 1 },
-	"Talen (Nederlands, Engels)": { SOC: 2, EDU: 2, LAW: 1 },
-	Aardrijkskunde: { SCI: 2 },
-	Maatschappijleer: { SOC: 2, LAW: 2, EDU: 1 },
-	// EN
-	Mathematics: { TECH: 2, SCI: 2, BUS: 1 },
-	"Computer Science / ICT": { TECH: 3 },
-	Biology: { MED: 2, SCI: 3 },
-	Chemistry: { SCI: 3, MED: 1 },
-	Physics: { TECH: 2, SCI: 2 },
-	Economics: { BUS: 3 },
-	History: { SOC: 2, LAW: 1 },
-	"Languages (Dutch, English)": { SOC: 2, EDU: 2, LAW: 1 },
-	Geography: { SCI: 2 },
-	"Social Studies": { SOC: 2, LAW: 2, EDU: 1 },
-
-	// ── preferredField ─────────────────────────────────────────
-	// NL
-	"ICT en Technologie": { TECH: 5 },
-	"Gezondheidszorg en Medisch": { MED: 5 },
-	"Business en Economie": { BUS: 5 },
-	"Onderwijs en Pedagogie": { EDU: 5 },
-	"Natuur- en Milieuwetenschappen": { SCI: 5 },
-	"Recht en Bestuur": { LAW: 5 },
-	"Landbouw en Biologie": { SCI: 4, TECH: 1 },
-	"Sociale Wetenschappen": { SOC: 5 },
-	// EN
-	"ICT and Technology": { TECH: 5 },
-	"Healthcare and Medical": { MED: 5 },
-	"Business and Economics": { BUS: 5 },
-	"Education and Pedagogy": { EDU: 5 },
-	"Natural and Environmental Sciences": { SCI: 5 },
-	"Law and Governance": { LAW: 5 },
-	"Agriculture and Biology": { SCI: 4, TECH: 1 },
-	"Social Sciences": { SOC: 5 },
-
-	// ── certificates ───────────────────────────────────────────
-	// NL
-	"ICT certificaten (bijv. CISCO, CompTIA)": { TECH: 2 },
-	"Talenopleidingen (bijv. Engels, Spaans)": { SOC: 1, EDU: 1 },
-	"Bedrijfskunde / Management cursus": { BUS: 2 },
-	"Gezondheidszorg cursus": { MED: 2 },
-	"Technische cursus (bijv. lassen, elektra)": { TECH: 2 },
-	"Landbouw / Natuur cursus": { SCI: 2 },
-	"Juridische / Bestuurskunde cursus": { LAW: 2 },
-	"Onderwijscursus / Pedagogie": { EDU: 2 },
-	// EN
-	"ICT certificates (e.g. CISCO, CompTIA)": { TECH: 2 },
-	"Language courses (e.g. English, Spanish)": { SOC: 1, EDU: 1 },
-	"Business / Management course": { BUS: 2 },
-	"Healthcare course": { MED: 2 },
-	"Technical course (e.g. welding, electrical)": { TECH: 2 },
-	"Agriculture / Nature course": { SCI: 2 },
-	"Legal / Public Administration course": { LAW: 2 },
-	"Education course / Pedagogy": { EDU: 2 },
-
-	// ── careerDirection ────────────────────────────────────────
-	// NL
-	"Hoog salaris en carrièremogelijkheden": { BUS: 2, TECH: 1 },
-	"Mensen helpen en sociaal werk doen": { MED: 2, SOC: 2 },
-	"Creatief en innovatief werk": { TECH: 1, SOC: 1 },
-	"Maatschappelijke impact maken": { SOC: 2, EDU: 1, LAW: 1 },
-	"Stabiliteit en zekerheid": { EDU: 1, LAW: 1, BUS: 1 },
-	"Ondernemerschap en vrijheid": { BUS: 2 },
-	// EN
-	"High salary and career opportunities": { BUS: 2, TECH: 1 },
-	"Helping people and social work": { MED: 2, SOC: 2 },
-	"Creative and innovative work": { TECH: 1, SOC: 1 },
-	"Making a social impact": { SOC: 2, EDU: 1, LAW: 1 },
-	"Stability and security": { EDU: 1, LAW: 1, BUS: 1 },
-	"Entrepreneurship and freedom": { BUS: 2 },
-
-	// ── learningStyle ──────────────────────────────────────────
-	// NL
-	"Praktisch: met mijn handen werken en direct toepassen": { TECH: 1, MED: 1 },
-	"Theoretisch: lezen, schrijven en analyseren": { SOC: 1, LAW: 1, SCI: 1 },
-	"Mix van theorie en praktijk": { BUS: 1, EDU: 1 },
-	"Door samenwerken in groepsverband": { SOC: 1, EDU: 1 },
-	"Door opdrachten zelfstandig uit te voeren": { TECH: 1, SCI: 1 },
-	// EN
-	"Practically: hands-on and direct application": { TECH: 1, MED: 1 },
-	"Theoretically: reading, writing and analysis": { SOC: 1, LAW: 1, SCI: 1 },
-	"Mix of theory and practice": { BUS: 1, EDU: 1 },
-	"Through collaboration in groups": { SOC: 1, EDU: 1 },
-	"By completing tasks independently": { TECH: 1, SCI: 1 },
-};
+// rrd removed answer weights 1 aug 6 pm
 
 // Reason labels per cluster, bilingual
 const CLUSTER_REASONS: Record<"nl" | "en", Record<Cluster, string>> = {
@@ -431,38 +291,46 @@ const CLUSTER_REASONS: Record<"nl" | "en", Record<Cluster, string>> = {
 	},
 };
 
+
+//replaced by rrd 1 aug 6pm
 quizRoutes.post("/recommend", async (c) => {
 	const req = { body: await readJsonBody(c) };
 	try {
 		const { answers, lang = "nl" } = req.body;
-		const quizAnswers = toQuizAnswers(answers);
 
-		if (!answers) {
+		if (!answers || typeof answers !== "object" || Array.isArray(answers)) {
 			return c.json({ error: "answers is required" }, 400);
 		}
 
 		// ── 1. Calculate cluster scores from all answers ──────────
-		const scores = createEmptyScores();
+		// `answers` is { [questionKey]: optionId | optionId[] }. We
+		// don't care which questionKey an answer came from — every
+		// submitted option ID gets looked up directly against the
+		// real AnswerOption rows, so any question (old or newly
+		// added via the admin page) scores correctly with no
+		// hardcoded key list to keep in sync.
+		const submittedIds = Object.values(answers as Record<string, unknown>)
+			.flatMap((value) => (Array.isArray(value) ? value : [value]))
+			.filter(
+				(value): value is string =>
+					typeof value === "string" && value.length > 0,
+			);
 
-		// Collect all answer values into one flat array
-		const allAnswers = [
-			...(quizAnswers.interests || []),
-			...(quizAnswers.subjectStrengths || []),
-			...(quizAnswers.certificates || []),
-			quizAnswers.preferredField || "",
-			quizAnswers.careerDirection || "",
-			quizAnswers.learningStyle || "",
-		].filter(Boolean);
+		if (submittedIds.length === 0) {
+			return c.json({ error: "No answers were selected" }, 400);
+		}
 
-		// Add points for each answer
-		allAnswers.forEach((answer) => {
-			const weights = ANSWER_WEIGHTS[answer];
-			if (weights) {
-				Object.entries(weights).forEach(([cluster, pts]) => {
-					if (isCluster(cluster)) scores[cluster] += pts ?? 0;
-				});
-			}
+		const selectedOptions = await db.answerOption.findMany({
+			where: { id: { in: submittedIds } },
 		});
+
+		const scores = createEmptyScores();
+		for (const option of selectedOptions) {
+			const weights = (option.weights ?? {}) as ClusterWeights;
+			Object.entries(weights).forEach(([cluster, pts]) => {
+				if (isCluster(cluster)) scores[cluster] += pts ?? 0;
+			});
+		}
 
 		// ── 2. Rank clusters by score ─────────────────────────────
 		const totalScore = Object.values(scores).reduce((a, b) => a + b, 0) || 1;

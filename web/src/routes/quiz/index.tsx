@@ -134,16 +134,18 @@ function QuizPage() {
   const total = questions.length
   const pct = Math.round(((step + 1) / total) * 100)
 
-  function toggleOption(optionText: string) {
+
+  //edited by rrd 1 aug 6 pm
+  function toggleOption(optionId: string) {
     setAnswers((prev) => {
       if (isMultiple) {
         const current = (prev[q.questionKey] as string[] | undefined) ?? []
-        const next = current.includes(optionText)
-          ? current.filter((o) => o !== optionText)
-          : [...current, optionText]
+        const next = current.includes(optionId)
+          ? current.filter((o) => o !== optionId)
+          : [...current, optionId]
         return { ...prev, [q.questionKey]: next }
       }
-      return { ...prev, [q.questionKey]: optionText }
+      return { ...prev, [q.questionKey]: optionId }
     })
   }
 
@@ -273,13 +275,13 @@ function QuizPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {q.options.map((option) => {
             const selected = isMultiple
-              ? Array.isArray(currentAnswer) && currentAnswer.includes(option.text)
-              : currentAnswer === option.text
+              ? Array.isArray(currentAnswer) && currentAnswer.includes(option.id)
+              : currentAnswer === option.id
             return (
               <button
                 key={option.id}
                 type="button"
-                onClick={() => toggleOption(option.text)}
+                onClick={() => toggleOption(option.id)}
                 aria-pressed={selected}
                 className={`w-full text-left flex items-center gap-2.5 rounded-xl border-2 px-3.5 py-2.5 transition-colors ${
                   selected
