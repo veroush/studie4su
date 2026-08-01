@@ -192,7 +192,7 @@ function RouteComponent() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
                   <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6b7280' }} axisLine={false} tickLine={false} />
                   <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#6b7280' }} axisLine={false} tickLine={false} />
-                  <Tooltip formatter={(v: number) => [`${v} result${v !== 1 ? 's' : ''}`, '']} />
+                  <Tooltip formatter={(v) => [`${v ?? 0} result${v !== 1 ? 's' : ''}`, '']} />
                   <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                     {chartData.map((entry) => (
                       <Cell key={entry.name} fill={entry.color} />

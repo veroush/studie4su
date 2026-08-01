@@ -17,6 +17,7 @@ import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminOpenhousesRouteImport } from './routes/admin/openhouses'
 import { Route as AdminProgramsRouteImport } from './routes/admin/programs'
+import { Route as AdminQuizRouteImport } from './routes/admin/quiz'
 import { Route as AdminSchoolsRouteImport } from './routes/admin/schools'
 import { Route as AdminStudentsRouteImport } from './routes/admin/students'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
@@ -66,6 +67,11 @@ const AdminOpenhousesRoute = AdminOpenhousesRouteImport.update({
 const AdminProgramsRoute = AdminProgramsRouteImport.update({
   id: '/programs',
   path: '/programs',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminQuizRoute = AdminQuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminSchoolsRoute = AdminSchoolsRouteImport.update({
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/openhouses': typeof AdminOpenhousesRoute
   '/admin/programs': typeof AdminProgramsRoute
+  '/admin/quiz': typeof AdminQuizRoute
   '/admin/schools': typeof AdminSchoolsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/openhouses': typeof AdminOpenhousesRoute
   '/admin/programs': typeof AdminProgramsRoute
+  '/admin/quiz': typeof AdminQuizRoute
   '/admin/schools': typeof AdminSchoolsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/openhouses': typeof AdminOpenhousesRoute
   '/admin/programs': typeof AdminProgramsRoute
+  '/admin/quiz': typeof AdminQuizRoute
   '/admin/schools': typeof AdminSchoolsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/openhouses'
     | '/admin/programs'
+    | '/admin/quiz'
     | '/admin/schools'
     | '/admin/students'
     | '/admin/users'
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/openhouses'
     | '/admin/programs'
+    | '/admin/quiz'
     | '/admin/schools'
     | '/admin/students'
     | '/admin/users'
@@ -230,6 +241,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/openhouses'
     | '/admin/programs'
+    | '/admin/quiz'
     | '/admin/schools'
     | '/admin/students'
     | '/admin/users'
@@ -316,6 +328,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProgramsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/quiz': {
+      id: '/admin/quiz'
+      path: '/quiz'
+      fullPath: '/admin/quiz'
+      preLoaderRoute: typeof AdminQuizRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/schools': {
       id: '/admin/schools'
       path: '/schools'
@@ -393,6 +412,7 @@ interface AdminRouteRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminOpenhousesRoute: typeof AdminOpenhousesRoute
   AdminProgramsRoute: typeof AdminProgramsRoute
+  AdminQuizRoute: typeof AdminQuizRoute
   AdminSchoolsRoute: typeof AdminSchoolsRoute
   AdminStudentsRoute: typeof AdminStudentsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -402,6 +422,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminOpenhousesRoute: AdminOpenhousesRoute,
   AdminProgramsRoute: AdminProgramsRoute,
+  AdminQuizRoute: AdminQuizRoute,
   AdminSchoolsRoute: AdminSchoolsRoute,
   AdminStudentsRoute: AdminStudentsRoute,
   AdminUsersRoute: AdminUsersRoute,
