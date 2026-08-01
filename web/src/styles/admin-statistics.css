@@ -1,0 +1,70 @@
+/* =============================================
+   admin-statistics.css
+   Additive on top of admin.css — only defines
+   what admin.css doesn't already cover.
+   ============================================= */
+
+.stats-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ranked-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ranked-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--admin-gray-100);
+}
+.ranked-item:last-child { border-bottom: none; }
+
+.ranked-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rank-badge {
+  width: 26px;
+  height: 26px;
+  background: var(--admin-green-600);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: var(--admin-text-xs);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.ranked-item-name {
+  color: var(--admin-gray-800);
+  font-size: var(--admin-text-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ranked-item-count {
+  color: var(--admin-gray-500);
+  font-size: var(--admin-text-sm);
+  white-space: nowrap;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.chart-wrap-lg { height: 300px; }
+
+@media (max-width: 1200px) {
+  .stats-grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .stats-grid-3 { grid-template-columns: 1fr; }
+}

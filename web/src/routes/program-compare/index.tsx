@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, useBlocker } from '@tanstack/react-router'
 import { useQueries } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { LoadingState } from '@/components/common/loading-state'
@@ -75,6 +75,7 @@ function ProgramComparePage() {
   const { ids: idsParam, replace: replaceParam } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const [leaveTarget, setLeaveTarget] = useState<string | null>(null)
+  const loggedSetRef = useRef<string | null>(null)
 
   const urlIds = (idsParam ?? '').split(',').map((id) => id.trim()).filter(Boolean)
   const replaceId = replaceParam ?? null
@@ -135,6 +136,20 @@ function ProgramComparePage() {
   const pendingProgram = isReplacing && replaceId ? loadedById.get(replaceId) ?? null : null
 
   const comparePrograms: CompareProgram[] = existingPrograms.map(toCompareProgram)
+
+  useEffect(() => {
+    if (comparePrograms.length < 2) return
+    const ids = comparePrograms.map((p) => p.id).sort()
+    const key = ids.join(',')
+    if (loggedSetRef.current === key) return
+    loggedSetRef.current = key
+    fetch('/api/track/comparison', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ programIds: ids }),
+    }).catch(() => {})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [comparePrograms])
 
   function updateIds(nextIds: string[]) {
     navigate({ search: nextIds.length > 0 ? { ids: nextIds.join(',') } : {} })

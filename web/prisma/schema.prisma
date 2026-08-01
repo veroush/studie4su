@@ -265,3 +265,17 @@ model AdminSettings {
   aboutUs       Json     @default("{}")
   updatedAt     DateTime @updatedAt
 }
+
+model ProgramComparison {
+  id         String   @id @default(cuid())
+  programIds Json     // array of 2-3 program IDs compared together
+  createdAt  DateTime @default(now())
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  type      String   // 'visit' | 'favorite'
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+}

@@ -34,11 +34,18 @@ export function FavoriteButton({ type, itemId, initialFavorited = false, onToggl
 
     try {
       if (next) {
-        await fetch(ENDPOINT[type], {
+        const res = await fetch(ENDPOINT[type], {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ [BODY_KEY[type]]: itemId }),
         })
+        if (res.ok) {
+          fetch("/api/track/pageview", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: "favorite" }),
+          }).catch(() => {})
+        }
       } else {
         await fetch(`${ENDPOINT[type]}/${itemId}`, { method: "DELETE" })
       }

@@ -12,6 +12,8 @@ import programRoutes from "./routes/programs";
 import quizRoutes from "./routes/quiz";
 import schoolRoutes from "./routes/schools";
 import quizQuestionRoutes from "./routes/quiz-questions";
+import statisticsRoutes from "./routes/statistics";
+import trackingRoutes from "./routes/tracking";
 
 const app = new Hono<{ Variables: AuthVariables }>().basePath('/api')
 
@@ -24,6 +26,7 @@ app.use("/admin/*", requireAuth, adminOnly);
 app.route("/admin", adminRoutes);
 app.route("/admin/settings", adminSettingsRoutes);
 app.route("/admin/quiz-questions", quizQuestionRoutes);
+app.route("/admin/statistics", statisticsRoutes); 
 
 app.use("/openhouses", optionalAuth);
 app.use("/openhouses/:id", optionalAuth);
@@ -35,6 +38,7 @@ app.route("/schools", schoolRoutes);
 app.route("/programs", programRoutes);
 app.route("/favorites", favoritesRoutes);
 app.route("/about", aboutRoutes);
+app.route("/track", trackingRoutes);
 
 app.use("/*", serveStatic({ root: "./public" }));
 
