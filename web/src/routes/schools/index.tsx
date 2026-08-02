@@ -9,6 +9,7 @@ import { SchoolFilters } from "@/components/schools/school-filters"
 import { CompareBar } from "@/components/schools/compare-bar"
 import { SchoolCard } from "@/components/schools/school-card"
 import { useCompare } from "@/hooks/use-compare"
+import { useChaserRunnerAnimation, useConfusedStickmanAnimation } from "@/hooks/use-state-animation"
 
 export const Route = createFileRoute("/schools/")({ component: SchoolsPage })
 
@@ -55,6 +56,7 @@ function SchoolsPage() {
   const [search, setSearch] = useState("")
   const [filters, setFilters] = useState({ type: "", location: "", level: "" })
   const compare = useCompare()
+  const { chaserSrc, runnerSrc } = useChaserRunnerAnimation(isLoading)
 
   // Real data has no separate "level" field - v1 read the same `type`
   // field for both the Type and Niveau dropdowns, so we replicate that
@@ -82,6 +84,8 @@ function SchoolsPage() {
       return true
     })
   }, [schools, search, filters])
+
+  const stickmanSrc = useConfusedStickmanAnimation(isError || (!isLoading && filtered.length === 0))
 
   const compareItems = filtered
     .filter((s) => compare.ids.includes(s.id))
@@ -118,8 +122,8 @@ function SchoolsPage() {
           {isLoading && (
             <div className="text-center py-16 text-[#6b7280]">
               <div className="relative w-full max-w-[380px] h-40 mx-auto mb-4">
-                <img src="/img/chasing-1.svg" alt="" className="absolute bottom-[18px] left-[30px] w-[92px] h-[92px] object-contain" />
-                <img src="/img/running-1.svg" alt="" className="absolute bottom-[18px] left-[170px] w-[92px] h-[92px] object-contain" />
+                <img src={chaserSrc} alt="" className="absolute bottom-[18px] left-[30px] w-[92px] h-[92px] object-contain" />
+                <img src={runnerSrc} alt="" className="absolute bottom-[18px] left-[170px] w-[92px] h-[92px] object-contain" />
               </div>
               <p className="text-[0.95rem]">Scholen laden...</p>
             </div>
@@ -127,7 +131,7 @@ function SchoolsPage() {
 
           {isError && (
             <div className="text-center py-16 text-[#6b7280]">
-              <img src="/img/stickman-confused1.svg" alt="" className="w-[100px] h-auto mx-auto mb-4" />
+              <img src={stickmanSrc} alt="" className="w-[100px] h-auto mx-auto mb-4" />
               <h3 className="font-display text-lg text-[#111827] mb-1">Kon scholen niet laden</h3>
               <p className="text-sm">Controleer of je server actief is.</p>
             </div>
@@ -135,7 +139,7 @@ function SchoolsPage() {
 
           {!isLoading && !isError && filtered.length === 0 && (
             <div className="text-center py-16 text-[#6b7280]">
-              <img src="/img/stickman-confused1.svg" alt="" className="w-[100px] h-auto mx-auto mb-4" />
+              <img src={stickmanSrc} alt="" className="w-[100px] h-auto mx-auto mb-4" />
               <p className="text-[0.95rem]">Geen scholen gevonden met deze filters</p>
             </div>
           )}

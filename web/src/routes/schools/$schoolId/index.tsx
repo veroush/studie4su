@@ -6,6 +6,7 @@ import { SchoolHero } from "@/components/schools/school-hero"
 import { ProgramsSlider } from "@/components/schools/programs-slider"
 import { OpenHousesMiniCard } from "@/components/schools/open-houses-mini-card"
 import { ContactSidebar } from "@/components/schools/contact-sidebar"
+import { useChaserRunnerAnimation, useConfusedStickmanAnimation } from "@/hooks/use-state-animation"
 
 export const Route = createFileRoute("/schools/$schoolId/")({ component: SchoolDetailPage })
 
@@ -66,6 +67,9 @@ function SchoolDetailPage() {
     },
   })
 
+  const { chaserSrc, runnerSrc } = useChaserRunnerAnimation(schoolLoading)
+  const stickmanSrc = useConfusedStickmanAnimation(schoolError)
+
   return (
     <div>
       <Navbar />
@@ -73,8 +77,8 @@ function SchoolDetailPage() {
       {schoolLoading && (
         <div className="text-center py-16 text-[#6b7280]">
           <div className="relative w-full max-w-[380px] h-40 mx-auto mb-4">
-            <img src="/img/chasing-1.svg" alt="" className="absolute bottom-[18px] left-[30px] w-[92px] h-[92px] object-contain" />
-            <img src="/img/running-1.svg" alt="" className="absolute bottom-[18px] left-[170px] w-[92px] h-[92px] object-contain" />
+            <img src={chaserSrc} alt="" className="absolute bottom-[18px] left-[30px] w-[92px] h-[92px] object-contain" />
+            <img src={runnerSrc} alt="" className="absolute bottom-[18px] left-[170px] w-[92px] h-[92px] object-contain" />
           </div>
           <p className="text-[0.95rem]">Schoolgegevens laden...</p>
         </div>
@@ -82,7 +86,7 @@ function SchoolDetailPage() {
 
       {schoolError && (
         <div className="text-center py-16 text-[#6b7280]">
-          <img src="/img/stickman-confused1.svg" alt="" className="w-[100px] h-auto mx-auto mb-4" />
+          <img src={stickmanSrc} alt="" className="w-[100px] h-auto mx-auto mb-4" />
           <h3 className="font-display text-lg text-[#111827] mb-1">Kon school niet laden</h3>
           <p className="text-sm">Controleer of je server actief is.</p>
         </div>
