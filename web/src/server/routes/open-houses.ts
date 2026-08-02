@@ -4,7 +4,7 @@ import type { Context } from "hono";
 import { prisma } from "../../db";
 
 type Variables = {
-	userId?: number;
+	user: { id: string } | null;
 };
 
 type SchoolSummary = {
@@ -17,7 +17,7 @@ type SchoolSummary = {
 type School = SchoolSummary & Record<string, unknown>;
 
 type RegistrationSummary = {
-	userId: number;
+	userId: string;
 };
 
 type OpenHouseListItem = {
@@ -101,12 +101,12 @@ type SchoolDelegate = {
 
 type OpenHouseRegistrationDelegate = {
 	upsert(args: {
-		where: { userId_openHouseId: { userId: number | undefined; openHouseId: string } };
+		where: { userId_openHouseId: { userId: string; openHouseId: string } };
 		update: Record<string, never>;
-		create: { userId: number | undefined; openHouseId: string };
+		create: { userId: string; openHouseId: string };
 	}): Promise<unknown>;
 	deleteMany(args: {
-		where: { userId: number | undefined; openHouseId: string };
+		where: { userId: string; openHouseId: string };
 	}): Promise<unknown>;
 };
 
@@ -141,7 +141,7 @@ openHouseRoutes.get("/", async (c) => {
 			},
 		});
 
-		const userId = c.get("userId") || null;
+		const userId = c.get("user")?.id ?? null;
 		const data = openHouses.map((openHouse) => ({
 			id: openHouse.id,
 			title: openHouse.title,
@@ -330,7 +330,11 @@ openHouseRoutes.delete("/:id", async (c) => {
 // TODO: attach require-auth Hono middleware before mounting registration routes.
 openHouseRoutes.post("/:id/register", async (c) => {
 	const id = c.req.param("id");
-	const userId = c.get("userId");
+	const userId = c.get("user")?.id;
+
+	if (!userId) {
+		return c.json({ error: "Login required" }, 401);
+	}
 
 	try {
 		const openHouse = await db.openHouse.findUnique({ where: { id } });
@@ -355,7 +359,11 @@ openHouseRoutes.post("/:id/register", async (c) => {
 // TODO: attach require-auth Hono middleware before mounting registration routes.
 openHouseRoutes.delete("/:id/register", async (c) => {
 	const id = c.req.param("id");
-	const userId = c.get("userId");
+	const userId = c.get("user")?.id;
+
+	if (!userId) {
+		return c.json({ error: "Login required" }, 401);
+	}
 
 	try {
 		await db.openHouseRegistration.deleteMany({
