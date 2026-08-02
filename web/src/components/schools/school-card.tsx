@@ -1,7 +1,9 @@
-﻿import { Link } from "@tanstack/react-router"
+﻿import { useState } from "react"
+import { Link } from "@tanstack/react-router"
 import { MapPin, BookOpen } from "lucide-react"
 import { FavoriteButton } from "@/components/common/favorite-button"
 import { CompareButton } from "@/components/common/compare-button"
+import { Toast } from "@/components/common/toast"
 
 interface SchoolCardProps {
   school: {
@@ -30,6 +32,11 @@ export function SchoolCard({
   compareDisabled = false,
   description,
 }: SchoolCardProps) {
+  const [toast, setToast] = useState({ message: "", visible: false, added: false })
+  function showToast(message: string, added: boolean) {
+    setToast({ message, visible: true, added })
+  }
+
   // ── Homepage "preview" cards keep the original v2 dark styling ──
   if (variant === "preview") {
     return (
@@ -81,7 +88,14 @@ export function SchoolCard({
           {school.type}
         </span>
 
-        <FavoriteButton type="school" itemId={school.id} initialFavorited={isFavorited} />
+        <FavoriteButton
+          type="school"
+          itemId={school.id}
+          initialFavorited={isFavorited}
+          onToggle={(favorited) =>
+            showToast(favorited ? "Toegevoegd aan favorieten" : "Verwijderd uit favorieten", favorited)
+          }
+        />
       </div>
 
       <div className="px-6 pt-5 pb-6 flex flex-col flex-1">
@@ -132,6 +146,15 @@ export function SchoolCard({
           )}
         </div>
       </div>
+
+      <Toast
+        message={toast.message}
+        visible={toast.visible}
+        onDismiss={() => setToast((t) => ({ ...t, visible: false }))}
+        variant="favorite"
+        durationMs={3500}
+        linkTo={toast.added ? "/favorites" : undefined}
+      />
     </div>
   )
 }

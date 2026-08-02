@@ -85,6 +85,16 @@ export function ProfileDropdown({ user }: ProfileDropdownProps) {
             </div>
 
             <Link
+              to="/favorites"
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-sm text-white/85 no-underline transition-colors hover:bg-white/[0.06]"
+            >
+              <span className="w-5 flex-shrink-0 text-center text-base">❤️</span>
+              <span className="flex-1">Favorieten</span>
+              <span className="text-[1.1rem] text-[var(--text-muted)]">›</span>
+            </Link>
+            
+            <Link
               to="/settings"
               onClick={() => setOpen(false)}
               className="flex w-full items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-sm text-white/85 no-underline transition-colors hover:bg-white/[0.06]"

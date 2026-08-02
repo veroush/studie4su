@@ -3,8 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
-import { LoadingState } from '@/components/common/loading-state'
-import { EmptyState } from '@/components/common/empty-state'
+import { Toast } from '@/components/common/toast'
+import { StateAnimation } from '@/components/open-houses/state-animation'
 import { EventCard } from '@/components/open-houses/event-card'
 import { CalendarEventRow } from '@/components/open-houses/calendar-event-row'
 import { authClient } from '@/lib/auth-client'
@@ -22,6 +22,12 @@ interface OpenHouseApi {
   school: string
   registered: boolean
   registrationCount: number
+}
+
+interface FavoritesIds {
+  schools: string[]
+  programs: string[]
+  openhouses: string[]
 }
 
 const MONTHS_NL = [
@@ -71,7 +77,36 @@ function OpenHousesPage() {
     },
   })
 
-  const [filter, setFilter] = useState<'all' | 'upcoming'>('all')
+  const { data: favIds } = useQuery({
+    queryKey: ['favorites', 'me'],
+    queryFn: async (): Promise<FavoritesIds | null> => {
+      const res = await fetch('/api/favorites/me')
+      if (!res.ok) return null
+      return res.json()
+    },
+  })
+
+  const [favOverrides, setFavOverrides] = useState<Record<string, boolean>>({})
+  const [toast, setToast] = useState<{ message: string; visible: boolean; linkTo?: string }>({
+    message: '',
+    visible: false,
+  })
+
+  function isFavorited(id: string) {
+    if (id in favOverrides) return favOverrides[id]
+    return favIds?.openhouses.includes(id) ?? false
+  }
+
+  function handleFavoriteToggle(id: string, favorited: boolean) {
+    setFavOverrides((prev) => ({ ...prev, [id]: favorited }))
+    setToast({
+      message: favorited ? 'Toegevoegd aan favorieten' : 'Verwijderd uit favorieten',
+      visible: true,
+      linkTo: favorited ? '/favorites' : undefined,
+    })
+  }
+
+  const [filter, setFilter] = useState<'all' | 'upcoming' | 'saved'>('all')
   const [view, setView] = useState<'list' | 'calendar'>('list')
 
   const registerMutation = useMutation({
@@ -100,9 +135,12 @@ function OpenHousesPage() {
 
   const filtered = useMemo(() => {
     if (!events) return []
-    const list = filter === 'upcoming' ? events.filter((e) => isUpcoming(e.date)) : events
+    let list = events
+    if (filter === 'upcoming') list = list.filter((e) => isUpcoming(e.date))
+    if (filter === 'saved') list = list.filter((e) => isFavorited(e.id))
     return [...list].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-  }, [events, filter])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events, filter, favOverrides, favIds])
 
   const grouped = useMemo(() => {
     const map = new Map<string, OpenHouseApi[]>()
@@ -131,23 +169,23 @@ function OpenHousesPage() {
     <div>
       <Navbar />
 
-      <section className="py-16">
-        <div className="max-w-[1100px] mx-auto px-6">
-          <div className="text-center mb-10">
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-[#faf6ee] mb-3">
+      <main className="bg-gradient-to-br from-[#f0fdf4] via-white to-[rgba(220,252,231,0.3)] px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[80rem]">
+          <div className="mb-12 px-4 text-center sm:px-[90px]">
+            <h1 className="font-display mb-3 text-4xl font-bold leading-tight text-[#111827] md:text-5xl">
               Open Dagen
             </h1>
-            <p className="text-[#8aab96] text-lg">
+            <p className="text-lg text-[#4b5563]">
               Bezoek scholen en maak kennis met de opleidingen
             </p>
           </div>
 
           {!session?.user && (
-            <div className="bg-[#122b1e] border border-[#e8b84b]/20 rounded-xl px-5 py-3 mb-8 text-center text-sm text-[#8aab96]">
+            <div className="mb-8 rounded-xl border border-[#e8b84b]/40 bg-[#fef9ec] px-5 py-3 text-center text-sm text-[#4b5563]">
               <Link
                 to="/login"
                 search={{ redirect: '/open-houses' }}
-                className="text-[#e8b84b] font-semibold"
+                className="font-semibold text-[#15803d]"
               >
                 Log in
               </Link>{' '}
@@ -155,40 +193,30 @@ function OpenHousesPage() {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-[#122b1e] border border-white/[0.07] rounded-2xl p-4 mb-8">
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setFilter('all')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filter === 'all'
-                    ? 'bg-gradient-to-r from-[#2d7a4f] to-[#1d5c38] text-white'
-                    : 'bg-white/5 text-[#8aab96] hover:bg-white/10'
-                }`}
-              >
-                Alle
-              </button>
-              <button
-                type="button"
-                onClick={() => setFilter('upcoming')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filter === 'upcoming'
-                    ? 'bg-gradient-to-r from-[#2d7a4f] to-[#1d5c38] text-white'
-                    : 'bg-white/5 text-[#8aab96] hover:bg-white/10'
-                }`}
-              >
-                Aankomend
-              </button>
+          <div className="mb-8 flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap gap-2">
+              {(['all', 'upcoming', 'saved'] as const).map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setFilter(f)}
+                  className={`rounded-lg px-4 py-2 text-base font-medium transition-colors ${
+                    filter === f
+                      ? 'bg-gradient-to-r from-[#16a34a] to-[#15803d] text-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)]'
+                      : 'bg-[#f3f4f6] text-[#4b5563] hover:bg-[#e5e7eb]'
+                  }`}
+                >
+                  {f === 'all' ? 'Alle' : f === 'upcoming' ? 'Aankomend' : 'Opgeslagen'}
+                </button>
+              ))}
             </div>
 
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setView('list')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  view === 'list'
-                    ? 'bg-[#e8b84b]/15 text-[#e8b84b]'
-                    : 'bg-white/5 text-[#8aab96] hover:bg-white/10'
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  view === 'list' ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#f3f4f6] text-[#4b5563] hover:bg-[#e5e7eb]'
                 }`}
               >
                 Lijst
@@ -196,10 +224,8 @@ function OpenHousesPage() {
               <button
                 type="button"
                 onClick={() => setView('calendar')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  view === 'calendar'
-                    ? 'bg-[#e8b84b]/15 text-[#e8b84b]'
-                    : 'bg-white/5 text-[#8aab96] hover:bg-white/10'
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  view === 'calendar' ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#f3f4f6] text-[#4b5563] hover:bg-[#e5e7eb]'
                 }`}
               >
                 Kalender
@@ -207,27 +233,23 @@ function OpenHousesPage() {
             </div>
           </div>
 
-          {isLoading && <LoadingState message="Open dagen laden..." />}
-          {isError && (
-            <EmptyState
-              title="Kon open dagen niet laden"
-              description="Controleer of je server actief is."
-            />
-          )}
-
+          {isLoading && <StateAnimation kind="loading" message="Open dagen laden..." />}
+          {isError && <StateAnimation kind="empty" message="Kon open dagen niet laden" />}
           {!isLoading && !isError && filtered.length === 0 && (
-            <EmptyState title="Geen open dagen gevonden" />
+            <StateAnimation kind="empty" message="Geen open dagen gevonden" />
           )}
 
           {!isLoading && !isError && filtered.length > 0 && view === 'list' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {filtered.map((event) => (
                 <EventCard
                   key={event.id}
                   variant="list"
                   event={event}
+                  isFavorited={isFavorited(event.id)}
                   isRegistered={event.registered}
                   onRegisterToggle={() => handleRegisterToggle(event)}
+                  onFavoriteToggle={(favorited) => handleFavoriteToggle(event.id, favorited)}
                 />
               ))}
             </div>
@@ -238,20 +260,29 @@ function OpenHousesPage() {
               {grouped.map(([key, monthEvents]) => {
                 const [year, month] = key.split('-').map(Number)
                 return (
-                  <div
-                    key={key}
-                    className="bg-[#122b1e] border border-white/[0.07] rounded-2xl p-6"
-                  >
-                    <h2 className="font-display text-xl text-[#faf6ee] mb-4">
-                      {MONTHS_NL[month - 1]} {year}
-                    </h2>
-                    <div className="flex flex-col gap-3">
+                  <div key={key} className="rounded-2xl bg-white p-6 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)]">
+                    <div className="mb-6 flex items-center gap-3">
+                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#16a34a] to-[#15803d] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)]">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                          <line x1="16" y1="2" x2="16" y2="6" />
+                          <line x1="8" y1="2" x2="8" y2="6" />
+                          <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                      </div>
+                      <h2 className="font-display text-2xl font-semibold text-[#111827]">
+                        {MONTHS_NL[month - 1]} {year}
+                      </h2>
+                    </div>
+                    <div className="flex flex-col gap-4">
                       {monthEvents.map((event) => (
                         <CalendarEventRow
                           key={event.id}
                           event={event}
+                          isFavorited={isFavorited(event.id)}
                           isRegistered={event.registered}
                           onRegisterToggle={() => handleRegisterToggle(event)}
+                          onFavoriteToggle={(favorited) => handleFavoriteToggle(event.id, favorited)}
                         />
                       ))}
                     </div>
@@ -261,9 +292,18 @@ function OpenHousesPage() {
             </div>
           )}
         </div>
-      </section>
+      </main>
 
       <Footer />
+
+      <Toast
+        message={toast.message}
+        visible={toast.visible}
+        onDismiss={() => setToast((t) => ({ ...t, visible: false }))}
+        variant="favorite"
+        durationMs={3500}
+        linkTo={toast.linkTo}
+      />
     </div>
   )
 }

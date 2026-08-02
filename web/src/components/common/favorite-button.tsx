@@ -2,12 +2,14 @@
 import { Heart } from "lucide-react"
 
 type FavoriteType = "school" | "program" | "openhouse"
+type FavoriteButtonVariant = "light" | "overlay" | "inline"
 
 interface FavoriteButtonProps {
   type: FavoriteType
   itemId: string
   initialFavorited?: boolean
   onToggle?: (favorited: boolean) => void
+  variant?: FavoriteButtonVariant
 }
 
 const ENDPOINT: Record<FavoriteType, string> = {
@@ -22,7 +24,13 @@ const BODY_KEY: Record<FavoriteType, string> = {
   openhouse: "openHouseId",
 }
 
-export function FavoriteButton({ type, itemId, initialFavorited = false, onToggle }: FavoriteButtonProps) {
+export function FavoriteButton({
+  type,
+  itemId,
+  initialFavorited = false,
+  onToggle,
+  variant = "light",
+}: FavoriteButtonProps) {
   const [favorited, setFavorited] = useState(initialFavorited)
   const [pending, setPending] = useState(false)
 
@@ -57,6 +65,30 @@ export function FavoriteButton({ type, itemId, initialFavorited = false, onToggl
     }
   }
 
+  const variantClasses =
+    variant === "overlay"
+      ? `absolute top-4 right-4 z-10 w-10 h-10 rounded-full backdrop-blur-sm transition-colors ${
+          favorited ? "bg-[#ef4444]" : "bg-white/20 hover:bg-white/35"
+        }`
+      : variant === "inline"
+        ? `w-9 h-9 rounded-full border transition-colors ${
+            favorited
+              ? "bg-[#ef4444] border-[#ef4444]"
+              : "bg-white border-[#e5e7eb] hover:bg-[#f3f4f6]"
+          }`
+        : "absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white hover:scale-110 z-10"
+
+  const iconClass =
+    variant === "overlay"
+      ? "text-white"
+      : variant === "inline"
+        ? favorited
+          ? "text-white"
+          : "text-[#4b5563]"
+        : favorited
+          ? "text-[#dc2626]"
+          : "text-[#4b5563]"
+
   return (
     <button
       type="button"
@@ -64,11 +96,11 @@ export function FavoriteButton({ type, itemId, initialFavorited = false, onToggl
       aria-pressed={favorited}
       aria-label={favorited ? "Verwijder uit favorieten" : "Voeg toe aan favorieten"}
       disabled={pending}
-      className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm shadow-lg flex items-center justify-center transition-transform hover:bg-white hover:scale-110 z-10"
+      className={`flex items-center justify-center transition-transform disabled:opacity-70 ${variantClasses}`}
     >
       <Heart
-        size={18}
-        className={favorited ? "text-[#dc2626]" : "text-[#4b5563]"}
+        size={variant === "inline" ? 16 : 18}
+        className={iconClass}
         fill={favorited ? "currentColor" : "none"}
       />
     </button>

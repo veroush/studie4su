@@ -39,9 +39,14 @@ export function MobileNav({ open, onClose, links, session }: MobileNavProps) {
       </nav>
 
       {session?.user ? (
-        <Link to="/settings" onClick={onClose} className="py-2.5 text-[0.95rem] font-medium text-white/80">
-          Instellingen
-        </Link>
+        <>
+          <Link to="/favorites" onClick={onClose} className="py-2.5 text-[0.95rem] font-medium text-white/80">
+            Favorieten
+          </Link>
+          <Link to="/settings" onClick={onClose} className="py-2.5 text-[0.95rem] font-medium text-white/80">
+            Instellingen
+          </Link>
+        </>
       ) : (
         <Link to="/login" onClick={onClose} className="py-2.5 text-[0.95rem] font-medium text-white/80">
           Inloggen
