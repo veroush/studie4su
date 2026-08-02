@@ -16,6 +16,7 @@ interface ProgramHeroProps {
     name: string
   }
   isFavorited?: boolean
+  onFavoriteToggle?: (favorited: boolean) => void
   isComparing?: boolean
   onToggleCompare?: () => void
 }
@@ -46,6 +47,7 @@ export function ProgramHero({
   program,
   school,
   isFavorited = false,
+  onFavoriteToggle,
   isComparing = false,
   onToggleCompare,
 }: ProgramHeroProps) {
@@ -154,9 +156,13 @@ export function ProgramHero({
 
           <div className="flex-shrink-0 flex flex-col items-end gap-2.5 pt-2">
             <div className="flex items-center gap-2">
-              <div className="relative w-10 h-10">
-                <FavoriteButton type="program" itemId={program.id} initialFavorited={isFavorited} />
-              </div>
+              <FavoriteButton
+                type="program"
+                itemId={program.id}
+                initialFavorited={isFavorited}
+                onToggle={onFavoriteToggle}
+                variant="inline"
+              />
               {onToggleCompare && <CompareButton selected={isComparing} onToggle={onToggleCompare} />}
             </div>
           </div>

@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { LoadingState } from '@/components/common/loading-state'
 import { EmptyState } from '@/components/common/empty-state'
+import { Toast } from '@/components/common/toast'
 import { ProgramHero } from '@/components/programs/program-hero'
 import { DetailCard } from '@/components/programs/detail-card'
 
@@ -23,6 +24,12 @@ interface ProgramApi {
   tuitionCost: string | null
   careers: string | null
   school: { id: string; name: string; shortName: string | null; location: string | null } | null
+}
+
+interface FavoritesIds {
+  schools: string[]
+  programs: string[]
+  openhouses: string[]
 }
 
 function readStoredIds(): string[] {
@@ -51,6 +58,32 @@ function ProgramDetail() {
       return res.json()
     },
   })
+
+  const { data: favIds } = useQuery({
+    queryKey: ['favorites', 'me'],
+    queryFn: async (): Promise<FavoritesIds | null> => {
+      const res = await fetch('/api/favorites/me')
+      if (!res.ok) return null
+      return res.json()
+    },
+  })
+
+  const [favOverride, setFavOverride] = useState<boolean | null>(null)
+  const isFavorited = favOverride ?? (favIds?.programs.includes(programId) ?? false)
+
+  const [toast, setToast] = useState<{ message: string; visible: boolean; linkTo?: string }>({
+    message: '',
+    visible: false,
+  })
+
+  function handleFavoriteToggle(favorited: boolean) {
+    setFavOverride(favorited)
+    setToast({
+      message: favorited ? 'Toegevoegd aan favorieten' : 'Verwijderd uit favorieten',
+      visible: true,
+      linkTo: favorited ? '/favorites' : undefined,
+    })
+  }
 
   function handleToggleCompare() {
     const stored = readStoredIds()
@@ -100,6 +133,8 @@ function ProgramDetail() {
               id: program.school?.id ?? '',
               name: program.school?.name ?? program.school?.shortName ?? '—',
             }}
+            isFavorited={isFavorited}
+            onFavoriteToggle={handleFavoriteToggle}
             isComparing={isComparing}
             onToggleCompare={handleToggleCompare}
           />
@@ -140,6 +175,15 @@ function ProgramDetail() {
       )}
 
       <Footer />
+
+      <Toast
+        message={toast.message}
+        visible={toast.visible}
+        onDismiss={() => setToast((t) => ({ ...t, visible: false }))}
+        variant="favorite"
+        durationMs={3500}
+        linkTo={toast.linkTo}
+      />
     </div>
   )
 }
