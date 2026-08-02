@@ -8,6 +8,15 @@ import { EmptyState } from '@/components/common/empty-state'
 import { AuthGate } from '@/components/quiz/auth-gate'
 import { RecommendationCard } from '@/components/quiz/recommendation-card'
 
+import { AnimatedQuizHeader } from '@/components/quiz/animated-quiz-header'
+import {
+  HEADER_ANIMATIONS,
+  getQuizAnimationStep,
+  preloadAnimationFrames,
+  useLoopingFrameAnimator,
+} from '@/hooks/use-header-stickman'
+import { useEffect } from 'react'
+
 export const Route = createFileRoute('/quiz/')({ component: QuizPage })
 
 interface QuizOption {
@@ -66,6 +75,23 @@ function QuizPage() {
   const [showResults, setShowResults] = useState(false)
   const [results, setResults] = useState<RecommendationResult[] | null>(null)
   const [submitError, setSubmitError] = useState(false)
+
+  const quizAnimator = useLoopingFrameAnimator(8)
+  const resultsAnimator = useLoopingFrameAnimator(8)
+
+  useEffect(() => {
+    preloadAnimationFrames()
+  }, [])
+
+  useEffect(() => {
+    if (showResults) return
+    const animStep = getQuizAnimationStep(step)
+    quizAnimator.play(HEADER_ANIMATIONS[animStep.key])
+  }, [step, showResults])
+
+  useEffect(() => {
+    if (showResults) resultsAnimator.play(HEADER_ANIMATIONS.celebrating)
+  }, [showResults])
 
   const recommendMutation = useMutation({
     mutationFn: async (): Promise<RecommendResponse> => {
@@ -189,12 +215,12 @@ function QuizPage() {
             </svg>
             Quiz voltooid!
           </span>
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-[#111827] mb-3">
-            Jouw Gepersonaliseerde Aanbevelingen
-          </h1>
-          <p className="text-[#4b5563]">
-            Op basis van jouw opleidingsniveau, certificaten en voorkeuren
-          </p>
+          <AnimatedQuizHeader
+            title="Jouw Gepersonaliseerde Aanbevelingen"
+            subtitle="Op basis van jouw opleidingsniveau, certificaten en voorkeuren"
+            stickmanSide="right"
+            frameSrc={resultsAnimator.src}
+          />
         </header>
 
         {recommendMutation.isPending && (
@@ -238,14 +264,12 @@ function QuizPage() {
 
   return pageShell(
     <>
-      <header className="text-center mb-10">
-        <h1 className="font-display text-4xl md:text-5xl font-bold text-[#111827] mb-3">
-          Studiekeuzequiz
-        </h1>
-        <p className="text-lg text-[#4b5563]">
-          Beantwoord deze vragen om jouw ideale studie te vinden
-        </p>
-      </header>
+      <AnimatedQuizHeader
+        title="Studiekeuzequiz"
+        subtitle="Beantwoord deze vragen om jouw ideale studie te vinden"
+        stickmanSide={getQuizAnimationStep(step).position}
+        frameSrc={quizAnimator.src}
+      />
 
       <div className="mb-5">
         <div className="flex justify-between text-sm text-[#4b5563] mb-2">
