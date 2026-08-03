@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { FavoriteButton } from '@/components/common/favorite-button'
 import { CompareButton } from '@/components/common/compare-button'
+import { Breadcrumb } from '@/components/common/breadcrumb'
 
 interface ProgramHeroProps {
   program: {
@@ -61,6 +62,15 @@ export function ProgramHero({
       <div className="relative z-10 max-w-[1100px] mx-auto px-6">
         <div className="flex flex-wrap items-start justify-between gap-8">
           <div className="flex-1 min-w-0">
+            <Breadcrumb
+              className="hidden md:block mb-4"
+              items={[
+                { label: 'Home', to: '/' },
+                { label: school.name, to: '/schools/$schoolId', params: { schoolId: school.id } },
+                { label: program.name },
+              ]}
+            />
+
             <span
               className={`inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold tracking-[0.06em] uppercase mb-4 border ${clusterStyle}`}
             >
