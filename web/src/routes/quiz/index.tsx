@@ -7,6 +7,10 @@ import { LoadingState } from '@/components/common/loading-state'
 import { EmptyState } from '@/components/common/empty-state'
 import { AuthGate } from '@/components/quiz/auth-gate'
 import { RecommendationCard } from '@/components/quiz/recommendation-card'
+import { ProgressBar } from '@/components/quiz/progress-bar'
+import { QuestionCard } from '@/components/quiz/question-card'
+import { QuizNavRow } from '@/components/quiz/quiz-nav-row'
+import { RetakeButton } from '@/components/quiz/retake-button'
 
 import { AnimatedQuizHeader } from '@/components/quiz/animated-quiz-header'
 import {
@@ -158,7 +162,6 @@ function QuizPage() {
     : typeof currentAnswer === 'string' && currentAnswer !== ''
 
   const total = questions.length
-  const pct = Math.round(((step + 1) / total) * 100)
 
   function toggleOption(optionText: string) {
     setAnswers((prev) => {
@@ -249,15 +252,7 @@ function QuizPage() {
           </div>
         )}
 
-        <div className="text-center mt-10">
-          <button
-            type="button"
-            onClick={retake}
-            className="rounded-lg border-2 border-[#16a34a] bg-white px-6 py-2.5 text-base font-semibold text-[#15803d] transition-colors hover:bg-[#f0fdf4]"
-          >
-            Quiz Opnieuw Doen
-          </button>
-        </div>
+        <RetakeButton onRetake={retake} />
       </AuthGate>,
     )
   }
@@ -271,119 +266,24 @@ function QuizPage() {
         frameSrc={quizAnimator.src}
       />
 
-      <div className="mb-5">
-        <div className="flex justify-between text-sm text-[#4b5563] mb-2">
-          <span>
-            Vraag {step + 1} van {total}
-          </span>
-          <span>{pct}%</span>
-        </div>
-        <div className="h-3 bg-[#e5e7eb] rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-[#16a34a] to-[#15803d] rounded-full transition-[width] duration-300"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-      </div>
+      <ProgressBar current={step + 1} total={total} />
 
-      <div className="bg-white rounded-2xl shadow-xl px-6 py-6 md:px-8 md:py-7 mb-4">
-        <h2 className="text-xl md:text-2xl font-semibold text-[#111827] mb-1.5 leading-snug">
-          {q.text}
-        </h2>
-        <p className="text-sm text-[#6b7280] mb-4">
-          {isMultiple ? 'Selecteer alle die van toepassing zijn' : 'Selecteer één optie'}
-        </p>
+      <QuestionCard
+        question={q.text}
+        options={q.options}
+        multiple={isMultiple}
+        selectedAnswer={currentAnswer}
+        onToggle={toggleOption}
+      />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {q.options.map((option) => {
-            const selected = isMultiple
-              ? Array.isArray(currentAnswer) && currentAnswer.includes(option.text)
-              : currentAnswer === option.text
-            return (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => toggleOption(option.text)}
-                aria-pressed={selected}
-                className={`w-full text-left flex items-center gap-2.5 rounded-xl border-2 px-3.5 py-2.5 transition-colors ${
-                  selected
-                    ? 'border-[#16a34a] bg-[#f0fdf4]'
-                    : 'border-[#e5e7eb] bg-white hover:border-[#86efac] hover:bg-[#f9fafb]'
-                }`}
-              >
-                <span
-                  className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selected ? 'border-[#16a34a] bg-[#16a34a]' : 'border-[#d1d5db]'
-                  }`}
-                >
-                  {selected && (
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  )}
-                </span>
-                <span className="text-sm text-[#111827]">{option.text}</span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      <div className="flex justify-between gap-4 mt-3">
-        <button
-          type="button"
-          onClick={handlePrev}
-          disabled={step === 0}
-          className="flex items-center gap-2 rounded-lg border-2 border-[#d1d5db] bg-white px-5 py-2.5 text-sm font-medium text-[#374151] transition-colors disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:bg-[#f9fafb]"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          Vorige
-        </button>
-        <button
-          type="button"
-          onClick={handleNext}
-          disabled={!isAnswered || recommendMutation.isPending}
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#16a34a] to-[#15803d] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:from-[#15803d] enabled:hover:to-[#166534]"
-        >
-          {step === total - 1
-            ? recommendMutation.isPending
-              ? 'Bezig...'
-              : 'Bekijk Resultaten'
-            : 'Volgende'}
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
-      </div>
+      <QuizNavRow
+        onPrev={handlePrev}
+        onNext={handleNext}
+        canGoPrev={step > 0}
+        canGoNext={isAnswered && !recommendMutation.isPending}
+        isLast={step === total - 1}
+        isPending={recommendMutation.isPending}
+      />
     </>,
   )
 }

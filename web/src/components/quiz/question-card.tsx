@@ -2,32 +2,42 @@ import { OptionButton } from './option-button'
 
 interface QuizOption {
   id: string
-  label: string
+  text: string
+  textEn: string | null
 }
 
 interface QuestionCardProps {
   question: string
   options: QuizOption[]
-  multiple?: boolean
-  selectedIds: string[]
-  onSelect: (id: string) => void
+  multiple: boolean
+  selectedAnswer: string | string[] | undefined
+  onToggle: (optionText: string) => void
 }
 
-export function QuestionCard({ question, options, multiple = false, selectedIds, onSelect }: QuestionCardProps) {
+export function QuestionCard({ question, options, multiple, selectedAnswer, onToggle }: QuestionCardProps) {
   return (
-    <div role="group" aria-label={question}>
-      <h2>{question}</h2>
+    <div className="bg-white rounded-2xl shadow-xl px-6 py-6 md:px-8 md:py-7 mb-4">
+      <h2 className="text-xl md:text-2xl font-semibold text-[#111827] mb-1.5 leading-snug">
+        {question}
+      </h2>
+      <p className="text-sm text-[#6b7280] mb-4">
+        {multiple ? 'Selecteer alle die van toepassing zijn' : 'Selecteer één optie'}
+      </p>
 
-      <div>
-        {options.map((option) => (
-          <OptionButton
-            key={option.id}
-            label={option.label}
-            selected={selectedIds.includes(option.id)}
-            multiple={multiple}
-            onClick={() => onSelect(option.id)}
-          />
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {options.map((option) => {
+          const selected = multiple
+            ? Array.isArray(selectedAnswer) && selectedAnswer.includes(option.text)
+            : selectedAnswer === option.text
+          return (
+            <OptionButton
+              key={option.id}
+              label={option.text}
+              selected={selected}
+              onClick={() => onToggle(option.text)}
+            />
+          )
+        })}
       </div>
     </div>
   )
