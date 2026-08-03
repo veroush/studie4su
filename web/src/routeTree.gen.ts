@@ -20,6 +20,7 @@ import { Route as AdminOpenhousesRouteImport } from './routes/admin/openhouses'
 import { Route as AdminProgramsRouteImport } from './routes/admin/programs'
 import { Route as AdminQuizRouteImport } from './routes/admin/quiz'
 import { Route as AdminSchoolsRouteImport } from './routes/admin/schools'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminStatisticsRouteImport } from './routes/admin/statistics'
 import { Route as AdminStudentsRouteImport } from './routes/admin/students'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
@@ -86,6 +87,11 @@ const AdminSchoolsRoute = AdminSchoolsRouteImport.update({
   path: '/schools',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminStatisticsRoute = AdminStatisticsRouteImport.update({
   id: '/statistics',
   path: '/statistics',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/admin/programs': typeof AdminProgramsRoute
   '/admin/quiz': typeof AdminQuizRoute
   '/admin/schools': typeof AdminSchoolsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/statistics': typeof AdminStatisticsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/admin/programs': typeof AdminProgramsRoute
   '/admin/quiz': typeof AdminQuizRoute
   '/admin/schools': typeof AdminSchoolsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/statistics': typeof AdminStatisticsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/admin/programs': typeof AdminProgramsRoute
   '/admin/quiz': typeof AdminQuizRoute
   '/admin/schools': typeof AdminSchoolsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/statistics': typeof AdminStatisticsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/admin/programs'
     | '/admin/quiz'
     | '/admin/schools'
+    | '/admin/settings'
     | '/admin/statistics'
     | '/admin/students'
     | '/admin/users'
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/admin/programs'
     | '/admin/quiz'
     | '/admin/schools'
+    | '/admin/settings'
     | '/admin/statistics'
     | '/admin/students'
     | '/admin/users'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/admin/programs'
     | '/admin/quiz'
     | '/admin/schools'
+    | '/admin/settings'
     | '/admin/statistics'
     | '/admin/students'
     | '/admin/users'
@@ -374,6 +386,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSchoolsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/statistics': {
       id: '/admin/statistics'
       path: '/statistics'
@@ -453,6 +472,7 @@ interface AdminRouteRouteChildren {
   AdminProgramsRoute: typeof AdminProgramsRoute
   AdminQuizRoute: typeof AdminQuizRoute
   AdminSchoolsRoute: typeof AdminSchoolsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStatisticsRoute: typeof AdminStatisticsRoute
   AdminStudentsRoute: typeof AdminStudentsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -464,6 +484,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminProgramsRoute: AdminProgramsRoute,
   AdminQuizRoute: AdminQuizRoute,
   AdminSchoolsRoute: AdminSchoolsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminStatisticsRoute: AdminStatisticsRoute,
   AdminStudentsRoute: AdminStudentsRoute,
   AdminUsersRoute: AdminUsersRoute,
