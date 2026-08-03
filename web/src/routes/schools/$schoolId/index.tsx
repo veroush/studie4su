@@ -72,7 +72,7 @@ function SchoolDetailPage() {
   const { data: openHouses } = useQuery({
     queryKey: ["openHouses", schoolId],
     queryFn: async (): Promise<OpenHouseItem[]> => {
-      const res = await fetch(`/api/open-houses?schoolId=${schoolId}`)
+      const res = await fetch(`/api/openhouses?schoolId=${schoolId}`)
       if (!res.ok) throw new Error("Failed to fetch open houses")
       return res.json()
     },
