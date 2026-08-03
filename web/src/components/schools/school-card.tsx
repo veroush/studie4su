@@ -2,7 +2,6 @@
 import { Link } from "@tanstack/react-router"
 import { MapPin, BookOpen } from "lucide-react"
 import { FavoriteButton } from "@/components/common/favorite-button"
-import { CompareButton } from "@/components/common/compare-button"
 import { Toast } from "@/components/common/toast"
 
 interface SchoolCardProps {
@@ -17,9 +16,6 @@ interface SchoolCardProps {
   }
   variant?: "preview" | "grid"
   isFavorited?: boolean
-  isComparing?: boolean
-  onToggleCompare?: () => void
-  compareDisabled?: boolean
   description?: string
 }
 
@@ -27,9 +23,6 @@ export function SchoolCard({
   school,
   variant = "grid",
   isFavorited = false,
-  isComparing = false,
-  onToggleCompare,
-  compareDisabled = false,
   description,
 }: SchoolCardProps) {
   const [toast, setToast] = useState({ message: "", visible: false, added: false })
@@ -137,13 +130,14 @@ export function SchoolCard({
           >
             Bekijk school
           </Link>
-          {onToggleCompare && (
-            <CompareButton
-              selected={isComparing}
-              onToggle={onToggleCompare}
-              disabled={compareDisabled && !isComparing}
-            />
-          )}
+          <Link
+            to="/schools/$schoolId"
+            params={{ schoolId: school.id }}
+            search={{ compare: "1" }}
+            className="py-2.5 px-4 rounded-lg border-2 border-[#16a34a] text-[#15803d] text-sm font-semibold hover:bg-[#f0fdf4] transition-colors whitespace-nowrap"
+          >
+            Vergelijk opleiding
+          </Link>
         </div>
       </div>
 

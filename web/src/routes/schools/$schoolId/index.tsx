@@ -1,5 +1,6 @@
 ﻿import { createFileRoute } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
+import { useEffect, useRef, useState } from "react"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { SchoolHero } from "@/components/schools/school-hero"
@@ -7,8 +8,14 @@ import { ProgramsSlider } from "@/components/schools/programs-slider"
 import { OpenHousesMiniCard } from "@/components/schools/open-houses-mini-card"
 import { ContactSidebar } from "@/components/schools/contact-sidebar"
 import { useChaserRunnerAnimation, useConfusedStickmanAnimation } from "@/hooks/use-state-animation"
+import { useProgramCompare } from "@/hooks/use-program-compare"
 
-export const Route = createFileRoute("/schools/$schoolId/")({ component: SchoolDetailPage })
+export const Route = createFileRoute("/schools/$schoolId/")({
+  component: SchoolDetailPage,
+  validateSearch: (search: Record<string, unknown>): { compare?: string } => ({
+    compare: typeof search.compare === "string" ? search.compare : undefined,
+  }),
+})
 
 interface Program {
   id: string
@@ -41,6 +48,10 @@ interface OpenHouseItem {
 
 function SchoolDetailPage() {
   const { schoolId } = Route.useParams()
+  const { compare } = Route.useSearch()
+  const { addProgram } = useProgramCompare()
+  const [compareSelectMode, setCompareSelectMode] = useState(false)
+  const compareTriggeredRef = useRef(false)
 
   const {
     data: school,
@@ -69,6 +80,23 @@ function SchoolDetailPage() {
 
   const { chaserSrc, runnerSrc } = useChaserRunnerAnimation(schoolLoading)
   const stickmanSrc = useConfusedStickmanAnimation(schoolError)
+
+  function handleCompareClick() {
+    if (!school || school.programs.length === 0) {
+      alert("Deze school heeft nog geen opleidingen om te vergelijken.")
+      return
+    }
+    document.getElementById("programs-section")?.scrollIntoView({ behavior: "smooth", block: "start" })
+    setTimeout(() => setCompareSelectMode(true), 400)
+  }
+
+  useEffect(() => {
+    if (compare !== "1" || compareTriggeredRef.current || !school) return
+    compareTriggeredRef.current = true
+    const t = setTimeout(handleCompareClick, 600)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [compare, school])
 
   return (
     <div>
@@ -102,6 +130,7 @@ function SchoolDetailPage() {
               location: school.location,
               programCount: school.programs.length,
             }}
+            onCompareClick={handleCompareClick}
           />
 
           <div className="bg-gradient-to-br from-[#f9fafb] to-[#f0fdf4]/50">
@@ -117,7 +146,12 @@ function SchoolDetailPage() {
             </main>
           </div>
 
-          <ProgramsSlider programs={school.programs} />
+          <ProgramsSlider
+            programs={school.programs}
+            selectMode={compareSelectMode}
+            onSelectProgram={addProgram}
+            onCancelSelect={() => setCompareSelectMode(false)}
+          />
         </>
       )}
 

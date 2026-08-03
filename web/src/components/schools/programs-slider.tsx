@@ -16,6 +16,9 @@ interface Program {
 
 interface ProgramsSliderProps {
   programs: Program[]
+  selectMode?: boolean
+  onSelectProgram?: (programId: string) => void
+  onCancelSelect?: () => void
 }
 
 interface ClusterMeta {
@@ -40,7 +43,7 @@ function truncateTuition(t: string, max = 30) {
   return { short: t.slice(0, max).trimEnd() + "…", overflow: true }
 }
 
-export function ProgramsSlider({ programs }: ProgramsSliderProps) {
+export function ProgramsSlider({ programs, selectMode, onSelectProgram, onCancelSelect }: ProgramsSliderProps) {
   const { addProgram } = useProgramCompare()
   const viewportRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -109,7 +112,7 @@ export function ProgramsSlider({ programs }: ProgramsSliderProps) {
 
   if (programs.length === 0) {
     return (
-      <section className="bg-[#0d2b1f] py-12">
+      <section id="programs-section" className="bg-[#0d2b1f] py-12">
         <div className="max-w-[1280px] mx-auto px-8">
           <p className="text-white/50 text-sm">Geen opleidingen gevonden.</p>
         </div>
@@ -118,7 +121,25 @@ export function ProgramsSlider({ programs }: ProgramsSliderProps) {
   }
 
   return (
-    <section className="bg-[#0d2b1f] py-12 pb-16">
+    <section id="programs-section" className="bg-[#0d2b1f] py-12 pb-16">
+      {selectMode && (
+        <div className="sticky top-[68px] z-50 bg-gradient-to-r from-[#16a34a] to-[#15803d] px-6 py-3 animate-[fadeInDown_.3s_ease_both]">
+          <div className="max-w-[1280px] mx-auto flex items-center gap-3 text-white text-sm font-medium">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0 opacity-90">
+              <circle cx="18" cy="18" r="3" /><circle cx="6" cy="6" r="3" />
+              <path d="M13 6h3a2 2 0 012 2v7" /><path d="M11 18H8a2 2 0 01-2-2V9" />
+            </svg>
+            <span className="flex-1">Klik op een opleiding hieronder om te vergelijken</span>
+            <button
+              type="button"
+              onClick={onCancelSelect}
+              className="px-3.5 py-1.5 rounded-lg bg-white/20 border border-white/35 text-white text-xs font-semibold hover:bg-white/35 transition-colors whitespace-nowrap"
+            >
+              Annuleren
+            </button>
+          </div>
+        </div>
+      )}
       <div className="max-w-[1280px] mx-auto px-8 mb-7 flex items-center justify-between gap-3">
         <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2.5">
           Aangeboden opleidingen
@@ -165,7 +186,17 @@ export function ProgramsSlider({ programs }: ProgramsSliderProps) {
                   <Link
                     to="/programs/$programId"
                     params={{ programId: p.id }}
-                    className="relative rounded-[18px] overflow-hidden h-full flex flex-col shadow-lg hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-250 group"
+                    onClick={(e) => {
+                      if (selectMode) {
+                        e.preventDefault()
+                        onSelectProgram?.(p.id)
+                      }
+                    }}
+                    className={`relative rounded-[18px] overflow-hidden h-full flex flex-col shadow-lg transition-all duration-250 group ${
+                      selectMode
+                        ? "outline outline-2 outline-transparent hover:outline-[#16a34a] hover:shadow-[0_0_0_4px_rgba(22,163,74,0.18)] hover:-translate-y-1 cursor-pointer"
+                        : "hover:-translate-y-1.5 hover:shadow-2xl"
+                    }`}
                   >
                     <div className="h-[5px] w-full" style={{ background: accent }} />
                     <div className="bg-white/[0.07] border border-white/10 border-t-0 rounded-b-[18px] p-5 flex flex-col gap-2.5 flex-1 group-hover:bg-white/[0.11] group-hover:border-white/[0.18] transition-colors">
@@ -205,18 +236,20 @@ export function ProgramsSlider({ programs }: ProgramsSliderProps) {
                           </span>
                         ))}
                       </div>
-                      <div className="overflow-hidden max-h-0 opacity-0 group-hover:max-h-[60px] group-hover:opacity-100 transition-all duration-300">
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            addProgram(p.id)
-                          }}
-                          className="mt-2 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#0d2b1f] bg-[#e8b84b] hover:opacity-90 px-4 py-2 rounded-lg transition-opacity"
-                        >
-                          Vergelijk opleiding
-                        </button>
-                      </div>
+                      {!selectMode && (
+                        <div className="overflow-hidden max-h-0 opacity-0 group-hover:max-h-[60px] group-hover:opacity-100 transition-all duration-300">
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              addProgram(p.id)
+                            }}
+                            className="mt-2 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#0d2b1f] bg-[#e8b84b] hover:opacity-90 px-4 py-2 rounded-lg transition-opacity"
+                          >
+                            Vergelijk opleiding
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </div>

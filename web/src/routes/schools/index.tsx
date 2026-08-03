@@ -6,9 +6,7 @@ import { Footer } from "@/components/layout/footer"
 import { PageTitleSection } from "@/components/schools/page-title-section"
 import { SearchBar } from "@/components/schools/search-bar"
 import { SchoolFilters } from "@/components/schools/school-filters"
-import { CompareBar } from "@/components/schools/compare-bar"
 import { SchoolCard } from "@/components/schools/school-card"
-import { useCompare } from "@/hooks/use-compare"
 import { useChaserRunnerAnimation, useConfusedStickmanAnimation } from "@/hooks/use-state-animation"
 
 export const Route = createFileRoute("/schools/")({ component: SchoolsPage })
@@ -55,7 +53,6 @@ function SchoolsPage() {
 
   const [search, setSearch] = useState("")
   const [filters, setFilters] = useState({ type: "", location: "", level: "" })
-  const compare = useCompare()
   const { chaserSrc, runnerSrc } = useChaserRunnerAnimation(isLoading)
 
   // Real data has no separate "level" field - v1 read the same `type`
@@ -86,10 +83,6 @@ function SchoolsPage() {
   }, [schools, search, filters])
 
   const stickmanSrc = useConfusedStickmanAnimation(isError || (!isLoading && filtered.length === 0))
-
-  const compareItems = filtered
-    .filter((s) => compare.ids.includes(s.id))
-    .map((s) => ({ id: s.id, name: s.shortName ?? s.name }))
 
   return (
     <div>
@@ -159,9 +152,6 @@ function SchoolsPage() {
                     programCount: school._count.programs,
                   }}
                   description={DESCRIPTIONS[school.id] ?? DEFAULT_DESCRIPTION}
-                  isComparing={compare.isComparing(school.id)}
-                  onToggleCompare={() => compare.toggle(school.id)}
-                  compareDisabled={compare.atLimit}
                 />
               ))}
             </div>
@@ -171,12 +161,6 @@ function SchoolsPage() {
 
       <Footer />
 
-      <CompareBar
-        items={compareItems}
-        onRemove={compare.remove}
-        onClear={compare.clear}
-        compareTo="/program-compare"
-      />
-    </div>
+      </div>
   )
 }

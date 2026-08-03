@@ -25,9 +25,7 @@ export function useProgramCompare() {
     }
 
     if (ids.length >= MAX_ITEMS) {
-      const next = [...ids, programId]
-      writeIds(next)
-      window.location.href = `/program-compare?ids=${next.join(",")}&replace=${encodeURIComponent(programId)}`
+      window.location.href = `/program-compare?ids=${ids.join(",")}&replace=${encodeURIComponent(programId)}`
       return
     }
 
