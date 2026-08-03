@@ -6,7 +6,8 @@ import { Footer } from '@/components/layout/footer'
 import { Toast } from '@/components/common/toast'
 import { StateAnimation } from '@/components/open-houses/state-animation'
 import { EventCard } from '@/components/open-houses/event-card'
-import { CalendarEventRow } from '@/components/open-houses/calendar-event-row'
+import { CalendarView } from '@/components/open-houses/calendar-view'
+import { FilterTabs } from '@/components/open-houses/filter-tabs'
 import { authClient } from '@/lib/auth-client'
 
 export const Route = createFileRoute('/open-houses/')({ component: OpenHousesPage })
@@ -29,11 +30,6 @@ interface FavoritesIds {
   programs: string[]
   openhouses: string[]
 }
-
-const MONTHS_NL = [
-  'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
-  'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December',
-]
 
 function addToGoogleCalendar(event: OpenHouseApi) {
   const start = new Date(event.date)
@@ -142,17 +138,6 @@ function OpenHousesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events, filter, favOverrides, favIds])
 
-  const grouped = useMemo(() => {
-    const map = new Map<string, OpenHouseApi[]>()
-    filtered.forEach((event) => {
-      const key = event.date.slice(0, 7)
-      const bucket = map.get(key) ?? []
-      bucket.push(event)
-      map.set(key, bucket)
-    })
-    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b))
-  }, [filtered])
-
   function handleRegisterToggle(event: OpenHouseApi) {
     if (!session?.user) {
       navigate({ to: '/login', search: { redirect: '/open-houses' } })
@@ -194,22 +179,7 @@ function OpenHousesPage() {
           )}
 
           <div className="mb-8 flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap gap-2">
-              {(['all', 'upcoming', 'saved'] as const).map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => setFilter(f)}
-                  className={`rounded-lg px-4 py-2 text-base font-medium transition-colors ${
-                    filter === f
-                      ? 'bg-gradient-to-r from-[#16a34a] to-[#15803d] text-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)]'
-                      : 'bg-[#f3f4f6] text-[#4b5563] hover:bg-[#e5e7eb]'
-                  }`}
-                >
-                  {f === 'all' ? 'Alle' : f === 'upcoming' ? 'Aankomend' : 'Opgeslagen'}
-                </button>
-              ))}
-            </div>
+            <FilterTabs value={filter} onChange={setFilter} />
 
             <div className="flex gap-2">
               <button
@@ -256,40 +226,12 @@ function OpenHousesPage() {
           )}
 
           {!isLoading && !isError && filtered.length > 0 && view === 'calendar' && (
-            <div className="flex flex-col gap-8">
-              {grouped.map(([key, monthEvents]) => {
-                const [year, month] = key.split('-').map(Number)
-                return (
-                  <div key={key} className="rounded-2xl bg-white p-6 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)]">
-                    <div className="mb-6 flex items-center gap-3">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#16a34a] to-[#15803d] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)]">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                          <line x1="16" y1="2" x2="16" y2="6" />
-                          <line x1="8" y1="2" x2="8" y2="6" />
-                          <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                      </div>
-                      <h2 className="font-display text-2xl font-semibold text-[#111827]">
-                        {MONTHS_NL[month - 1]} {year}
-                      </h2>
-                    </div>
-                    <div className="flex flex-col gap-4">
-                      {monthEvents.map((event) => (
-                        <CalendarEventRow
-                          key={event.id}
-                          event={event}
-                          isFavorited={isFavorited(event.id)}
-                          isRegistered={event.registered}
-                          onRegisterToggle={() => handleRegisterToggle(event)}
-                          onFavoriteToggle={(favorited) => handleFavoriteToggle(event.id, favorited)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+            <CalendarView
+              events={filtered}
+              isFavorited={isFavorited}
+              onRegisterToggle={handleRegisterToggle}
+              onFavoriteToggle={handleFavoriteToggle}
+            />
           )}
         </div>
       </main>
