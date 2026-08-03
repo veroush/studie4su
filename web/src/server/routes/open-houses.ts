@@ -118,6 +118,7 @@ type OpenHouseDatabase = {
 
 const db = prisma as unknown as OpenHouseDatabase;
 const openHouseRoutes = new Hono<{ Variables: Variables }>();
+const openHouseAdminRoutes = new Hono<{ Variables: Variables }>();
 
 const parseBody = async (c: Context<{ Variables: Variables }>) =>
 	(await c.req.json()) as OpenHouseBody;
@@ -188,8 +189,7 @@ openHouseRoutes.get("/:id", async (c) => {
 	}
 });
 
-// TODO: attach admin-only Hono middleware before mounting admin open house routes.
-openHouseRoutes.post("/", async (c) => {
+openHouseAdminRoutes.post("/", async (c) => {
 	try {
 		const {
 			title,
@@ -243,8 +243,7 @@ openHouseRoutes.post("/", async (c) => {
 	}
 });
 
-// TODO: attach admin-only Hono middleware before mounting admin open house routes.
-openHouseRoutes.put("/:id", async (c) => {
+openHouseAdminRoutes.put("/:id", async (c) => {
 	try {
 		const {
 			title,
@@ -307,8 +306,7 @@ openHouseRoutes.put("/:id", async (c) => {
 	}
 });
 
-// TODO: attach admin-only Hono middleware before mounting admin open house routes.
-openHouseRoutes.delete("/:id", async (c) => {
+openHouseAdminRoutes.delete("/:id", async (c) => {
 	try {
 		const existing = await db.openHouse.findUnique({
 			where: { id: c.req.param("id") },
@@ -379,3 +377,4 @@ openHouseRoutes.delete("/:id/register", async (c) => {
 });
 
 export default openHouseRoutes;
+export { openHouseAdminRoutes };

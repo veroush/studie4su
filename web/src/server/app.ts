@@ -7,7 +7,7 @@ import aboutRoutes from "./routes/about";
 import adminRoutes from "./routes/admin";
 import adminSettingsRoutes from "./routes/admin-settings";
 import favoritesRoutes from "./routes/favorites";
-import openHouseRoutes from "./routes/open-houses";
+import openHouseRoutes, { openHouseAdminRoutes } from "./routes/open-houses";
 import programRoutes from "./routes/programs";
 import quizRoutes from "./routes/quiz";
 import schoolRoutes from "./routes/schools";
@@ -32,7 +32,7 @@ app.use("/openhouses", optionalAuth);
 app.use("/openhouses/:id", optionalAuth);
 app.use("/openhouses/:id/register", requireAuth);
 app.route("/openhouses", openHouseRoutes);
-app.route("/admin/openhouses", openHouseRoutes);
+app.route("/admin/openhouses", openHouseAdminRoutes);
 
 app.route("/schools", schoolRoutes);
 app.route("/programs", programRoutes);
