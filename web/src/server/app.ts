@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { serveStatic } from "hono/cloudflare-workers";
+import { serveStatic } from "@hono/node-server/serve-static";
 import { auth } from "#/lib/auth";
 import { adminOnly, attachSession, optionalAuth, requireAuth } from "./middleware/session";
 import type { AuthVariables } from "./middleware/session";
