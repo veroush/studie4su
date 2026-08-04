@@ -8,6 +8,7 @@ import { StateAnimation } from '@/components/open-houses/state-animation'
 import { EventCard } from '@/components/open-houses/event-card'
 import { CalendarView } from '@/components/open-houses/calendar-view'
 import { FilterTabs } from '@/components/open-houses/filter-tabs'
+import { ViewToggle } from '@/components/open-houses/view-toggle'
 import { authClient } from '@/lib/auth-client'
 
 export const Route = createFileRoute('/open-houses/')({ component: OpenHousesPage })
@@ -181,26 +182,7 @@ function OpenHousesPage() {
           <div className="mb-8 flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] sm:flex-row sm:items-center sm:justify-between">
             <FilterTabs value={filter} onChange={setFilter} />
 
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setView('list')}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  view === 'list' ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#f3f4f6] text-[#4b5563] hover:bg-[#e5e7eb]'
-                }`}
-              >
-                Lijst
-              </button>
-              <button
-                type="button"
-                onClick={() => setView('calendar')}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  view === 'calendar' ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#f3f4f6] text-[#4b5563] hover:bg-[#e5e7eb]'
-                }`}
-              >
-                Kalender
-              </button>
-            </div>
+            <ViewToggle value={view} onChange={setView} />
           </div>
 
           {isLoading && <StateAnimation kind="loading" message="Open dagen laden..." />}
