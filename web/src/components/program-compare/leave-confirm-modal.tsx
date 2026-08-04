@@ -12,10 +12,10 @@ export function LeaveConfirmModal({ open, onConfirm, onCancel }: LeaveConfirmMod
   return (
     <ConfirmModal
       open={open}
-      title="Vergelijking verlaten?"
-      description="Je geselecteerde opleidingen worden niet bewaard."
-      confirmLabel="Verlaten"
-      cancelLabel="Blijven"
+      title="Vergelijking wissen?"
+      description="Wil je de vergelijking wissen zodat je opnieuw kunt beginnen?"
+      confirmLabel="Ja, wis vergelijking"
+      cancelLabel="Nee, bewaar"
       onConfirm={onConfirm}
       onCancel={onCancel}
     />
