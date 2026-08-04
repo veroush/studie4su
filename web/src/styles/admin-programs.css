@@ -1,0 +1,18 @@
+.program-name-cell { font-weight: 500; color: var(--admin-gray-800); }
+.program-id { font-size: var(--admin-text-xs); color: var(--admin-gray-400); margin-top: 2px; }
+
+.level-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: var(--admin-text-xs); font-weight: 500; }
+.level-MAVO { background: #fef3c7; color: #b45309; }
+.level-HAVO { background: #dbeafe; color: #1d4ed8; }
+.level-VWO  { background: #e0e7ff; color: #4338ca; }
+.level-MBO  { background: #dcfce7; color: #15803d; }
+.level-HBO  { background: #f3e8ff; color: #7e22ce; }
+
+/* Two-column form only used by Schools so far; admin.css doesn't define
+   form-group-full since Schools has no full-width fields. Programs needs
+   it for description/careers textareas. */
+.form-group-full { grid-column: 1 / -1; }
+
+@media (max-width: 768px) {
+  .form-group-full { grid-column: 1; }
+}

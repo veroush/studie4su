@@ -21,7 +21,7 @@ interface AdminDatabase {
 			select: { id: true; name: true; email: true; role: true; createdAt: true };
 			orderBy: { createdAt: "asc" };
 		}): Promise<unknown[]>;
-		update(args: { where: { id: number }; data: { role: string } }): Promise<unknown>;
+		update(args: { where: { id: string }; data: { role: string } }): Promise<unknown>;
 	};
 	school: {
 		findMany(args: { orderBy: { createdAt: "desc" }; include: { _count: { select: { programs: true } } } }): Promise<unknown[]>;
@@ -254,7 +254,7 @@ adminRoutes.put("/users/:id", async (c) => {
 	const { role } = await readJsonBody<{ role?: string }>(c);
 	if (!role || !["admin", "student"].includes(role)) return c.json({ message: "Invalid role" }, 400);
 	try {
-		return c.json(await db.user.update({ where: { id: Number.parseInt(c.req.param("id"), 10) }, data: { role } }));
+		return c.json(await db.user.update({ where: { id: c.req.param("id") }, data: { role } }));
 	} catch {
 		return c.json({ message: "Failed to update user" }, 500);
 	}

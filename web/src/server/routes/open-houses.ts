@@ -4,7 +4,7 @@ import type { Context } from "hono";
 import { prisma } from "../../db";
 
 type Variables = {
-	userId?: number;
+	user: { id: string } | null;
 };
 
 type SchoolSummary = {
@@ -17,7 +17,7 @@ type SchoolSummary = {
 type School = SchoolSummary & Record<string, unknown>;
 
 type RegistrationSummary = {
-	userId: number;
+	userId: string;
 };
 
 type OpenHouseListItem = {
@@ -28,7 +28,8 @@ type OpenHouseListItem = {
 	location: string | null;
 	isOnline: boolean;
 	registrationUrl: string | null;
-	school: SchoolSummary | null;
+	isActive: boolean;
+	school: School | null;
 	OpenHouseRegistration: RegistrationSummary[];
 };
 
@@ -70,7 +71,7 @@ type UpdateOpenHouseData = Partial<CreateOpenHouseData>;
 
 type OpenHouseDelegate = {
 	findMany(args: {
-		where: { isActive: true; schoolId?: string };
+		where: { isActive?: boolean; schoolId?: string };
 		orderBy: { date: "asc" };
 		include: {
 			school: { select: { id: true; name: true; shortName: true; type: true } };
@@ -100,12 +101,12 @@ type SchoolDelegate = {
 
 type OpenHouseRegistrationDelegate = {
 	upsert(args: {
-		where: { userId_openHouseId: { userId: number | undefined; openHouseId: string } };
+		where: { userId_openHouseId: { userId: string; openHouseId: string } };
 		update: Record<string, never>;
-		create: { userId: number | undefined; openHouseId: string };
+		create: { userId: string; openHouseId: string };
 	}): Promise<unknown>;
 	deleteMany(args: {
-		where: { userId: number | undefined; openHouseId: string };
+		where: { userId: string; openHouseId: string };
 	}): Promise<unknown>;
 };
 
@@ -117,6 +118,7 @@ type OpenHouseDatabase = {
 
 const db = prisma as unknown as OpenHouseDatabase;
 const openHouseRoutes = new Hono<{ Variables: Variables }>();
+const openHouseAdminRoutes = new Hono<{ Variables: Variables }>();
 
 const parseBody = async (c: Context<{ Variables: Variables }>) =>
 	(await c.req.json()) as OpenHouseBody;
@@ -124,10 +126,11 @@ const parseBody = async (c: Context<{ Variables: Variables }>) =>
 openHouseRoutes.get("/", async (c) => {
 	try {
 		const schoolId = c.req.query("schoolId");
+		const includeInactive = c.req.query("includeInactive") === "true";
 
 		const openHouses = await db.openHouse.findMany({
 			where: {
-				isActive: true,
+				...(includeInactive ? {} : { isActive: true }),
 				...(schoolId && { schoolId }),
 			},
 			orderBy: { date: "asc" },
@@ -139,7 +142,7 @@ openHouseRoutes.get("/", async (c) => {
 			},
 		});
 
-		const userId = c.get("userId") || null;
+		const userId = c.get("user")?.id ?? null;
 		const data = openHouses.map((openHouse) => ({
 			id: openHouse.id,
 			title: openHouse.title,
@@ -148,8 +151,11 @@ openHouseRoutes.get("/", async (c) => {
 			location: openHouse.location,
 			isOnline: openHouse.isOnline,
 			registrationUrl: openHouse.registrationUrl,
-			school:
-				openHouse.school?.shortName || openHouse.school?.name || openHouse.title,
+			isActive: openHouse.isActive,
+			schoolId: openHouse.school?.id ?? null,
+			school: includeInactive
+				? openHouse.school
+				: (openHouse.school?.shortName || openHouse.school?.name || openHouse.title),
 			registered: userId
 				? openHouse.OpenHouseRegistration.some(
 						(registration) => registration.userId === userId,
@@ -183,8 +189,7 @@ openHouseRoutes.get("/:id", async (c) => {
 	}
 });
 
-// TODO: attach admin-only Hono middleware before mounting admin open house routes.
-openHouseRoutes.post("/", async (c) => {
+openHouseAdminRoutes.post("/", async (c) => {
 	try {
 		const {
 			title,
@@ -238,8 +243,7 @@ openHouseRoutes.post("/", async (c) => {
 	}
 });
 
-// TODO: attach admin-only Hono middleware before mounting admin open house routes.
-openHouseRoutes.put("/:id", async (c) => {
+openHouseAdminRoutes.put("/:id", async (c) => {
 	try {
 		const {
 			title,
@@ -302,8 +306,7 @@ openHouseRoutes.put("/:id", async (c) => {
 	}
 });
 
-// TODO: attach admin-only Hono middleware before mounting admin open house routes.
-openHouseRoutes.delete("/:id", async (c) => {
+openHouseAdminRoutes.delete("/:id", async (c) => {
 	try {
 		const existing = await db.openHouse.findUnique({
 			where: { id: c.req.param("id") },
@@ -325,7 +328,11 @@ openHouseRoutes.delete("/:id", async (c) => {
 // TODO: attach require-auth Hono middleware before mounting registration routes.
 openHouseRoutes.post("/:id/register", async (c) => {
 	const id = c.req.param("id");
-	const userId = c.get("userId");
+	const userId = c.get("user")?.id;
+
+	if (!userId) {
+		return c.json({ error: "Login required" }, 401);
+	}
 
 	try {
 		const openHouse = await db.openHouse.findUnique({ where: { id } });
@@ -350,7 +357,11 @@ openHouseRoutes.post("/:id/register", async (c) => {
 // TODO: attach require-auth Hono middleware before mounting registration routes.
 openHouseRoutes.delete("/:id/register", async (c) => {
 	const id = c.req.param("id");
-	const userId = c.get("userId");
+	const userId = c.get("user")?.id;
+
+	if (!userId) {
+		return c.json({ error: "Login required" }, 401);
+	}
 
 	try {
 		await db.openHouseRegistration.deleteMany({
@@ -366,3 +377,4 @@ openHouseRoutes.delete("/:id/register", async (c) => {
 });
 
 export default openHouseRoutes;
+export { openHouseAdminRoutes };

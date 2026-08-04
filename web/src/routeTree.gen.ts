@@ -9,89 +9,332 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiSplatRouteImport } from './routes/api/$'
-import { Route as AdminStudentsRouteImport } from './routes/admin/students'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as FavoritesRouteImport } from './routes/favorites'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminOpenhousesRouteImport } from './routes/admin/openhouses'
+import { Route as AdminProgramsRouteImport } from './routes/admin/programs'
+import { Route as AdminQuizRouteImport } from './routes/admin/quiz'
+import { Route as AdminSchoolsRouteImport } from './routes/admin/schools'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminStatisticsRouteImport } from './routes/admin/statistics'
+import { Route as AdminStudentsRouteImport } from './routes/admin/students'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as ApiSplatRouteImport } from './routes/api/$'
+import { Route as OpenHousesIndexRouteImport } from './routes/open-houses/index'
+import { Route as ProgramCompareIndexRouteImport } from './routes/program-compare/index'
+import { Route as QuizIndexRouteImport } from './routes/quiz/index'
+import { Route as SchoolsIndexRouteImport } from './routes/schools/index'
+import { Route as ProgramsProgramIdIndexRouteImport } from './routes/programs/$programId/index'
+import { Route as SchoolsSchoolIdIndexRouteImport } from './routes/schools/$schoolId/index'
 
-const AdminRouteRoute = AdminRouteRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSplatRoute = ApiSplatRouteImport.update({
-  id: '/api/$',
-  path: '/api/$',
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminStudentsRoute = AdminStudentsRouteImport.update({
-  id: '/students',
-  path: '/students',
-  getParentRoute: () => AdminRouteRoute,
+const FavoritesRoute = FavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutIndexRoute = AboutIndexRouteImport.update({
+  id: '/about/',
+  path: '/about/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminOpenhousesRoute = AdminOpenhousesRouteImport.update({
+  id: '/openhouses',
+  path: '/openhouses',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminProgramsRoute = AdminProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminQuizRoute = AdminQuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSchoolsRoute = AdminSchoolsRouteImport.update({
+  id: '/schools',
+  path: '/schools',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminStatisticsRoute = AdminStatisticsRouteImport.update({
+  id: '/statistics',
+  path: '/statistics',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminStudentsRoute = AdminStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const ApiSplatRoute = ApiSplatRouteImport.update({
+  id: '/api/$',
+  path: '/api/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpenHousesIndexRoute = OpenHousesIndexRouteImport.update({
+  id: '/open-houses/',
+  path: '/open-houses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgramCompareIndexRoute = ProgramCompareIndexRouteImport.update({
+  id: '/program-compare/',
+  path: '/program-compare/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizIndexRoute = QuizIndexRouteImport.update({
+  id: '/quiz/',
+  path: '/quiz/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SchoolsIndexRoute = SchoolsIndexRouteImport.update({
+  id: '/schools/',
+  path: '/schools/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgramsProgramIdIndexRoute = ProgramsProgramIdIndexRouteImport.update({
+  id: '/programs/$programId/',
+  path: '/programs/$programId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SchoolsSchoolIdIndexRoute = SchoolsSchoolIdIndexRouteImport.update({
+  id: '/schools/$schoolId/',
+  path: '/schools/$schoolId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/favorites': typeof FavoritesRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/openhouses': typeof AdminOpenhousesRoute
+  '/admin/programs': typeof AdminProgramsRoute
+  '/admin/quiz': typeof AdminQuizRoute
+  '/admin/schools': typeof AdminSchoolsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/statistics': typeof AdminStatisticsRoute
   '/admin/students': typeof AdminStudentsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/api/$': typeof ApiSplatRoute
+  '/about/': typeof AboutIndexRoute
+  '/open-houses/': typeof OpenHousesIndexRoute
+  '/program-compare/': typeof ProgramCompareIndexRoute
+  '/quiz/': typeof QuizIndexRoute
+  '/schools/': typeof SchoolsIndexRoute
+  '/programs/$programId/': typeof ProgramsProgramIdIndexRoute
+  '/schools/$schoolId/': typeof SchoolsSchoolIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/favorites': typeof FavoritesRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/openhouses': typeof AdminOpenhousesRoute
+  '/admin/programs': typeof AdminProgramsRoute
+  '/admin/quiz': typeof AdminQuizRoute
+  '/admin/schools': typeof AdminSchoolsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/statistics': typeof AdminStatisticsRoute
   '/admin/students': typeof AdminStudentsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/api/$': typeof ApiSplatRoute
+  '/about': typeof AboutIndexRoute
+  '/open-houses': typeof OpenHousesIndexRoute
+  '/program-compare': typeof ProgramCompareIndexRoute
+  '/quiz': typeof QuizIndexRoute
+  '/schools': typeof SchoolsIndexRoute
+  '/programs/$programId': typeof ProgramsProgramIdIndexRoute
+  '/schools/$schoolId': typeof SchoolsSchoolIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/favorites': typeof FavoritesRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/openhouses': typeof AdminOpenhousesRoute
+  '/admin/programs': typeof AdminProgramsRoute
+  '/admin/quiz': typeof AdminQuizRoute
+  '/admin/schools': typeof AdminSchoolsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/statistics': typeof AdminStatisticsRoute
   '/admin/students': typeof AdminStudentsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/api/$': typeof ApiSplatRoute
+  '/about/': typeof AboutIndexRoute
+  '/open-houses/': typeof OpenHousesIndexRoute
+  '/program-compare/': typeof ProgramCompareIndexRoute
+  '/quiz/': typeof QuizIndexRoute
+  '/schools/': typeof SchoolsIndexRoute
+  '/programs/$programId/': typeof ProgramsProgramIdIndexRoute
+  '/schools/$schoolId/': typeof SchoolsSchoolIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/admin/dashboard' | '/admin/students' | '/api/$'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/favorites'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/settings'
+    | '/admin/dashboard'
+    | '/admin/openhouses'
+    | '/admin/programs'
+    | '/admin/quiz'
+    | '/admin/schools'
+    | '/admin/settings'
+    | '/admin/statistics'
+    | '/admin/students'
+    | '/admin/users'
+    | '/api/$'
+    | '/about/'
+    | '/open-houses/'
+    | '/program-compare/'
+    | '/quiz/'
+    | '/schools/'
+    | '/programs/$programId/'
+    | '/schools/$schoolId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/admin/dashboard' | '/admin/students' | '/api/$'
+  to:
+    | '/'
+    | '/admin'
+    | '/favorites'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/settings'
+    | '/admin/dashboard'
+    | '/admin/openhouses'
+    | '/admin/programs'
+    | '/admin/quiz'
+    | '/admin/schools'
+    | '/admin/settings'
+    | '/admin/statistics'
+    | '/admin/students'
+    | '/admin/users'
+    | '/api/$'
+    | '/about'
+    | '/open-houses'
+    | '/program-compare'
+    | '/quiz'
+    | '/schools'
+    | '/programs/$programId'
+    | '/schools/$schoolId'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/favorites'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/settings'
     | '/admin/dashboard'
+    | '/admin/openhouses'
+    | '/admin/programs'
+    | '/admin/quiz'
+    | '/admin/schools'
+    | '/admin/settings'
+    | '/admin/statistics'
     | '/admin/students'
+    | '/admin/users'
     | '/api/$'
+    | '/about/'
+    | '/open-houses/'
+    | '/program-compare/'
+    | '/quiz/'
+    | '/schools/'
+    | '/programs/$programId/'
+    | '/schools/$schoolId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  FavoritesRoute: typeof FavoritesRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SettingsRoute: typeof SettingsRoute
   ApiSplatRoute: typeof ApiSplatRoute
+  AboutIndexRoute: typeof AboutIndexRoute
+  OpenHousesIndexRoute: typeof OpenHousesIndexRoute
+  ProgramCompareIndexRoute: typeof ProgramCompareIndexRoute
+  QuizIndexRoute: typeof QuizIndexRoute
+  SchoolsIndexRoute: typeof SchoolsIndexRoute
+  ProgramsProgramIdIndexRoute: typeof ProgramsProgramIdIndexRoute
+  SchoolsSchoolIdIndexRoute: typeof SchoolsSchoolIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -99,19 +342,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/$': {
-      id: '/api/$'
-      path: '/api/$'
-      fullPath: '/api/$'
-      preLoaderRoute: typeof ApiSplatRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/students': {
-      id: '/admin/students'
-      path: '/students'
-      fullPath: '/admin/students'
-      preLoaderRoute: typeof AdminStudentsRouteImport
-      parentRoute: typeof AdminRouteRoute
+    '/favorites': {
+      id: '/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof FavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about/': {
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/dashboard': {
       id: '/admin/dashboard'
@@ -120,17 +398,136 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/openhouses': {
+      id: '/admin/openhouses'
+      path: '/openhouses'
+      fullPath: '/admin/openhouses'
+      preLoaderRoute: typeof AdminOpenhousesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/programs': {
+      id: '/admin/programs'
+      path: '/programs'
+      fullPath: '/admin/programs'
+      preLoaderRoute: typeof AdminProgramsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/quiz': {
+      id: '/admin/quiz'
+      path: '/quiz'
+      fullPath: '/admin/quiz'
+      preLoaderRoute: typeof AdminQuizRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/schools': {
+      id: '/admin/schools'
+      path: '/schools'
+      fullPath: '/admin/schools'
+      preLoaderRoute: typeof AdminSchoolsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/statistics': {
+      id: '/admin/statistics'
+      path: '/statistics'
+      fullPath: '/admin/statistics'
+      preLoaderRoute: typeof AdminStatisticsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/students': {
+      id: '/admin/students'
+      path: '/students'
+      fullPath: '/admin/students'
+      preLoaderRoute: typeof AdminStudentsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/api/$': {
+      id: '/api/$'
+      path: '/api/$'
+      fullPath: '/api/$'
+      preLoaderRoute: typeof ApiSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/open-houses/': {
+      id: '/open-houses/'
+      path: '/open-houses'
+      fullPath: '/open-houses/'
+      preLoaderRoute: typeof OpenHousesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/program-compare/': {
+      id: '/program-compare/'
+      path: '/program-compare'
+      fullPath: '/program-compare/'
+      preLoaderRoute: typeof ProgramCompareIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz/': {
+      id: '/quiz/'
+      path: '/quiz'
+      fullPath: '/quiz/'
+      preLoaderRoute: typeof QuizIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/schools/': {
+      id: '/schools/'
+      path: '/schools'
+      fullPath: '/schools/'
+      preLoaderRoute: typeof SchoolsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/programs/$programId/': {
+      id: '/programs/$programId/'
+      path: '/programs/$programId'
+      fullPath: '/programs/$programId/'
+      preLoaderRoute: typeof ProgramsProgramIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/schools/$schoolId/': {
+      id: '/schools/$schoolId/'
+      path: '/schools/$schoolId'
+      fullPath: '/schools/$schoolId/'
+      preLoaderRoute: typeof SchoolsSchoolIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AdminRouteRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminOpenhousesRoute: typeof AdminOpenhousesRoute
+  AdminProgramsRoute: typeof AdminProgramsRoute
+  AdminQuizRoute: typeof AdminQuizRoute
+  AdminSchoolsRoute: typeof AdminSchoolsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminStatisticsRoute: typeof AdminStatisticsRoute
   AdminStudentsRoute: typeof AdminStudentsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminOpenhousesRoute: AdminOpenhousesRoute,
+  AdminProgramsRoute: AdminProgramsRoute,
+  AdminQuizRoute: AdminQuizRoute,
+  AdminSchoolsRoute: AdminSchoolsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminStatisticsRoute: AdminStatisticsRoute,
   AdminStudentsRoute: AdminStudentsRoute,
+  AdminUsersRoute: AdminUsersRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
@@ -140,7 +537,19 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
+  FavoritesRoute: FavoritesRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SettingsRoute: SettingsRoute,
   ApiSplatRoute: ApiSplatRoute,
+  AboutIndexRoute: AboutIndexRoute,
+  OpenHousesIndexRoute: OpenHousesIndexRoute,
+  ProgramCompareIndexRoute: ProgramCompareIndexRoute,
+  QuizIndexRoute: QuizIndexRoute,
+  SchoolsIndexRoute: SchoolsIndexRoute,
+  ProgramsProgramIdIndexRoute: ProgramsProgramIdIndexRoute,
+  SchoolsSchoolIdIndexRoute: SchoolsSchoolIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
