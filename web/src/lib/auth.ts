@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { prisma } from '#/db'
+import { sendResetPasswordEmail } from './email/send-reset-password-email'
 
 // Docs: https://www.better-auth.com/docs/adapters/prisma
 export const auth = betterAuth({
@@ -11,12 +12,10 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    // TODO: wire up a real sendResetPassword (e.g. reuse the
-    // Nodemailer HTML template that currently lives in the old
-    // src/server/routes/auth.ts forgot-password handler) once we
-    // retire that route. Without this, "forgot password" has no
-    // way to actually email the user.
-    // sendResetPassword: async ({ user, url }) => { ... },
+    resetPasswordTokenExpiresIn: 3600, // 1 hour — matches v1's RESET_TOKEN_TTL_MS
+    sendResetPassword: async ({ user, url }) => {
+      await sendResetPasswordEmail(user.email, user.name, url)
+    },
   },
 
   // Carries over the v1 User.role field so `session.user.role`
