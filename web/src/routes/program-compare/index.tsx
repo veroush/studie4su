@@ -11,6 +11,7 @@ import { NoProgramsEmptyState } from '@/components/program-compare/no-programs-e
 import { OneProgramPrompt } from '@/components/program-compare/one-program-prompt'
 import { ReplaceBanner } from '@/components/program-compare/replace-banner'
 import { LeaveConfirmModal } from '@/components/program-compare/leave-confirm-modal'
+import { EmptySlotCard } from '@/components/program-compare/empty-slot-card'
 
 export const Route = createFileRoute('/program-compare/')({
   component: ProgramComparePage,
@@ -76,6 +77,7 @@ function ProgramComparePage() {
   const navigate = useNavigate({ from: Route.fullPath })
   const [leaveTarget, setLeaveTarget] = useState<string | null>(null)
   const loggedSetRef = useRef<string | null>(null)
+  const bypassBlockRef = useRef(false)
 
   const urlIds = (idsParam ?? '').split(',').map((id) => id.trim()).filter(Boolean)
   const replaceId = replaceParam ?? null
@@ -105,6 +107,10 @@ function ProgramComparePage() {
   const displayCount = isReplacing ? urlIds.length - 1 : urlIds.length
   useBlocker({
     shouldBlockFn: ({ next }) => {
+      if (bypassBlockRef.current) {
+        bypassBlockRef.current = false
+        return false
+      }
       if (displayCount < 2) return false
       setLeaveTarget(next.fullPath)
       return true
@@ -160,6 +166,11 @@ function ProgramComparePage() {
     updateIds([])
   }
 
+  function handleAddSlot() {
+    bypassBlockRef.current = true
+    navigate({ to: '/schools' })
+  }
+
   function handleCancelReplace() {
     updateIds(existingIds)
   }
@@ -183,6 +194,7 @@ function ProgramComparePage() {
   }
 
   function handleLeaveCancel() {
+    if (leaveTarget) window.location.href = leaveTarget
     setLeaveTarget(null)
   }
 
@@ -208,15 +220,25 @@ function ProgramComparePage() {
 
           {!isLoading && comparePrograms.length >= 2 && (
             <>
-              <div className="hidden md:block overflow-x-auto bg-white rounded-2xl shadow-lg">
-                <ComparisonTable
-                  programs={comparePrograms}
-                  onRemove={handleRemoveOrSwap}
-                />
+              <div className="hidden md:flex md:items-stretch md:gap-6">
+                <div className="flex-1 overflow-x-auto rounded-2xl bg-white shadow-lg">
+                  <ComparisonTable
+                    programs={comparePrograms}
+                    onRemove={handleRemoveOrSwap}
+                  />
+                </div>
+                {comparePrograms.length < MAX_SLOTS && (
+                  <div className="w-72 shrink-0">
+                    <EmptySlotCard onClick={handleAddSlot} />
+                  </div>
+                )}
               </div>
 
-              <div className="md:hidden">
+              <div className="md:hidden flex flex-col gap-6">
                 <MobileComparisonCards programs={comparePrograms} onRemove={handleRemoveOrSwap} />
+                {comparePrograms.length < MAX_SLOTS && (
+                  <EmptySlotCard onClick={handleAddSlot} />
+                )}
               </div>
 
               <div className="text-center mt-8">
