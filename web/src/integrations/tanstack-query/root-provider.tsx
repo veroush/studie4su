@@ -5,6 +5,7 @@ export function getContext() {
 
   return {
     queryClient,
+    session: null,
   }
 }
 export default function TanstackQueryProvider() {}

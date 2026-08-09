@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { authClient } from '@/lib/auth-client'
+import { useRouteContext } from '@tanstack/react-router'
 import { ProfileDropdown } from './profile-dropdown'
 import { MobileNav } from './mobile-nav'
 
@@ -12,7 +12,7 @@ const NAV_LINKS = [
 ]
 
 export function Navbar() {
-  const { data: session } = authClient.useSession()
+  const { session } = useRouteContext({ from: '__root__' })
   const [lang, setLang] = useState<'nl' | 'en'>('nl')
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 

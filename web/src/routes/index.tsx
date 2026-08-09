@@ -12,7 +12,30 @@ import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { FeatureCard } from '@/components/home/feature-card'
 
+import { createIsomorphicFn } from '@tanstack/react-start'
 import { FloatingIconsBackground } from '@/components/home/floating-icons-background'
+
+const fetchSchools = createIsomorphicFn()
+  .server(async () => {
+    const { getSchoolsList } = await import('@/server/routes/schools')
+    return getSchoolsList()
+  })
+  .client(async () => {
+    const res = await fetch('/api/schools')
+    if (!res.ok) throw new Error('Failed to fetch schools')
+    return res.json()
+  })
+
+const fetchOpenHouses = createIsomorphicFn()
+  .server(async () => {
+    const { getOpenHousesList } = await import('@/server/routes/open-houses')
+    return getOpenHousesList()
+  })
+  .client(async () => {
+    const res = await fetch('/api/openhouses')
+    if (!res.ok) throw new Error('Failed to fetch open houses')
+    return res.json()
+  })
 
 export const Route = createFileRoute('/')({ component: Home })
 
@@ -45,20 +68,12 @@ interface OpenHouse {
 function Home() {
   const { data: schools, isLoading: schoolsLoading, isError: schoolsError } = useQuery({
     queryKey: ['schools'],
-    queryFn: async (): Promise<School[]> => {
-      const res = await fetch('/api/schools')
-      if (!res.ok) throw new Error('Failed to fetch schools')
-      return res.json()
-    },
+    queryFn: () => fetchSchools() as Promise<School[]>,
   })
 
   const { data: openHouses, isLoading: eventsLoading, isError: eventsError } = useQuery({
     queryKey: ['openhouses'],
-    queryFn: async (): Promise<OpenHouse[]> => {
-      const res = await fetch('/api/openhouses')
-      if (!res.ok) throw new Error('Failed to fetch open houses')
-      return res.json()
-    },
+    queryFn: () => fetchOpenHouses() as Promise<OpenHouse[]>,
   })
 
   const totalPrograms = schools?.reduce((sum, s) => sum + s._count.programs, 0) ?? 0

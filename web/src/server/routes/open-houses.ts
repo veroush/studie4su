@@ -123,46 +123,50 @@ const openHouseAdminRoutes = new Hono<{ Variables: Variables }>();
 const parseBody = async (c: Context<{ Variables: Variables }>) =>
 	(await c.req.json()) as OpenHouseBody;
 
+export async function getOpenHousesList(opts: { includeInactive?: boolean; schoolId?: string; userId?: string | null } = {}) {
+	const { includeInactive = false, schoolId, userId = null } = opts;
+
+	const openHouses = await db.openHouse.findMany({
+		where: {
+			...(includeInactive ? {} : { isActive: true }),
+			...(schoolId && { schoolId }),
+		},
+		orderBy: { date: "asc" },
+		include: {
+			school: {
+				select: { id: true, name: true, shortName: true, type: true },
+			},
+			OpenHouseRegistration: { select: { userId: true } },
+		},
+	});
+
+	return openHouses.map((openHouse) => ({
+		id: openHouse.id,
+		title: openHouse.title,
+		description: openHouse.description,
+		date: openHouse.date,
+		location: openHouse.location,
+		isOnline: openHouse.isOnline,
+		registrationUrl: openHouse.registrationUrl,
+		isActive: openHouse.isActive,
+		schoolId: openHouse.school?.id ?? null,
+		school: includeInactive
+			? openHouse.school
+			: (openHouse.school?.shortName || openHouse.school?.name || openHouse.title),
+		registered: userId
+			? openHouse.OpenHouseRegistration.some((r) => r.userId === userId)
+			: false,
+		registrationCount: openHouse.OpenHouseRegistration.length,
+	}));
+}
+
 openHouseRoutes.get("/", async (c) => {
 	try {
 		const schoolId = c.req.query("schoolId");
 		const includeInactive = c.req.query("includeInactive") === "true";
-
-		const openHouses = await db.openHouse.findMany({
-			where: {
-				...(includeInactive ? {} : { isActive: true }),
-				...(schoolId && { schoolId }),
-			},
-			orderBy: { date: "asc" },
-			include: {
-				school: {
-					select: { id: true, name: true, shortName: true, type: true },
-				},
-				OpenHouseRegistration: { select: { userId: true } },
-			},
-		});
-
 		const userId = c.get("user")?.id ?? null;
-		const data = openHouses.map((openHouse) => ({
-			id: openHouse.id,
-			title: openHouse.title,
-			description: openHouse.description,
-			date: openHouse.date,
-			location: openHouse.location,
-			isOnline: openHouse.isOnline,
-			registrationUrl: openHouse.registrationUrl,
-			isActive: openHouse.isActive,
-			schoolId: openHouse.school?.id ?? null,
-			school: includeInactive
-				? openHouse.school
-				: (openHouse.school?.shortName || openHouse.school?.name || openHouse.title),
-			registered: userId
-				? openHouse.OpenHouseRegistration.some(
-						(registration) => registration.userId === userId,
-					)
-				: false,
-			registrationCount: openHouse.OpenHouseRegistration.length,
-		}));
+
+		const data = await getOpenHousesList({ includeInactive, schoolId, userId });
 
 		return c.json(data);
 	} catch (error) {

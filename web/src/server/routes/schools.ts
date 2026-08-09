@@ -23,12 +23,16 @@ const schoolRoutes = new Hono();
 const getErrorMessage = (error: unknown) =>
 	error instanceof Error ? error.message : String(error);
 
+export async function getSchoolsList() {
+	return db.school.findMany({
+		include: { _count: { select: { programs: true } } },
+		orderBy: { name: "asc" },
+	});
+}
+
 schoolRoutes.get("/", async (c) => {
 	try {
-		const schools = await db.school.findMany({
-			include: { _count: { select: { programs: true } } },
-			orderBy: { name: "asc" },
-		});
+		const schools = await getSchoolsList();
 
 		return c.json(schools);
 	} catch (error) {

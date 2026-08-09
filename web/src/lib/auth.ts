@@ -10,6 +10,8 @@ export const auth = betterAuth({
     provider: 'postgresql',
   }),
 
+    telemetry: { enabled: false },
+
   emailAndPassword: {
     enabled: true,
     resetPasswordTokenExpiresIn: 3600, // 1 hour — matches v1's RESET_TOKEN_TTL_MS

@@ -13,12 +13,20 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
+import { getSession } from '@/lib/get-session'
+
+type SessionData = Awaited<ReturnType<typeof getSession>>
 
 interface MyRouterContext {
   queryClient: QueryClient
+  session: SessionData
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: async () => {
+    const session = await getSession()
+    return { session }
+  },
   head: () => ({
     meta: [
       {
