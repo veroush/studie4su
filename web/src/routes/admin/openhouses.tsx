@@ -110,6 +110,7 @@ function RouteComponent() {
 
   async function loadOpenHouses() {
     try {
+    
       const res = await fetch('/api/openhouses?includeInactive=true')
       if (!res.ok) throw new Error('Failed to load')
       const data = await res.json()
@@ -271,7 +272,8 @@ function RouteComponent() {
     }
 
     try {
-      const res = await fetch(editingId ? `/api/openhouses/${editingId}` : '/api/openhouses', {
+
+      const res = await fetch(editingId ? `/api/admin/openhouses/${editingId}` : '/api/admin/openhouses', {
         method: editingId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -299,7 +301,8 @@ function RouteComponent() {
     if (!deleteTarget) return
     setDeleting(true)
     try {
-      const res = await fetch(`/api/openhouses/${deleteTarget.id}`, { method: 'DELETE' })
+      
+      const res = await fetch(`/api/admin/openhouses/${deleteTarget.id}`, { method: 'DELETE' })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(data.error || 'Delete failed')
       setOpenHouses((prev) => (prev ?? []).filter((oh) => oh.id !== deleteTarget.id))
