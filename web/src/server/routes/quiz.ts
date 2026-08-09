@@ -431,6 +431,47 @@ const CLUSTER_REASONS: Record<"nl" | "en", Record<Cluster, string>> = {
 	},
 };
 
+// Keywords used to re-rank programs *within* a cluster by how closely
+// their name/description match the specific field the student picked.
+// Clusters are coarse (e.g. TECH covers ICT, civil engineering, and
+// agriculture), so without this, an unrelated program tagged with the
+// same cluster can outrank the actual best match.
+const PREFERRED_FIELD_KEYWORDS: Record<string, string[]> = {
+	"ICT en Technologie": ["ict", "informatica", "computer", "software", "technologie", "communicatie"],
+	"ICT and Technology": ["ict", "informatica", "computer", "software", "technologie", "communicatie"],
+	"Gezondheidszorg en Medisch": ["gezondheid", "medisch", "geneeskunde", "fysiotherapie", "zorg"],
+	"Healthcare and Medical": ["gezondheid", "medisch", "geneeskunde", "fysiotherapie", "zorg", "health"],
+	"Business en Economie": ["economie", "bedrijfskunde", "business", "management", "finance", "accounting", "marketing"],
+	"Business and Economics": ["economie", "bedrijfskunde", "business", "management", "finance", "accounting", "marketing"],
+	"Onderwijs en Pedagogie": ["onderwijs", "pedagogi", "leraren", "educat"],
+	"Education and Pedagogy": ["onderwijs", "pedagogi", "leraren", "educat"],
+	"Natuur- en Milieuwetenschappen": ["milieu", "natuurkunde", "scheikunde", "biologie", "wetenschap"],
+	"Natural and Environmental Sciences": ["milieu", "natuurkunde", "scheikunde", "biologie", "wetenschap", "science"],
+	"Recht en Bestuur": ["recht", "rechtswetenschap", "bestuur", "governance"],
+	"Law and Governance": ["recht", "rechtswetenschap", "bestuur", "governance", "law"],
+	"Landbouw en Biologie": ["landbouw", "agrarisch", "agro", "biologie"],
+	"Agriculture and Biology": ["landbouw", "agrarisch", "agro", "biologie", "agri"],
+	"Sociale Wetenschappen": ["sociolog", "psycholog", "sociaal", "maatschapp"],
+	"Social Sciences": ["sociolog", "psycholog", "sociaal", "maatschapp", "social"],
+};
+
+// Counts how many of the preferred field's keywords appear in a program's
+// name or description (case-insensitive). Higher = more relevant.
+function computeProgramRelevance(
+	program: { name: string; description: string | null },
+	preferredField: string | undefined,
+): number {
+	if (!preferredField) return 0;
+	const keywords = PREFERRED_FIELD_KEYWORDS[preferredField];
+	if (!keywords || keywords.length === 0) return 0;
+
+	const haystack = `${program.name} ${program.description ?? ""}`.toLowerCase();
+	return keywords.reduce(
+		(count, kw) => (haystack.includes(kw) ? count + 1 : count),
+		0,
+	);
+}
+
 quizRoutes.post("/recommend", async (c) => {
 	const req = { body: await readJsonBody(c) };
 	try {
@@ -511,13 +552,22 @@ quizRoutes.post("/recommend", async (c) => {
 		][]) {
 			if (slots <= 0) continue;
 
-			const programs = await db.studyProgram.findMany({
+			const clusterPrograms = await db.studyProgram.findMany({
 				where: { cluster },
 				include: {
 					school: { select: { id: true, name: true, shortName: true } },
 				},
-				take: slots + 2, // fetch a few extra in case of duplicates
+				take: 50, // fetch a wide pool so relevance sorting below has room to work
 			});
+
+			// Re-rank by relevance to the student's specific preferred field —
+			// the cluster alone isn't precise enough (e.g. TECH spans ICT,
+			// civil engineering, and agriculture).
+			const programs = [...clusterPrograms].sort(
+				(a, b) =>
+					computeProgramRelevance(b, quizAnswers.preferredField) -
+					computeProgramRelevance(a, quizAnswers.preferredField),
+			);
 
 			for (const program of programs) {
 				if (usedIds.has(program.id)) continue;
@@ -576,6 +626,17 @@ quizRoutes.post("/recommend", async (c) => {
 	}
 });
 
+const QUESTION_KEY_MAP: Record<string, string> = {
+	q_diplomas: "diplomas",
+	q_certificates: "certificates",
+	q_educationstatus: "educationStatus",
+	q_interests: "interests",
+	q_subjectstrengths: "subjectStrengths",
+	q_learningstyle: "learningStyle",
+	q_preferredfield: "preferredField",
+	q_careerdirection: "careerDirection",
+};
+
 /* =============================================================
    GET /api/quiz/questions
    ADDED: returns all active questions with their answer options,
@@ -605,7 +666,7 @@ quizRoutes.get("/questions", async (c) => {
 		// quiz.js uses these as keys in quizState.answers
 		const shaped = questions.map((q) => ({
 			...q,
-			questionKey: q.id.replace(/^q_/, ""),
+			questionKey: QUESTION_KEY_MAP[q.id] ?? q.id.replace(/^q_/, ""),
 		}));
 
 		return c.json(shaped);
