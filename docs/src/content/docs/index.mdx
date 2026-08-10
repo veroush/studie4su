@@ -18,6 +18,17 @@ The application is currently undergoing a structural modernization to improve pe
 ## Team Responsibilities
 *   **Valentino Amasaleh:** Backend + Architecture Lead (Hono + Prisma)
 *   **Manish Bhawan:** Frontend Lead (TanStack Start UI)
-*   **Veroushka Ramjiawan:** UI/UX + Styling (Tailwind + Design System)
+*   **Veroushka Ramjiawan:** UI/UX + Styling & Polishing (Tailwind + Design System)
 *   **Raksha Doerga:** Database + Auth Engineer (Prisma + Better Auth)
 *   **Shaquille Kempes:** Documentation + QA Engineer (Astro + Testing)
+
+## Systeem Architectuur
+Hieronder ziet u het architectuurschema van Studie4SU:
+
++-------------------------+           +-------------------------+           +-------------------------+
+|      CLIENT ZIJDE       |           |      SERVER ZIJDE       |           |        DATABASE         |
+|                         |           |                         |           |                         |
+|   TanStack Start (UI)   |   HTTP    |       Hono API          |  Prisma   |   PostgreSQL Database   |
+|                         | <=======> |   (Backend Logica &     | <=======> |    (Gegevensopslag)     |
+|   Astro (Documentatie)  |   REST    |    Authenticatie)       |    ORM    |                         |
++-------------------------+           +-------------------------+           +-------------------------+
