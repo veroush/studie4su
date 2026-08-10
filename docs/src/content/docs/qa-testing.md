@@ -3,12 +3,26 @@ title: QA Testing & Bug Reporting
 description: Standardized procedures for testing frontend flows and API endpoints.
 ---
 
-## Quality Assurance Methodology
+## QA Testing Checklist
 
-As the application is being rebuilt, all new modules will undergo rigorous testing before being merged into the production branch. This includes:
-1.  **Endpoint Testing:** Verifying standard REST methods (GET, POST, PUT, DELETE) using local API clients.
-2.  **UI/UX Testing:** Ensuring responsive design integrity and verifying routing through TanStack Start.
-3.  **Authentication Testing:** Validating protected routes and login/register flows.
+Hier is de standaard checklist die voor elke deployment afgevinkt moet worden:
+
+### API Endpoint Tests (via REST Client)
+- [ ] Test `GET /api/schools` (Lijst met scholen laadt)
+- [ ] Test `GET /api/programs` (Lijst met opleidingen laadt)
+- [ ] Test `GET /api/search` (Zoek/filter parameters werken correct)
+- [ ] Test `GET /api/users` (Admin kan gebruikers ophalen)
+
+### Frontend & UI/UX Tests
+- [ ] Controleer of de homepagina responsief is (Desktop & Mobiel)
+- [ ] Doorloop de Studie-Keuze Quiz zonder vast te lopen
+- [ ] Test of de 'Compare' functionaliteit correct programma's vergelijkt
+- [ ] Controleer of alle links naar de 'About' pagina werken
+
+### Authenticatie & Security Tests
+- [ ] Test een succesvolle login (JWT token wordt geaccepteerd)
+- [ ] Verifieer of uitgelogde gebruikers NIET bij de admin-sectie kunnen
+- [ ] Test de Wachtwoord Reset functionaliteit
 
 ## Bug Report Template
 
