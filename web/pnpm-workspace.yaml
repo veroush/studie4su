@@ -4,7 +4,7 @@ packages:
 allowBuilds:
   '@prisma/client': true
   '@prisma/engines': true
-  deasync: true
+  deasync: false
   esbuild: true
   prisma: true
   sharp: true

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { authClient } from '@/lib/auth-client'
 import { AVATARS } from '@/lib/avatars'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 interface ProfileDropdownProps {
   user: {
@@ -13,6 +14,7 @@ interface ProfileDropdownProps {
 }
 
 export function ProfileDropdown({ user }: ProfileDropdownProps) {
+  const { t } = useLanguage()
   const [open, setOpen] = useState(false)
   const [alertsEnabled, setAlertsEnabled] = useState(user.platformAlerts ?? true)
   const navigate = useNavigate()
@@ -72,7 +74,7 @@ export function ProfileDropdown({ user }: ProfileDropdownProps) {
           <div className="p-2">
             <div className="flex w-full items-center gap-2.5 rounded-[10px] px-3 py-2.5">
               <span className="w-5 flex-shrink-0 text-center text-base">🔔</span>
-              <span className="flex-1 text-sm text-white/85">Meldingen</span>
+              <span className="flex-1 text-sm text-white/85">{t('profileMenu.notifications')}</span>
               <label className="relative inline-block h-6 w-11 flex-shrink-0">
                 <input
                   type="checkbox"
@@ -90,7 +92,7 @@ export function ProfileDropdown({ user }: ProfileDropdownProps) {
               className="flex w-full items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-sm text-white/85 no-underline transition-colors hover:bg-white/[0.06]"
             >
               <span className="w-5 flex-shrink-0 text-center text-base">❤️</span>
-              <span className="flex-1">Favorieten</span>
+              <span className="flex-1">{t('profileMenu.favorites')}</span>
               <span className="text-[1.1rem] text-[var(--text-muted)]">›</span>
             </Link>
             
@@ -100,7 +102,7 @@ export function ProfileDropdown({ user }: ProfileDropdownProps) {
               className="flex w-full items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-sm text-white/85 no-underline transition-colors hover:bg-white/[0.06]"
             >
               <span className="w-5 flex-shrink-0 text-center text-base">⚙️</span>
-              <span className="flex-1">Instellingen</span>
+              <span className="flex-1">{t('profileMenu.settings')}</span>
               <span className="text-[1.1rem] text-[var(--text-muted)]">›</span>
             </Link>
           </div>
@@ -112,7 +114,7 @@ export function ProfileDropdown({ user }: ProfileDropdownProps) {
             onClick={handleLogout}
             className="flex w-full items-center gap-2 px-5 py-3.5 text-sm font-medium text-[#fc8181] transition-colors hover:bg-[rgba(220,38,38,0.08)]"
           >
-            <span>🚪</span> <span>Uitloggen</span>
+            <span>🚪</span> <span>{t('profileMenu.logout')}</span>
           </button>
         </div>
       )}

@@ -1,4 +1,7 @@
 import { FavoriteButton } from '@/components/common/favorite-button'
+import { MapPin, Clock } from 'lucide-react'
+import { useLanguage } from '@/lib/i18n/language-context'
+import { translations } from '@/lib/i18n/translations'
 
 interface CalendarEventRowProps {
   event: {
@@ -16,8 +19,6 @@ interface CalendarEventRowProps {
   onFavoriteToggle?: (favorited: boolean) => void
 }
 
-const MONTHS_NL_SHORT = ['Jan', 'Feb', 'Mrt', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec']
-
 export function CalendarEventRow({
   event,
   isFavorited = false,
@@ -25,14 +26,16 @@ export function CalendarEventRow({
   onRegisterToggle,
   onFavoriteToggle,
 }: CalendarEventRowProps) {
+  const { lang, t } = useLanguage()
+  const monthsShort = translations[lang].openHouses.monthsShort
   const date = new Date(event.date)
-  const timeLabel = date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+  const timeLabel = date.toLocaleTimeString(lang === 'en' ? 'en-US' : 'nl-NL', { hour: '2-digit', minute: '2-digit' })
 
   return (
     <div className="flex flex-col gap-4 rounded-xl bg-gradient-to-br from-[#f0fdf4] to-[rgba(220,252,231,0.5)] p-4 transition-shadow hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] sm:flex-row">
       <div className="flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#16a34a] to-[#15803d] text-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)]">
         <div className="text-2xl font-bold leading-none">{date.getDate()}</div>
-        <div className="mt-1 text-xs leading-none">{MONTHS_NL_SHORT[date.getMonth()]}</div>
+        <div className="mt-1 text-xs leading-none">{monthsShort[date.getMonth()]}</div>
       </div>
 
       <div className="flex-1">
@@ -48,8 +51,8 @@ export function CalendarEventRow({
         </div>
 
         <div className="mb-3 flex flex-wrap gap-3 text-sm text-[#4b5563]">
-          <span className="flex items-center gap-1.5">🕐 {timeLabel}</span>
-          <span className="flex items-center gap-1.5">📍 {event.isOnline ? 'Online' : event.location}</span>
+          <span className="flex items-center gap-1.5"><Clock size={14} className="flex-shrink-0" /> {timeLabel}</span>
+          <span className="flex items-center gap-1.5"><MapPin size={14} className="flex-shrink-0" /> {event.isOnline ? t('openHouses.online') : event.location}</span>
         </div>
 
         {event.description && (
@@ -66,7 +69,7 @@ export function CalendarEventRow({
                 : 'rounded-lg bg-gradient-to-r from-[#16a34a] to-[#15803d] px-5 py-2 text-sm font-semibold text-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] transition-colors hover:from-[#15803d] hover:to-[#166534]'
             }
           >
-            {isRegistered ? 'Uitschrijven' : 'Aanmelden'}
+            {isRegistered ? t('openHouses.unregister') : t('openHouses.register')}
           </button>
         )}
       </div>

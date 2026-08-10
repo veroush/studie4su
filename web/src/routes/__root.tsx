@@ -9,6 +9,8 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { useEffect } from 'react'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
+import { LanguageProvider } from '@/lib/i18n/language-context'
+import { ScrollProgress } from '@/components/common/scroll-progress'
 
 import appCss from '../styles.css?url'
 
@@ -81,8 +83,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
-        <VisitPing />
+        <LanguageProvider>
+          {children}
+          <VisitPing />
+          <ScrollProgress />
         <TanStackDevtools
           config={{
             position: 'bottom-right',
@@ -95,6 +99,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             TanStackQueryDevtools,
           ]}
         />
+        </LanguageProvider>
         <Scripts />
       </body>
     </html>

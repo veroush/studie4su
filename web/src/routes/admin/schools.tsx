@@ -13,6 +13,7 @@ interface School {
   type: string
   website: string | null
   location: string | null
+  imageUrl: string | null
   createdAt: string
   _count?: { programs: number }
 }
@@ -22,7 +23,7 @@ type SortDir = 'asc' | 'desc'
 
 const PAGE_SIZE = 10
 
-const EMPTY_FORM = { name: '', shortName: '', type: '', location: '', website: '' }
+const EMPTY_FORM = { name: '', shortName: '', type: '', location: '', website: '', imageUrl: '' }
 
 interface ToastItem { id: number; type: 'success' | 'error'; message: string }
 
@@ -147,6 +148,7 @@ function RouteComponent() {
       type: s.type,
       location: s.location ?? '',
       website: s.website ?? '',
+      imageUrl: s.imageUrl ?? '',
     })
     setFormErrors({})
     setFormOpen(true)
@@ -178,6 +180,7 @@ function RouteComponent() {
       type: form.type,
       location: form.location.trim(),
       website: form.website.trim() || null,
+      imageUrl: form.imageUrl.trim() || null,
     }
 
     try {
@@ -448,6 +451,17 @@ function RouteComponent() {
                     placeholder="https://example.sr"
                     value={form.website}
                     onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="field-image-url">Image URL</label>
+                  <input
+                    className="form-input"
+                    id="field-image-url"
+                    type="url"
+                    placeholder="https://example.com/photo.jpg"
+                    value={form.imageUrl}
+                    onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))}
                   />
                 </div>
               </div>

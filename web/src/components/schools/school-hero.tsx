@@ -1,6 +1,7 @@
 ﻿import { Link } from "@tanstack/react-router"
 import { MapPin, BookOpen, ArrowLeft } from "lucide-react"
 import { FavoriteButton } from "@/components/common/favorite-button"
+import { useLanguage } from "@/lib/i18n/language-context"
 
 interface SchoolHeroProps {
   school: {
@@ -15,6 +16,7 @@ interface SchoolHeroProps {
 }
 
 export function SchoolHero({ school, isFavorited = false, onCompareClick }: SchoolHeroProps) {
+  const { t } = useLanguage()
   return (
     <div className="bg-gradient-to-r from-[#16a34a] via-[#15803d] to-[#16a34a] text-white relative overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
@@ -23,7 +25,7 @@ export function SchoolHero({ school, isFavorited = false, onCompareClick }: Scho
           className="inline-flex items-center gap-1.5 text-white/75 hover:text-white text-sm mb-6 transition-colors"
         >
           <ArrowLeft size={16} />
-          Terug naar scholen
+          {t('schoolDetail.backToSchools')}
         </Link>
 
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
@@ -38,14 +40,14 @@ export function SchoolHero({ school, isFavorited = false, onCompareClick }: Scho
               <div className="flex flex-wrap items-center gap-3 text-white/90 text-sm">
                 <span className="flex items-center gap-1.5">
                   <MapPin size={16} />
-                  {school.location || "Suriname"}
+                  {school.location || t('schoolDetail.suriname')}
                 </span>
                 <span className="px-3 py-1 rounded-full bg-blue-500/35 backdrop-blur text-xs font-medium">
                   {school.type}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <BookOpen size={16} />
-                  {school.programCount} opleidingen
+                  {school.programCount} {t(school.programCount === 1 ? 'schools.programsCountSuffixOne' : 'schools.programsCountSuffixMany')}
                 </span>
               </div>
             </div>
@@ -66,7 +68,7 @@ export function SchoolHero({ school, isFavorited = false, onCompareClick }: Scho
                 <circle cx="18" cy="18" r="3" /><circle cx="6" cy="6" r="3" />
                 <path d="M13 6h3a2 2 0 012 2v7" /><path d="M11 18H8a2 2 0 01-2-2V9" />
               </svg>
-              <span className="hidden sm:inline">Vergelijk opleiding</span>
+              <span className="hidden sm:inline">{t('schoolDetail.compareProgram')}</span>
             </button>
           </div>
         </div>

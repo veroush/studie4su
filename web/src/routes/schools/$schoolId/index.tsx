@@ -35,6 +35,7 @@ interface SchoolDetail {
   type: string
   website: string | null
   location: string | null
+  imageUrl: string | null
   programs: Program[]
 }
 
@@ -137,7 +138,7 @@ function SchoolDetailPage() {
             <main className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
               <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
                 <div className="flex flex-col gap-8">
-                  <OpenHousesMiniCard openHouses={openHouses ?? []} />
+                  <OpenHousesMiniCard openHouses={openHouses ?? []} schoolImageUrl={school.imageUrl} />
                 </div>
                 <div className="flex flex-col gap-6">
                   <ContactSidebar website={school.website} />

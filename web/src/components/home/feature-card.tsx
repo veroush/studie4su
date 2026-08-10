@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 interface FeatureCardProps {
   icon: React.ReactNode
@@ -16,6 +17,7 @@ const ACCENTS = {
 }
 
 export function FeatureCard({ icon, title, description, to, imageUrl, accent = 'green' }: FeatureCardProps) {
+  const { t } = useLanguage()
   return (
     <Link
       to={to}
@@ -35,7 +37,7 @@ export function FeatureCard({ icon, title, description, to, imageUrl, accent = '
         <h3 className="font-display text-lg font-bold text-[#faf6ee] mb-2">{title}</h3>
         <p className="text-[13.5px] text-[#8aab96] leading-relaxed flex-1">{description}</p>
         <span className="inline-flex items-center gap-1.5 mt-4.5 text-[13px] font-semibold text-[#e8b84b] group-hover:gap-2.5 transition-all">
-          Ontdek meer <span className="group-hover:translate-x-1 transition-transform">→</span>
+          {t('home.discoverMore')} <span className="group-hover:translate-x-1 transition-transform">→</span>
         </span>
       </div>
     </Link>

@@ -99,6 +99,7 @@ model School {
   type       String
   website    String?
   location   String?
+  imageUrl   String?
   createdAt  DateTime         @default(now())
   openHouses OpenHouse[]
   programs   StudyProgram[]
@@ -195,6 +196,7 @@ model OpenHouse {
   id                    String                  @id @default(cuid())
   title                 String
   description           String?                 @db.Text
+  descriptionEn         String?                 @db.Text
   date                  DateTime
   location              String?
   isOnline              Boolean                 @default(false)

@@ -8,6 +8,7 @@ import { SuccessStatePanel } from '../components/auth/success-state-panel'
 import { PasswordVisibilityToggle } from '../components/auth/password-visibility-toggle'
 import { PasswordStrengthMeter } from '../components/auth/password-strength-meter'
 import { authClient } from '../lib/auth-client'
+import { useLanguage } from '../lib/i18n/language-context'
 
 export const Route = createFileRoute('/reset-password')({
   component: ResetPassword,
@@ -17,17 +18,18 @@ export const Route = createFileRoute('/reset-password')({
   }),
 })
 
-const quote = {
-  text: '"Een nieuw begin is altijd mogelijk."',
-  book: 'Studie4SU',
-  author: '',
-}
-
 type PageState = 'invalid' | 'form' | 'success'
 
 function ResetPassword() {
   const { token, error } = Route.useSearch()
   const navigate = useNavigate()
+  const { t } = useLanguage()
+
+  const quote = {
+    text: t('auth.resetPasswordQuoteText'),
+    book: t('auth.resetPasswordQuoteBook'),
+    author: '',
+  }
 
   // No separate validate-token endpoint exists in Better Auth — the token
   // is only actually checked when resetPassword() is called. Missing token
@@ -59,15 +61,15 @@ function ResetPassword() {
     setApiError(null)
 
     if (!password) {
-      setPwError('Vul een wachtwoord in.')
+      setPwError(t('auth.passwordRequired'))
       return
     }
     if (password.length < 8) {
-      setPwError('Wachtwoord moet minimaal 8 tekens bevatten.')
+      setPwError(t('auth.passwordTooShort'))
       return
     }
     if (password !== confirm) {
-      setConfirmError('Wachtwoorden komen niet overeen.')
+      setConfirmError(t('auth.passwordsDontMatch'))
       return
     }
     if (!token) {
@@ -96,21 +98,21 @@ function ResetPassword() {
           <div className="mx-auto mb-3 grid h-[58px] w-[58px] place-items-center rounded-full bg-white/15">
             <ShieldCheck className="h-7 w-7" aria-hidden="true" />
           </div>
-          <h1 className="font-display m-0 text-[1.85rem]">Nieuw wachtwoord</h1>
-          <p className="mt-2 mb-0 opacity-95">Kies een nieuw wachtwoord voor je account</p>
+          <h1 className="font-display m-0 text-[1.85rem]">{t('auth.resetPasswordTitle')}</h1>
+          <p className="mt-2 mb-0 opacity-95">{t('auth.resetPasswordSubtitle')}</p>
         </div>
 
         <div className="px-6 pb-6 pt-5">
           {state === 'invalid' && (
             <div className="flex flex-col items-center gap-3 py-4 text-center">
               <p className="text-[#6b7280]">
-                Deze resetlink is verlopen of al gebruikt. Vraag een nieuwe link aan.
+                {t('auth.linkExpired')}
               </p>
               <Link
                 to="/forgot-password"
                 className="mt-1 rounded-xl bg-[#2fa84f] px-4 py-3 text-white hover:bg-[#259243]"
               >
-                Nieuwe link aanvragen
+                {t('auth.requestNewLink')}
               </Link>
             </div>
           )}
@@ -120,7 +122,7 @@ function ResetPassword() {
               {apiError && <ApiBanner variant="error" message={apiError} />}
               <form onSubmit={handleSubmit} noValidate>
                 <label className="mb-4 block">
-                  <span className="mb-1.5 block font-semibold text-[#111827]">Nieuw wachtwoord</span>
+                  <span className="mb-1.5 block font-semibold text-[#111827]">{t('auth.newPasswordLabel')}</span>
                   <div className="flex items-center gap-2.5 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5">
                     <Lock className="h-[18px] w-[18px] shrink-0 text-[#6b7280]" aria-hidden="true" />
                     <input
@@ -138,7 +140,7 @@ function ResetPassword() {
                 </label>
 
                 <label className="mb-1 block">
-                  <span className="mb-1.5 block font-semibold text-[#111827]">Bevestig wachtwoord</span>
+                  <span className="mb-1.5 block font-semibold text-[#111827]">{t('auth.confirmPasswordLabel')}</span>
                   <div className="flex items-center gap-2.5 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5">
                     <Lock className="h-[18px] w-[18px] shrink-0 text-[#6b7280]" aria-hidden="true" />
                     <input
@@ -167,7 +169,7 @@ function ResetPassword() {
                   ) : (
                     <ArrowRight className="h-[17px] w-[17px]" aria-hidden="true" />
                   )}
-                  <span>Wachtwoord opslaan</span>
+                  <span>{t('auth.savePassword')}</span>
                 </button>
               </form>
             </>
@@ -175,14 +177,14 @@ function ResetPassword() {
 
           {state === 'success' && (
             <SuccessStatePanel
-              title="Wachtwoord gewijzigd!"
-              description="Je kunt nu inloggen met je nieuwe wachtwoord."
+              title={t('auth.passwordChanged')}
+              description={t('auth.passwordChangedDescription')}
               action={
                 <Link
                   to="/login"
                   className="mt-2 inline-flex items-center gap-2 rounded-xl bg-[#2fa84f] px-4 py-3 text-white hover:bg-[#259243]"
                 >
-                  Naar inloggen
+                  {t('auth.goToLogin')}
                 </Link>
               }
             />

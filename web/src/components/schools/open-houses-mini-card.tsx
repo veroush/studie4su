@@ -10,11 +10,10 @@ interface OpenHouseItem {
 
 interface OpenHousesMiniCardProps {
   openHouses: OpenHouseItem[]
+  schoolImageUrl?: string | null
 }
 
-// Single fallback image for all cards — v1 keyed images to hardcoded school
-// IDs that no longer exist under the cuid scheme. Real per-school images
-// need an imageUrl column or a manual mapping (flagged, not resolved here).
+// Used when the school has no imageUrl set in the admin panel yet.
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&h=400&fit=crop"
 
@@ -30,7 +29,9 @@ function formatDate(dateStr: string) {
   }
 }
 
-export function OpenHousesMiniCard({ openHouses }: OpenHousesMiniCardProps) {
+export function OpenHousesMiniCard({ openHouses, schoolImageUrl }: OpenHousesMiniCardProps) {
+  const image = schoolImageUrl || FALLBACK_IMAGE
+
   return (
     <div className="bg-gradient-to-br from-[#16a34a] to-[#15803d] text-white rounded-2xl shadow-lg p-6">
       <h3 className="font-display text-[1.15rem] font-semibold mb-4 flex items-center gap-2">
@@ -53,7 +54,7 @@ export function OpenHousesMiniCard({ openHouses }: OpenHousesMiniCardProps) {
             >
               <div className="relative h-[72px] overflow-hidden flex-shrink-0">
                 <img
-                  src={FALLBACK_IMAGE}
+                  src={image}
                   alt={oh.title}
                   loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-[400ms] group-hover:scale-[1.08]"

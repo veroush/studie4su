@@ -6,24 +6,26 @@ import { AuthLayout } from '../components/auth/auth-layout'
 import { ApiBanner } from '../components/auth/api-banner'
 import { SuccessStatePanel } from '../components/auth/success-state-panel'
 import { authClient } from '../lib/auth-client'
+import { useLanguage } from '../lib/i18n/language-context'
 
 export const Route = createFileRoute('/forgot-password')({
   component: ForgotPassword,
 })
 
-const quote = {
-  text: '"Het begin is het belangrijkste deel van het werk."',
-  book: 'De Republiek',
-  author: 'by Plato',
-}
-
-function validateEmail(value: string) {
-  if (!value) return 'Vul je e-mailadres in.'
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Vul een geldig e-mailadres in.'
-  return ''
-}
-
 function ForgotPassword() {
+  const { t } = useLanguage()
+  const quote = {
+    text: t('auth.forgotPasswordQuoteText'),
+    book: t('auth.forgotPasswordQuoteBook'),
+    author: t('auth.forgotPasswordQuoteAuthor'),
+  }
+
+  function validateEmail(value: string) {
+    if (!value) return t('auth.emailRequired')
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return t('auth.emailInvalid')
+    return ''
+  }
+
   const [email, setEmail] = useState('')
   const [fieldError, setFieldError] = useState('')
   const [apiError, setApiError] = useState<string | null>(null)
@@ -49,7 +51,7 @@ function ForgotPassword() {
     setPending(false)
 
     if (error) {
-      setApiError('Er is iets misgegaan. Probeer het later opnieuw.')
+      setApiError(t('auth.forgotPasswordGenericError'))
       return
     }
     setSent(true)
@@ -62,8 +64,8 @@ function ForgotPassword() {
           <div className="mx-auto mb-3 grid h-[58px] w-[58px] place-items-center rounded-full bg-white/15">
             <KeyRound className="h-7 w-7" aria-hidden="true" />
           </div>
-          <h1 className="font-display m-0 text-[1.85rem]">Wachtwoord vergeten</h1>
-          <p className="mt-2 mb-0 opacity-95">Vul je e-mailadres in om een resetlink te ontvangen</p>
+          <h1 className="font-display m-0 text-[1.85rem]">{t('auth.forgotPasswordTitle')}</h1>
+          <p className="mt-2 mb-0 opacity-95">{t('auth.forgotPasswordSubtitle')}</p>
         </div>
 
         <div className="px-6 pb-6 pt-5">
@@ -71,13 +73,13 @@ function ForgotPassword() {
 
           {sent ? (
             <SuccessStatePanel
-              title="Link verstuurd!"
-              description="Controleer je inbox en klik op de link om je wachtwoord opnieuw in te stellen. Vergeet ook je spammap te controleren."
+              title={t('auth.linkSent')}
+              description={t('auth.linkSentDescription')}
             />
           ) : (
             <form onSubmit={handleSubmit} noValidate>
               <label className="mb-1 block">
-                <span className="mb-1.5 block font-semibold text-[#111827]">E-mailadres</span>
+                <span className="mb-1.5 block font-semibold text-[#111827]">{t('auth.emailAddressLabel')}</span>
                 <div className="flex items-center gap-2.5 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5">
                   <Mail className="h-[18px] w-[18px] shrink-0 text-[#6b7280]" aria-hidden="true" />
                   <input
@@ -103,13 +105,13 @@ function ForgotPassword() {
                 ) : (
                   <ArrowRight className="h-[17px] w-[17px]" aria-hidden="true" />
                 )}
-                <span>Resetlink versturen</span>
+                <span>{t('auth.sendResetLink')}</span>
               </button>
             </form>
           )}
 
           <Link to="/login" className="mt-4 block text-center text-[#374151]">
-            ← Terug naar inloggen
+            {t('auth.backToLogin')}
           </Link>
         </div>
       </div>

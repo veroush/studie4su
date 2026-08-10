@@ -8,6 +8,7 @@ import { SearchBar } from "@/components/schools/search-bar"
 import { SchoolFilters } from "@/components/schools/school-filters"
 import { SchoolCard } from "@/components/schools/school-card"
 import { useChaserRunnerAnimation, useConfusedStickmanAnimation } from "@/hooks/use-state-animation"
+import { useLanguage } from "@/lib/i18n/language-context"
 
 export const Route = createFileRoute("/schools/")({ component: SchoolsPage })
 
@@ -20,9 +21,9 @@ interface School {
   _count: { programs: number }
 }
 
-// Ported directly from v1 schools.js (NL only - the language toggle
-// exists visually in the navbar but does not actually switch text yet).
-const DESCRIPTIONS: Record<string, string> = {
+// Ported directly from v1 schools.js. Kept per-language since these read
+// as full sentences, not simple UI labels (translations.ts is for those).
+const DESCRIPTIONS_NL: Record<string, string> = {
   school_adekus:
     "De enige universiteit van Suriname, met opleidingen in geneeskunde, rechten, technologie en meer.",
   school_natin:
@@ -38,10 +39,26 @@ const DESCRIPTIONS: Record<string, string> = {
   school_igsr:
     "HBO-instituut voor gezondheidszorg met verpleegkunde, paramedische en zorgopleidingen.",
 }
-const DEFAULT_DESCRIPTION =
-  "Een erkende onderwijsinstelling in Suriname met hoogwaardige opleidingen."
+const DESCRIPTIONS_EN: Record<string, string> = {
+  school_adekus:
+    "Suriname's only university, offering programs in medicine, law, technology, and more.",
+  school_natin:
+    "Technical college with a strong focus on IT, engineering, and natural sciences.",
+  school_iol:
+    "Teacher training institute preparing future educators for Surinamese schools.",
+  school_covab:
+    "Agricultural college offering programs in agriculture, biology, and environmental science.",
+  school_imeao:
+    "Vocational school with hands-on programs in economics, administration, and trade.",
+  school_ptc:
+    "Polytechnic college training students in technical trades at vocational level.",
+  school_igsr:
+    "Healthcare college offering nursing, paramedical, and other care-related programs.",
+}
 
 function SchoolsPage() {
+  const { t, lang } = useLanguage()
+  const DESCRIPTIONS = lang === 'en' ? DESCRIPTIONS_EN : DESCRIPTIONS_NL
   const { data: schools, isLoading, isError } = useQuery({
     queryKey: ["schools"],
     queryFn: async (): Promise<School[]> => {
@@ -88,11 +105,11 @@ function SchoolsPage() {
     <div>
       <Navbar />
 
-      <div className="bg-gradient-to-br from-[#f9fafb] to-[#f0fdf4]/50 min-h-screen">
+      <div className="bg-gradient-to-br from-[#d3f5e0] via-[#eefbf3] to-[#fdf3d0] min-h-screen">
         <main className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <PageTitleSection
-            title="Alle Scholen"
-            description="Ontdek en vergelijk scholen in Suriname"
+            title={t('schools.pageTitle')}
+            description={t('schools.pageDescription')}
           />
 
           <SearchBar value={search} onChange={setSearch} />
@@ -108,7 +125,7 @@ function SchoolsPage() {
           {!isLoading && !isError && (
             <p className="text-sm text-[#6b7280] mb-6 animate-[fadeIn_0.3s_ease]">
               <strong className="text-[#16a34a]">{filtered.length}</strong>{" "}
-              school{filtered.length === 1 ? "" : "en"} gevonden
+              {t(filtered.length === 1 ? 'schools.resultsFoundSuffixOne' : 'schools.resultsFoundSuffixMany')}
             </p>
           )}
 
@@ -118,22 +135,22 @@ function SchoolsPage() {
                 <img src={chaserSrc} alt="" className="absolute bottom-[18px] left-[30px] w-[92px] h-[92px] object-contain" />
                 <img src={runnerSrc} alt="" className="absolute bottom-[18px] left-[170px] w-[92px] h-[92px] object-contain" />
               </div>
-              <p className="text-[0.95rem]">Scholen laden...</p>
+              <p className="text-[0.95rem]">{t('schools.loading')}</p>
             </div>
           )}
 
           {isError && (
             <div className="text-center py-16 text-[#6b7280]">
               <img src={stickmanSrc} alt="" className="w-[100px] h-auto mx-auto mb-4" />
-              <h3 className="font-display text-lg text-[#111827] mb-1">Kon scholen niet laden</h3>
-              <p className="text-sm">Controleer of je server actief is.</p>
+              <h3 className="font-display text-lg text-[#111827] mb-1">{t('schools.couldNotLoad')}</h3>
+              <p className="text-sm">{t('schools.checkServer')}</p>
             </div>
           )}
 
           {!isLoading && !isError && filtered.length === 0 && (
             <div className="text-center py-16 text-[#6b7280]">
               <img src={stickmanSrc} alt="" className="w-[100px] h-auto mx-auto mb-4" />
-              <p className="text-[0.95rem]">Geen scholen gevonden met deze filters</p>
+              <p className="text-[0.95rem]">{t('schools.noResults')}</p>
             </div>
           )}
 
@@ -151,7 +168,7 @@ function SchoolsPage() {
                     location: school.location,
                     programCount: school._count.programs,
                   }}
-                  description={DESCRIPTIONS[school.id] ?? DEFAULT_DESCRIPTION}
+                  description={DESCRIPTIONS[school.id] ?? t('schools.defaultDescription')}
                 />
               ))}
             </div>
