@@ -4,16 +4,16 @@
 ### --------------------------------------
 
 ### 1. Haal alle scholen op (School list)
-GET http://localhost:3000/api/schools
+GET http://localhost:3000/schools
 
 ### 2. Haal specifieke programma's op
-GET http://localhost:3000/api/programs
+GET http://localhost:3000/programs
 
 ### 3. Test de zoekfunctie (Search/filter page)
-GET http://localhost:3000/api/search?q=Natuurtechnisch
+GET http://localhost:3000/search?q=Natuurtechnisch
 
 ### 4. Haal alle open huizen op
-GET http://localhost:3000/api/openhouses
+GET http://localhost:3000/openhouses
 
 ### 5. Haal geregistreerde gebruikers op (Admin only)
-GET http://localhost:3000/api/users
+GET http://localhost:3000/users
