@@ -8,10 +8,10 @@ description: Standardized procedures for testing frontend flows and API endpoint
 Hier is de standaard checklist die voor elke deployment afgevinkt moet worden:
 
 ### API Endpoint Tests (via REST Client)
-- [ ] Test `GET /api/schools` (Lijst met scholen laadt)
-- [ ] Test `GET /api/programs` (Lijst met opleidingen laadt)
-- [ ] Test `GET /api/search` (Zoek/filter parameters werken correct)
-- [ ] Test `GET /api/users` (Admin kan gebruikers ophalen)
+- [ ] Test `GET /schools` (Lijst met scholen laadt)
+- [ ] Test `GET /programs` (Lijst met opleidingen laadt)
+- [ ] Test `GET /search` (Zoek/filter parameters werken correct)
+- [ ] Test `GET /users` (Admin kan gebruikers ophalen)
 
 ### Frontend & UI/UX Tests
 - [ ] Controleer of de homepagina responsief is (Desktop & Mobiel)
