@@ -1,3 +1,5 @@
+import { useLanguage } from '@/lib/i18n/language-context'
+
 interface AboutHeroProps {
   label: string
   heading: string
@@ -5,6 +7,8 @@ interface AboutHeroProps {
 }
 
 export function AboutHero({ label, heading, paragraphs }: AboutHeroProps) {
+  const { lang } = useLanguage()
+
   return (
     <section className="pt-28 pb-16">
       <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1.25fr_1fr] gap-9 items-center">
@@ -24,7 +28,7 @@ export function AboutHero({ label, heading, paragraphs }: AboutHeroProps) {
         <div className="bg-white border border-black/[0.08] rounded-[24px] p-5 shadow-[0_18px_42px_rgba(0,0,0,0.28)]">
           <img
             src="/img/group-photo.svg"
-            alt="Studie4SU team groepsfoto"
+            alt={lang === 'en' ? 'Studie4SU team group photo' : 'Studie4SU team groepsfoto'}
             className="w-full h-auto block rounded-[14px]"
           />
         </div>

@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Calendar } from 'lucide-react'
+import { Calendar, MapPin } from 'lucide-react'
 import { FavoriteButton } from '@/components/common/favorite-button'
 
 interface FavCardEventProps {
@@ -36,10 +36,10 @@ export function FavCardEvent({ event, onRemoved }: FavCardEventProps) {
             <h3 className="font-display mb-2 text-base font-bold leading-snug text-[#111827]">{event.title}</h3>
           </Link>
           <p className="mb-1 flex items-center gap-1 text-sm text-[#6b7280]">
-            📅 {new Date(event.date).toLocaleDateString('nl-NL')}
+            <Calendar size={14} className="flex-shrink-0" /> {new Date(event.date).toLocaleDateString('nl-NL')}
           </p>
           <p className="flex items-center gap-1 text-sm text-[#6b7280]">
-            📍 {event.isOnline ? 'Online' : event.location || '—'}
+            <MapPin size={14} className="flex-shrink-0" /> {event.isOnline ? 'Online' : event.location || '—'}
           </p>
         </div>
       </div>

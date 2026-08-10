@@ -1,3 +1,5 @@
+import { useLanguage } from '@/lib/i18n/language-context'
+
 interface QuizNavRowProps {
   onPrev: () => void
   onNext: () => void
@@ -8,6 +10,7 @@ interface QuizNavRowProps {
 }
 
 export function QuizNavRow({ onPrev, onNext, canGoPrev, canGoNext, isLast, isPending }: QuizNavRowProps) {
+  const { t } = useLanguage()
   return (
     <div className="flex justify-between gap-4 mt-3">
       <button
@@ -28,7 +31,7 @@ export function QuizNavRow({ onPrev, onNext, canGoPrev, canGoNext, isLast, isPen
         >
           <polyline points="15 18 9 12 15 6" />
         </svg>
-        Vorige
+        {t('quiz.prev')}
       </button>
       <button
         type="button"
@@ -36,7 +39,7 @@ export function QuizNavRow({ onPrev, onNext, canGoPrev, canGoNext, isLast, isPen
         disabled={!canGoNext}
         className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#16a34a] to-[#15803d] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:from-[#15803d] enabled:hover:to-[#166534]"
       >
-        {isLast ? (isPending ? 'Bezig...' : 'Bekijk Resultaten') : 'Volgende'}
+        {isLast ? (isPending ? t('quiz.pending') : t('quiz.viewResults')) : t('quiz.next')}
         <svg
           width="20"
           height="20"

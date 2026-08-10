@@ -1,7 +1,9 @@
 ﻿import { useCallback, useEffect, useRef, useState } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Laptop, TrendingUp, FlaskConical, Stethoscope, Handshake, BookOpen, Scale, GraduationCap } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import { useProgramCompare } from "@/hooks/use-program-compare"
+import { useLanguage, type Language } from "@/lib/i18n/language-context"
 
 interface Program {
   id: string
@@ -23,19 +25,39 @@ interface ProgramsSliderProps {
 
 interface ClusterMeta {
   accent: string
-  emoji: string
   label: string
   sparks: string[]
 }
 
-const CLUSTER_META: Record<string, ClusterMeta> = {
-  TECH: { accent: "#3b82f6", emoji: "💻", label: "Technologie", sparks: ["Bouw software en systemen", "Werk aan netwerken & AI", "Los technische problemen op"] },
-  BUS:  { accent: "#f59e0b", emoji: "📈", label: "Business", sparks: ["Leid projecten en teams", "Analyseer markten & cijfers", "Start je eigen onderneming"] },
-  SCI:  { accent: "#10b981", emoji: "🔬", label: "Wetenschap", sparks: ["Onderzoek de wereld om je heen", "Ontdek nieuwe verbanden", "Draag bij aan kennisgroei"] },
-  MED:  { accent: "#ef4444", emoji: "🩺", label: "Gezondheidszorg", sparks: ["Zorg voor mensen op hun kwetsbaarst", "Werk in een ziekenhuis of kliniek", "Maak levensreddend verschil"] },
-  SOC:  { accent: "#8b5cf6", emoji: "🤝", label: "Sociale wetenschappen", sparks: ["Begrijp menselijk gedrag", "Werk met gemeenschappen", "Maak maatschappelijk impact"] },
-  EDU:  { accent: "#f97316", emoji: "📚", label: "Onderwijs", sparks: ["Inspireer de volgende generatie", "Geef vorm aan de toekomst", "Werk in het onderwijs"] },
-  LAW:  { accent: "#64748b", emoji: "⚖️", label: "Rechten", sparks: ["Verdedig rechten van mensen", "Werk in rechtspraak of beleid", "Navigeer complexe wetgeving"] },
+const CLUSTER_ICONS: Record<string, LucideIcon> = {
+  TECH: Laptop,
+  BUS: TrendingUp,
+  SCI: FlaskConical,
+  MED: Stethoscope,
+  SOC: Handshake,
+  EDU: BookOpen,
+  LAW: Scale,
+}
+
+const CLUSTER_META: Record<Language, Record<string, ClusterMeta>> = {
+  nl: {
+    TECH: { accent: "#3b82f6", label: "Technologie", sparks: ["Bouw software en systemen", "Werk aan netwerken & AI", "Los technische problemen op"] },
+    BUS:  { accent: "#f59e0b", label: "Business", sparks: ["Leid projecten en teams", "Analyseer markten & cijfers", "Start je eigen onderneming"] },
+    SCI:  { accent: "#10b981", label: "Wetenschap", sparks: ["Onderzoek de wereld om je heen", "Ontdek nieuwe verbanden", "Draag bij aan kennisgroei"] },
+    MED:  { accent: "#ef4444", label: "Gezondheidszorg", sparks: ["Zorg voor mensen op hun kwetsbaarst", "Werk in een ziekenhuis of kliniek", "Maak levensreddend verschil"] },
+    SOC:  { accent: "#8b5cf6", label: "Sociale wetenschappen", sparks: ["Begrijp menselijk gedrag", "Werk met gemeenschappen", "Maak maatschappelijk impact"] },
+    EDU:  { accent: "#f97316", label: "Onderwijs", sparks: ["Inspireer de volgende generatie", "Geef vorm aan de toekomst", "Werk in het onderwijs"] },
+    LAW:  { accent: "#64748b", label: "Rechten", sparks: ["Verdedig rechten van mensen", "Werk in rechtspraak of beleid", "Navigeer complexe wetgeving"] },
+  },
+  en: {
+    TECH: { accent: "#3b82f6", label: "Technology", sparks: ["Build software and systems", "Work with networks & AI", "Solve technical problems"] },
+    BUS:  { accent: "#f59e0b", label: "Business", sparks: ["Lead projects and teams", "Analyze markets & numbers", "Start your own business"] },
+    SCI:  { accent: "#10b981", label: "Science", sparks: ["Research the world around you", "Discover new connections", "Contribute to growing knowledge"] },
+    MED:  { accent: "#ef4444", label: "Healthcare", sparks: ["Care for people at their most vulnerable", "Work in a hospital or clinic", "Make a life-saving difference"] },
+    SOC:  { accent: "#8b5cf6", label: "Social Sciences", sparks: ["Understand human behavior", "Work with communities", "Make a social impact"] },
+    EDU:  { accent: "#f97316", label: "Education", sparks: ["Inspire the next generation", "Shape the future", "Work in education"] },
+    LAW:  { accent: "#64748b", label: "Law", sparks: ["Defend people's rights", "Work in the justice system or policy", "Navigate complex legislation"] },
+  },
 }
 
 function truncateTuition(t: string, max = 30) {
@@ -45,6 +67,7 @@ function truncateTuition(t: string, max = 30) {
 
 export function ProgramsSlider({ programs, selectMode, onSelectProgram, onCancelSelect }: ProgramsSliderProps) {
   const { addProgram } = useProgramCompare()
+  const { t, lang } = useLanguage()
   const viewportRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const [visibleCount, setVisibleCount] = useState(3)
@@ -114,7 +137,7 @@ export function ProgramsSlider({ programs, selectMode, onSelectProgram, onCancel
     return (
       <section id="programs-section" className="bg-[#0d2b1f] py-12">
         <div className="max-w-[1280px] mx-auto px-8">
-          <p className="text-white/50 text-sm">Geen opleidingen gevonden.</p>
+          <p className="text-white/50 text-sm">{t('schoolDetail.noPrograms')}</p>
         </div>
       </section>
     )
@@ -129,24 +152,24 @@ export function ProgramsSlider({ programs, selectMode, onSelectProgram, onCancel
               <circle cx="18" cy="18" r="3" /><circle cx="6" cy="6" r="3" />
               <path d="M13 6h3a2 2 0 012 2v7" /><path d="M11 18H8a2 2 0 01-2-2V9" />
             </svg>
-            <span className="flex-1">Klik op een opleiding hieronder om te vergelijken</span>
+            <span className="flex-1">{t('schoolDetail.clickToCompare')}</span>
             <button
               type="button"
               onClick={onCancelSelect}
               className="px-3.5 py-1.5 rounded-lg bg-white/20 border border-white/35 text-white text-xs font-semibold hover:bg-white/35 transition-colors whitespace-nowrap"
             >
-              Annuleren
+              {t('schoolDetail.cancel')}
             </button>
           </div>
         </div>
       )}
       <div className="max-w-[1280px] mx-auto px-8 mb-7 flex items-center justify-between gap-3">
         <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2.5">
-          Aangeboden opleidingen
+          {t('schoolDetail.offeredPrograms')}
         </h2>
         {programs.length > 1 && (
           <span className="text-sm font-semibold text-white/45">
-            {programs.length} opleidingen
+            {programs.length} {t(programs.length === 1 ? 'schools.programsCountSuffixOne' : 'schools.programsCountSuffixMany')}
           </span>
         )}
       </div>
@@ -166,9 +189,9 @@ export function ProgramsSlider({ programs, selectMode, onSelectProgram, onCancel
             }}
           >
             {looped.map((p, i) => {
-              const meta = CLUSTER_META[p.cluster]
+              const meta = CLUSTER_META[lang][p.cluster]
               const accent = meta?.accent ?? "#10b981"
-              const emoji = meta?.emoji ?? "🎓"
+              const Icon = CLUSTER_ICONS[p.cluster] ?? GraduationCap
               const label = meta?.label ?? p.cluster
               const sparks = meta?.sparks ?? []
               const tuitionRaw =
@@ -201,7 +224,7 @@ export function ProgramsSlider({ programs, selectMode, onSelectProgram, onCancel
                     <div className="h-[5px] w-full" style={{ background: accent }} />
                     <div className="bg-white/[0.07] border border-white/10 border-t-0 rounded-b-[18px] p-5 flex flex-col gap-2.5 flex-1 group-hover:bg-white/[0.11] group-hover:border-white/[0.18] transition-colors">
                       <span className="inline-flex w-fit items-center gap-1.5 text-[0.68rem] font-bold tracking-wide uppercase px-2.5 py-[3px] rounded-full bg-white/10 text-white/75">
-                        <span>{emoji}</span> {label}
+                        <Icon size={12} aria-hidden="true" /> {label}
                       </span>
                       <h3 className="font-display text-[1.08rem] font-bold text-white leading-tight">
                         {p.name}
@@ -221,7 +244,7 @@ export function ProgramsSlider({ programs, selectMode, onSelectProgram, onCancel
                           </span>
                         ) : (
                           <span className="px-2.5 py-[3px] rounded-full bg-white/10 text-white/80 text-xs font-medium">
-                            Gratis (overheidsbekostiging)
+                            {t('schoolDetail.freeGovFunded')}
                           </span>
                         )}
                       </div>
@@ -246,7 +269,7 @@ export function ProgramsSlider({ programs, selectMode, onSelectProgram, onCancel
                             }}
                             className="mt-2 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#0d2b1f] bg-[#e8b84b] hover:opacity-90 px-4 py-2 rounded-lg transition-opacity"
                           >
-                            Vergelijk opleiding
+                            {t('schoolDetail.compareProgram')}
                           </button>
                         </div>
                       )}

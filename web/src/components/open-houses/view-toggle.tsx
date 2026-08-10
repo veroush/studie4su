@@ -1,4 +1,5 @@
 import { List, Calendar } from 'lucide-react'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 type ViewMode = 'list' | 'calendar'
 
@@ -13,8 +14,10 @@ const activeClasses = 'bg-[#dcfce7] text-[#166534]'
 const inactiveClasses = 'bg-[#f3f4f6] text-[#4b5563] hover:bg-[#e5e7eb]'
 
 export function ViewToggle({ value, onChange }: ViewToggleProps) {
+  const { t } = useLanguage()
+
   return (
-    <div role="group" aria-label="Weergave" className="flex gap-2">
+    <div role="group" aria-label={t('openHouses.viewAriaLabel')} className="flex gap-2">
       <button
         type="button"
         aria-pressed={value === 'list'}
@@ -22,7 +25,7 @@ export function ViewToggle({ value, onChange }: ViewToggleProps) {
         className={`${baseClasses} ${value === 'list' ? activeClasses : inactiveClasses}`}
       >
         <List className="h-4 w-4" aria-hidden="true" />
-        <span>Lijst</span>
+        <span>{t('openHouses.viewList')}</span>
       </button>
       <button
         type="button"
@@ -31,7 +34,7 @@ export function ViewToggle({ value, onChange }: ViewToggleProps) {
         className={`${baseClasses} ${value === 'calendar' ? activeClasses : inactiveClasses}`}
       >
         <Calendar className="h-4 w-4" aria-hidden="true" />
-        <span>Kalender</span>
+        <span>{t('openHouses.viewCalendar')}</span>
       </button>
     </div>
   )

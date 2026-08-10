@@ -1,8 +1,10 @@
+import { Heart } from 'lucide-react'
+
 interface EmptyStateProps {
   title: string
   description?: string
   action?: React.ReactNode
-  icon?: string
+  icon?: React.ReactNode
   variant?: 'dark' | 'light'
 }
 
@@ -10,7 +12,9 @@ export function EmptyState({ title, description, action, icon, variant = 'dark' 
   if (variant === 'light') {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
-        <div className="mb-2 text-[3.5rem] leading-none">{icon ?? '❤️'}</div>
+        <div className="mb-2 flex items-center justify-center text-[#d1d5db]">
+          {icon ?? <Heart size={56} strokeWidth={1.5} />}
+        </div>
         <h3 className="font-display text-2xl font-bold text-[#374151]">{title}</h3>
         {description && <p className="max-w-sm text-[0.95rem] text-[#6b7280]">{description}</p>}
         {action}

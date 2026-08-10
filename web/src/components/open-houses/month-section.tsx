@@ -4,11 +4,13 @@ interface OpenHouseApi {
   id: string
   title: string
   description: string | null
+  descriptionEn: string | null
   date: string
   location: string | null
   isOnline: boolean
   registrationUrl: string | null
   school: string
+  schoolImageUrl: string | null
   registered: boolean
   registrationCount: number
 }

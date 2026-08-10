@@ -1,3 +1,5 @@
+import { useLanguage } from '@/lib/i18n/language-context'
+
 type FilterTabValue = 'all' | 'upcoming' | 'saved'
 
 interface FilterTabsProps {
@@ -5,15 +7,17 @@ interface FilterTabsProps {
   onChange: (value: FilterTabValue) => void
 }
 
-const TABS: { value: FilterTabValue; label: string }[] = [
-  { value: 'all', label: 'Alle' },
-  { value: 'upcoming', label: 'Aankomend' },
-  { value: 'saved', label: 'Opgeslagen' },
-]
-
 export function FilterTabs({ value, onChange }: FilterTabsProps) {
+  const { t } = useLanguage()
+
+  const TABS: { value: FilterTabValue; label: string }[] = [
+    { value: 'all', label: t('openHouses.filterAll') },
+    { value: 'upcoming', label: t('openHouses.filterUpcoming') },
+    { value: 'saved', label: t('openHouses.filterSaved') },
+  ]
+
   return (
-    <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filter open dagen">
+    <div className="flex flex-wrap gap-2" role="tablist" aria-label={t('openHouses.filterAriaLabel')}>
       {TABS.map((tab) => (
         <button
           key={tab.value}

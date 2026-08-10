@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useLanguage } from '@/lib/i18n/language-context'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { LoadingState } from '@/components/common/loading-state'
@@ -61,6 +62,8 @@ interface RecommendResponse {
 }
 
 function QuizPage() {
+  const { lang, t } = useLanguage()
+
   const {
     data: questions,
     isLoading,
@@ -102,7 +105,7 @@ function QuizPage() {
       const res = await fetch('/api/quiz/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers, lang: 'nl' }),
+        body: JSON.stringify({ answers, lang }),
       })
       if (!res.ok) throw new Error('Failed to get recommendations')
       return res.json()
@@ -127,7 +130,7 @@ function QuizPage() {
   const pageShell = (content: React.ReactNode) => (
     <div>
       <Navbar />
-      <div className="bg-gradient-to-br from-[#f9fafb] via-white to-[#fefce8]/30 min-h-screen">
+      <div className="bg-gradient-to-br from-[#d3f5e0] via-white to-[#fdf1bf] min-h-screen">
         <main
           className={`mx-auto px-4 sm:px-6 pt-12 pb-24 ${
             showResults ? 'max-w-[72rem]' : 'max-w-[68rem]'
@@ -141,14 +144,14 @@ function QuizPage() {
   )
 
   if (isLoading) {
-    return pageShell(<LoadingState message="Quizvragen laden..." />)
+    return pageShell(null)
   }
 
   if (isError || !questions || questions.length === 0) {
     return pageShell(
       <EmptyState
-        title="Kon de quiz niet laden"
-        description="Controleer of je server actief is."
+        title={t('quiz.couldNotLoad')}
+        description={t('quiz.checkServer')}
       />,
     )
   }
@@ -216,31 +219,31 @@ function QuizPage() {
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
               <polyline points="22 4 12 14.01 9 11.01" />
             </svg>
-            Quiz voltooid!
+            {t('quiz.completedBadge')}
           </span>
           <AnimatedQuizHeader
-            title="Jouw Gepersonaliseerde Aanbevelingen"
-            subtitle="Op basis van jouw opleidingsniveau, certificaten en voorkeuren"
+            title={t('quiz.resultsTitle')}
+            subtitle={t('quiz.resultsSubtitle')}
             stickmanSide="right"
             frameSrc={resultsAnimator.src}
           />
         </header>
 
         {recommendMutation.isPending && (
-          <LoadingState message="Aanbevelingen worden geladen..." />
+          <LoadingState message={t('quiz.loadingResults')} />
         )}
 
         {submitError && (
           <EmptyState
-            title="Kon aanbevelingen niet laden"
-            description="Probeer de quiz opnieuw."
+            title={t('quiz.couldNotLoadResults')}
+            description={t('quiz.retryQuiz')}
           />
         )}
 
         {!submitError && !recommendMutation.isPending && results && results.length === 0 && (
           <EmptyState
-            title="Geen programma's gevonden"
-            description="Probeer de quiz opnieuw met andere antwoorden."
+            title={t('quiz.noResultsTitle')}
+            description={t('quiz.noResultsDesc')}
           />
         )}
 
@@ -260,8 +263,8 @@ function QuizPage() {
   return pageShell(
     <>
       <AnimatedQuizHeader
-        title="Studiekeuzequiz"
-        subtitle="Beantwoord deze vragen om jouw ideale studie te vinden"
+        title={t('quiz.title')}
+        subtitle={t('quiz.subtitle')}
         stickmanSide={getQuizAnimationStep(step).position}
         frameSrc={quizAnimator.src}
       />
@@ -269,8 +272,9 @@ function QuizPage() {
       <ProgressBar current={step + 1} total={total} />
 
       <QuestionCard
-        question={q.text}
+        question={lang === 'en' && q.textEn ? q.textEn : q.text}
         options={q.options}
+        lang={lang}
         multiple={isMultiple}
         selectedAnswer={currentAnswer}
         onToggle={toggleOption}

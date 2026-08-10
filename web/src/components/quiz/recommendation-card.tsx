@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 interface RecommendationResult {
   id: string
@@ -20,12 +21,13 @@ interface RecommendationCardProps {
 }
 
 export function RecommendationCard({ rank, result }: RecommendationCardProps) {
+  const { t } = useLanguage()
   return (
     <article className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-6">
       <div className="flex flex-col sm:flex-row gap-6 items-start">
         <div
           className="flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br from-[#16a34a] to-[#15803d] flex items-center justify-center text-white text-2xl font-bold"
-          aria-label={`Rang ${rank}`}
+          aria-label={t('quiz.rank', { rank })}
         >
           #{rank}
         </div>
@@ -66,7 +68,7 @@ export function RecommendationCard({ rank, result }: RecommendationCardProps) {
                 <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2" />
                 <path d="M19 11h2m-1 -1v2" />
               </svg>
-              <span className="text-sm font-semibold text-[#166534]">{result.match}% match</span>
+              <span className="text-sm font-semibold text-[#166534]">{result.match}{t('quiz.matchSuffix')}</span>
             </div>
           </div>
 
@@ -75,10 +77,10 @@ export function RecommendationCard({ rank, result }: RecommendationCardProps) {
           <div className="bg-[#fefce8] border border-[#fef08a] rounded-lg p-4 mb-4">
             {result.requiredLevel && (
               <p className="text-sm text-[#374151] mb-2">
-                <strong className="font-semibold">Vereist niveau:</strong> {result.requiredLevel}
+                <strong className="font-semibold">{t('quiz.requiredLevel')}</strong> {result.requiredLevel}
               </p>
             )}
-            <p className="text-sm font-medium text-[#374151] mb-2 mt-3">Waarom aanbevolen:</p>
+            <p className="text-sm font-medium text-[#374151] mb-2 mt-3">{t('quiz.whyRecommended')}</p>
             <ul className="flex flex-col gap-1">
               {result.reasons.map((reason) => (
                 <li key={reason} className="flex items-start gap-2 text-sm text-[#4b5563]">
@@ -108,14 +110,14 @@ export function RecommendationCard({ rank, result }: RecommendationCardProps) {
               params={{ schoolId: result.schoolId }}
               className="rounded-lg bg-[#16a34a] hover:bg-[#15803d] text-white text-sm font-semibold px-6 py-2.5 transition-colors"
             >
-              Bekijk School
+              {t('quiz.viewSchool')}
             </Link>
             <Link
               to="/programs/$programId"
               params={{ programId: result.id }}
               className="rounded-lg border-2 border-[#16a34a] text-[#15803d] hover:bg-[#f0fdf4] text-sm font-semibold px-6 py-2.5 transition-colors"
             >
-              Bekijk Programma
+              {t('quiz.viewProgram')}
             </Link>
           </div>
         </div>
