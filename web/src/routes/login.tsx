@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { AuthLayout } from '../components/auth/auth-layout'
 import { AuthForm } from '../components/auth/auth-form'
 import { authClient } from '../lib/auth-client'
+import { useLanguage } from '../lib/i18n/language-context'
 
 type AuthMode = 'login' | 'register'
 
@@ -13,25 +14,26 @@ export const Route = createFileRoute('/login')({
   }),
 })
 
-const quotes: Record<AuthMode, { text: string; book: string; author: string }> = {
-  login: {
-    text: '"Every failure is a step to success"',
-    book: 'Lectures on the History of Moral Philosophy in England',
-    author: 'by William Whewell',
-  },
-  register: {
-    text: '"The strongest principle of growth lies in the human choice."',
-    book: 'Daniel Deronda',
-    author: 'by George Eliot',
-  },
-}
-
 function Login() {
   const { redirect } = Route.useSearch()
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const [mode, setMode] = useState<AuthMode>('login')
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const quotes: Record<AuthMode, { text: string; book: string; author: string }> = {
+    login: {
+      text: t('auth.loginQuoteText'),
+      book: t('auth.loginQuoteBook'),
+      author: t('auth.loginQuoteAuthor'),
+    },
+    register: {
+      text: t('auth.registerQuoteText'),
+      book: t('auth.registerQuoteBook'),
+      author: t('auth.registerQuoteAuthor'),
+    },
+  }
 
   function resolveDestination(role?: string) {
     if (redirect) return redirect
@@ -51,7 +53,7 @@ function Login() {
       setPending(false)
 
       if (authError) {
-        setError('Onjuist e-mailadres of wachtwoord.')
+        setError(t('auth.loginError'))
         return
       }
 
@@ -70,8 +72,8 @@ function Login() {
     if (authError) {
       setError(
         authError.message?.toLowerCase().includes('already')
-          ? 'Dit e-mailadres is al in gebruik.'
-          : 'Er is iets misgegaan. Probeer het opnieuw.',
+          ? t('auth.registerEmailInUseError')
+          : t('auth.registerGenericError'),
       )
       return
     }

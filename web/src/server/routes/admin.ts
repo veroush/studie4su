@@ -70,13 +70,17 @@ interface QuestionBody {
 	answers?: QuizAnswerBody[];
 }
 
+interface PrismaError {
+	code?: string;
+}
+
 const db = prisma as unknown as AdminDatabase;
 const adminRoutes = new Hono();
 
 // TODO: Apply the migrated Hono requireAuth/adminOnly middleware when mounting this route module.
 
-const isPrismaRecordNotFound = (error: unknown) =>
-	typeof error === "object" && error !== null && "code" in error && error.code === "P2025";
+const isPrismaRecordNotFound = (error: unknown): error is PrismaError =>
+	typeof error === "object" && error !== null && (error as PrismaError).code === "P2025";
 
 const readJsonBody = async <T>(c: Context) => (await c.req.json()) as T;
 
@@ -148,9 +152,9 @@ adminRoutes.get("/schools/:id", async (c) => {
 
 adminRoutes.post("/schools", async (c) => {
 	try {
-		const { name, shortName, type, website, location } = await readJsonBody<Record<string, string | undefined>>(c);
+		const { name, shortName, type, website, location, imageUrl } = await readJsonBody<Record<string, string | undefined>>(c);
 		if (!name || !type) return c.json({ error: "name and type are required" }, 400);
-		const school = await db.school.create({ data: { name, shortName: shortName || null, type, website: website || null, location: location || null } });
+		const school = await db.school.create({ data: { name, shortName: shortName || null, type, website: website || null, location: location || null, imageUrl: imageUrl || null } });
 		return c.json(school, 201);
 	} catch (error) {
 		console.error(error);
@@ -160,10 +164,10 @@ adminRoutes.post("/schools", async (c) => {
 
 adminRoutes.put("/schools/:id", async (c) => {
 	try {
-		const { name, shortName, type, website, location } = await readJsonBody<Record<string, string | undefined>>(c);
+		const { name, shortName, type, website, location, imageUrl } = await readJsonBody<Record<string, string | undefined>>(c);
 		const existing = await db.school.findUnique({ where: { id: c.req.param("id") } });
 		if (!existing) return c.json({ error: "School not found" }, 404);
-		const updated = await db.school.update({ where: { id: c.req.param("id") }, data: { ...(name !== undefined && { name }), ...(shortName !== undefined && { shortName }), ...(type !== undefined && { type }), ...(website !== undefined && { website }), ...(location !== undefined && { location }) } });
+		const updated = await db.school.update({ where: { id: c.req.param("id") }, data: { ...(name !== undefined && { name }), ...(shortName !== undefined && { shortName }), ...(type !== undefined && { type }), ...(website !== undefined && { website }), ...(location !== undefined && { location }), ...(imageUrl !== undefined && { imageUrl }) } });
 		return c.json(updated);
 	} catch (error) {
 		console.error(error);

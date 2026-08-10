@@ -15,6 +15,7 @@ interface OpenHouse {
   id: string
   title: string
   description: string | null
+  descriptionEn: string | null
   date: string
   location: string | null
   isOnline: boolean
@@ -39,6 +40,7 @@ const EMPTY_FORM = {
   registrationUrl: '',
   isActive: true,
   description: '',
+  descriptionEn: '',
 }
 
 interface ToastItem { id: number; type: 'success' | 'error'; message: string }
@@ -235,6 +237,7 @@ function RouteComponent() {
       registrationUrl: oh.registrationUrl ?? '',
       isActive: oh.isActive,
       description: oh.description ?? '',
+      descriptionEn: oh.descriptionEn ?? '',
     })
     setFormErrors({})
     setFormOpen(true)
@@ -269,6 +272,7 @@ function RouteComponent() {
       registrationUrl: form.registrationUrl.trim() || null,
       isActive: form.isActive,
       description: form.description.trim() || null,
+      descriptionEn: form.descriptionEn.trim() || null,
     }
 
     try {
@@ -579,7 +583,7 @@ function RouteComponent() {
               <div className="form-section-title" style={{ marginTop: 20 }}>Details</div>
               <div className="form-grid">
                 <div className="form-group form-group-full">
-                  <label className="form-label" htmlFor="field-description">Description</label>
+                  <label className="form-label" htmlFor="field-description">Description (Dutch)</label>
                   <textarea
                     className="form-input"
                     id="field-description"
@@ -587,6 +591,17 @@ function RouteComponent() {
                     placeholder="Describe the open house event..."
                     value={form.description}
                     onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  />
+                </div>
+                <div className="form-group form-group-full">
+                  <label className="form-label" htmlFor="field-description-en">Description (English)</label>
+                  <textarea
+                    className="form-input"
+                    id="field-description-en"
+                    rows={4}
+                    placeholder="Describe the open house event in English..."
+                    value={form.descriptionEn}
+                    onChange={(e) => setForm((f) => ({ ...f, descriptionEn: e.target.value }))}
                   />
                 </div>
               </div>

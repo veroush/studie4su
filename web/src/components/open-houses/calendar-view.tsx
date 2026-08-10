@@ -1,14 +1,18 @@
 import { MonthSection } from './month-section'
+import { useLanguage } from '@/lib/i18n/language-context'
+import { translations } from '@/lib/i18n/translations'
 
 interface OpenHouseApi {
   id: string
   title: string
   description: string | null
+  descriptionEn: string | null
   date: string
   location: string | null
   isOnline: boolean
   registrationUrl: string | null
   school: string
+  schoolImageUrl: string | null
   registered: boolean
   registrationCount: number
 }
@@ -19,11 +23,6 @@ interface CalendarViewProps {
   onRegisterToggle: (event: OpenHouseApi) => void
   onFavoriteToggle: (id: string, favorited: boolean) => void
 }
-
-const MONTHS_NL = [
-  'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
-  'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December',
-]
 
 function groupByMonth(events: OpenHouseApi[]) {
   const map = new Map<string, OpenHouseApi[]>()
@@ -37,6 +36,8 @@ function groupByMonth(events: OpenHouseApi[]) {
 }
 
 export function CalendarView({ events, isFavorited, onRegisterToggle, onFavoriteToggle }: CalendarViewProps) {
+  const { lang } = useLanguage()
+  const months = translations[lang].openHouses.months
   const grouped = groupByMonth(events)
 
   return (
@@ -46,7 +47,7 @@ export function CalendarView({ events, isFavorited, onRegisterToggle, onFavorite
         return (
           <MonthSection
             key={key}
-            monthLabel={`${MONTHS_NL[month - 1]} ${year}`}
+            monthLabel={`${months[month - 1]} ${year}`}
             events={monthEvents}
             isFavorited={isFavorited}
             onRegisterToggle={onRegisterToggle}

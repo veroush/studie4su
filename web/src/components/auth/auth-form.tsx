@@ -3,6 +3,7 @@ import { Mail, User, Lock, ArrowRight, UserRound } from 'lucide-react'
 import { PasswordVisibilityToggle } from './password-visibility-toggle'
 import { PasswordStrengthMeter } from './password-strength-meter'
 import { ApiBanner } from './api-banner'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 type AuthMode = 'login' | 'register'
 
@@ -21,6 +22,7 @@ interface AuthFormProps {
 }
 
 export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error }: AuthFormProps) {
+  const { t } = useLanguage()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -39,12 +41,10 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
           <UserRound className="h-7 w-7" aria-hidden="true" />
         </div>
         <h1 className="font-display m-0 text-[1.85rem]">
-          {mode === 'login' ? 'Welkom terug' : 'Maak je account'}
+          {mode === 'login' ? t('auth.loginWelcome') : t('auth.registerWelcome')}
         </h1>
         <p className="mt-2 mb-0 opacity-95">
-          {mode === 'login'
-            ? 'Log in om verder te gaan met je studiekeuze'
-            : 'Begin je reis naar de perfecte studie'}
+          {mode === 'login' ? t('auth.loginSubtitle') : t('auth.registerSubtitle')}
         </p>
       </div>
 
@@ -55,7 +55,7 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
         <form onSubmit={handleSubmit}>
           {mode === 'register' && (
             <label className="mb-4 block">
-              <span className="mb-1.5 block font-semibold text-[#111827]">Naam</span>
+              <span className="mb-1.5 block font-semibold text-[#111827]">{t('auth.nameLabel')}</span>
               <div className="flex items-center gap-2.5 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5">
                 <User className="h-[18px] w-[18px] shrink-0 text-[#6b7280]" aria-hidden="true" />
                 <input
@@ -63,7 +63,7 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   autoComplete="name"
-                  placeholder="Naam"
+                  placeholder={t('auth.nameLabel')}
                   required
                   className="w-full border-0 bg-transparent text-[1rem] text-[#111827] outline-none"
                 />
@@ -72,7 +72,7 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
           )}
 
           <label className="mb-4 block">
-            <span className="mb-1.5 block font-semibold text-[#111827]">Email</span>
+            <span className="mb-1.5 block font-semibold text-[#111827]">{t('auth.emailLabel')}</span>
             <div className="flex items-center gap-2.5 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5">
               <Mail className="h-[18px] w-[18px] shrink-0 text-[#6b7280]" aria-hidden="true" />
               <input
@@ -80,7 +80,7 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                placeholder="Email"
+                placeholder={t('auth.emailLabel')}
                 required
                 className="w-full border-0 bg-transparent text-[1rem] text-[#111827] outline-none"
               />
@@ -88,7 +88,7 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
           </label>
 
           <label className="mb-1 block">
-            <span className="mb-1.5 block font-semibold text-[#111827]">Wachtwoord</span>
+            <span className="mb-1.5 block font-semibold text-[#111827]">{t('auth.passwordLabel')}</span>
             <div className="flex items-center gap-2.5 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5">
               <Lock className="h-[18px] w-[18px] shrink-0 text-[#6b7280]" aria-hidden="true" />
               <input
@@ -96,7 +96,7 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                placeholder="Wachtwoord"
+                placeholder={t('auth.passwordLabel')}
                 required
                 className="w-full border-0 bg-transparent text-[1rem] text-[#111827] outline-none"
               />
@@ -108,7 +108,7 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
           {mode === 'login' && (
             <div className="mb-3 mt-1 text-right">
               <a href="/forgot-password" className="text-sm text-[#6b7280] transition-colors hover:text-[#2fa84f]">
-                Wachtwoord vergeten?
+                {t('auth.forgotPassword')}
               </a>
             </div>
           )}
@@ -123,25 +123,25 @@ export function AuthForm({ mode, onModeChange, onSubmit, pending = false, error 
             ) : (
               <ArrowRight className="h-[17px] w-[17px]" aria-hidden="true" />
             )}
-            <span>{mode === 'login' ? 'Inloggen' : 'Account aanmaken'}</span>
+            <span>{mode === 'login' ? t('auth.loginButton') : t('auth.registerButton')}</span>
           </button>
         </form>
 
         <div className="mt-4 flex justify-center gap-1.5">
           <p className="m-0 text-[#111827]">
-            {mode === 'login' ? 'Nog geen account?' : 'Heb je al een account?'}
+            {mode === 'login' ? t('auth.noAccount') : t('auth.hasAccount')}
           </p>
           <button
             type="button"
             onClick={() => onModeChange(mode === 'login' ? 'register' : 'login')}
             className="font-bold text-[#2fa84f]"
           >
-            {mode === 'login' ? 'Maak er één aan' : 'Log in'}
+            {mode === 'login' ? t('auth.createOne') : t('auth.switchToLogin')}
           </button>
         </div>
 
         <a href="/" className="mt-4 block text-center text-[#374151]">
-          ← Terug naar home
+          {t('auth.backToHome')}
         </a>
       </div>
     </div>

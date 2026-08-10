@@ -1,4 +1,5 @@
 ﻿import { Filter } from "lucide-react"
+import { useLanguage } from "@/lib/i18n/language-context"
 
 interface FilterOption {
   value: string
@@ -38,23 +39,24 @@ export function SchoolFilters({
   locationOptions,
   levelOptions,
 }: SchoolFiltersProps) {
+  const { t } = useLanguage()
   return (
     <div className="bg-white rounded-2xl p-6 shadow-xl mb-8 animate-[fadeInDown_0.55s_ease_both]">
       <div className="flex items-center gap-2 mb-4">
         <Filter size={20} className="text-[#15803d]" />
-        <h2 className="font-display text-xl text-[#111827]">Filters</h2>
+        <h2 className="font-display text-xl text-[#111827]">{t('schools.filtersHeading')}</h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className={labelClass}>Schooltype</label>
+          <label className={labelClass}>{t('schools.filterType')}</label>
           <select
             className={selectClass}
             style={chevronBg}
             value={value.type}
             onChange={(e) => onChange({ ...value, type: e.target.value })}
           >
-            <option value="">Alle types</option>
+            <option value="">{t('schools.filterAllTypes')}</option>
             {typeOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
@@ -62,14 +64,14 @@ export function SchoolFilters({
         </div>
 
         <div>
-          <label className={labelClass}>Locatie</label>
+          <label className={labelClass}>{t('schools.filterLocation')}</label>
           <select
             className={selectClass}
             style={chevronBg}
             value={value.location}
             onChange={(e) => onChange({ ...value, location: e.target.value })}
           >
-            <option value="">Alle locaties</option>
+            <option value="">{t('schools.filterAllLocations')}</option>
             {locationOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
@@ -77,14 +79,14 @@ export function SchoolFilters({
         </div>
 
         <div>
-          <label className={labelClass}>Niveau</label>
+          <label className={labelClass}>{t('schools.filterLevel')}</label>
           <select
             className={selectClass}
             style={chevronBg}
             value={value.level}
             onChange={(e) => onChange({ ...value, level: e.target.value })}
           >
-            <option value="">Alle niveaus</option>
+            <option value="">{t('schools.filterAllLevels')}</option>
             {levelOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}

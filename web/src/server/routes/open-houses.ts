@@ -24,6 +24,7 @@ type OpenHouseListItem = {
 	id: string;
 	title: string;
 	description: string | null;
+	descriptionEn: string | null;
 	date: Date;
 	location: string | null;
 	isOnline: boolean;
@@ -37,6 +38,7 @@ type OpenHouse = {
 	id: string;
 	title: string;
 	description: string | null;
+	descriptionEn: string | null;
 	date: Date;
 	location: string | null;
 	isOnline: boolean;
@@ -48,6 +50,7 @@ type OpenHouse = {
 type OpenHouseBody = Partial<{
 	title: string;
 	description: string | null;
+	descriptionEn: string | null;
 	date: string | Date;
 	location: string | null;
 	isOnline: boolean;
@@ -59,6 +62,7 @@ type OpenHouseBody = Partial<{
 type CreateOpenHouseData = {
 	title: string;
 	description: string | null;
+	descriptionEn: string | null;
 	date: Date;
 	location: string | null;
 	isOnline: boolean;
@@ -134,7 +138,7 @@ export async function getOpenHousesList(opts: { includeInactive?: boolean; schoo
 		orderBy: { date: "asc" },
 		include: {
 			school: {
-				select: { id: true, name: true, shortName: true, type: true },
+				select: { id: true, name: true, shortName: true, type: true, imageUrl: true },
 			},
 			OpenHouseRegistration: { select: { userId: true } },
 		},
@@ -144,6 +148,7 @@ export async function getOpenHousesList(opts: { includeInactive?: boolean; schoo
 		id: openHouse.id,
 		title: openHouse.title,
 		description: openHouse.description,
+		descriptionEn: openHouse.descriptionEn,
 		date: openHouse.date,
 		location: openHouse.location,
 		isOnline: openHouse.isOnline,
@@ -153,6 +158,7 @@ export async function getOpenHousesList(opts: { includeInactive?: boolean; schoo
 		school: includeInactive
 			? openHouse.school
 			: (openHouse.school?.shortName || openHouse.school?.name || openHouse.title),
+		schoolImageUrl: (openHouse.school as { imageUrl?: string | null } | null)?.imageUrl ?? null,
 		registered: userId
 			? openHouse.OpenHouseRegistration.some((r) => r.userId === userId)
 			: false,
@@ -198,6 +204,7 @@ openHouseAdminRoutes.post("/", async (c) => {
 		const {
 			title,
 			description,
+			descriptionEn,
 			date,
 			location,
 			isOnline,
@@ -230,6 +237,7 @@ openHouseAdminRoutes.post("/", async (c) => {
 			data: {
 				title,
 				description: description || null,
+				descriptionEn: descriptionEn || null,
 				date: parsedDate,
 				location: location || null,
 				isOnline: isOnline ?? false,
@@ -252,6 +260,7 @@ openHouseAdminRoutes.put("/:id", async (c) => {
 		const {
 			title,
 			description,
+			descriptionEn,
 			date,
 			location,
 			isOnline,
@@ -293,6 +302,7 @@ openHouseAdminRoutes.put("/:id", async (c) => {
 			data: {
 				...(title !== undefined && { title }),
 				...(description !== undefined && { description }),
+				...(descriptionEn !== undefined && { descriptionEn }),
 				...(date !== undefined && { date: parsedDate }),
 				...(location !== undefined && { location }),
 				...(isOnline !== undefined && { isOnline }),

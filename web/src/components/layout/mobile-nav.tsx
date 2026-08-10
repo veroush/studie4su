@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 interface MobileNavProps {
   open: boolean
@@ -8,6 +9,7 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ open, onClose, links, session }: MobileNavProps) {
+  const { t } = useLanguage()
   if (!open) return null
 
   return (
@@ -19,7 +21,7 @@ export function MobileNav({ open, onClose, links, session }: MobileNavProps) {
       <button
         type="button"
         onClick={onClose}
-        aria-label="Close menu"
+        aria-label={t('mobileNav.closeMenu')}
         className="self-end p-1.5 text-white/70 hover:text-white"
       >
         ✕
@@ -41,15 +43,15 @@ export function MobileNav({ open, onClose, links, session }: MobileNavProps) {
       {session?.user ? (
         <>
           <Link to="/favorites" onClick={onClose} className="py-2.5 text-[0.95rem] font-medium text-white/80">
-            Favorieten
+            {t('nav.favorites')}
           </Link>
           <Link to="/settings" onClick={onClose} className="py-2.5 text-[0.95rem] font-medium text-white/80">
-            Instellingen
+            {t('nav.settings')}
           </Link>
         </>
       ) : (
         <Link to="/login" onClick={onClose} className="py-2.5 text-[0.95rem] font-medium text-white/80">
-          Inloggen
+          {t('nav.login')}
         </Link>
       )}
     </div>

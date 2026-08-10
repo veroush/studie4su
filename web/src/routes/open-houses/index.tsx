@@ -10,6 +10,7 @@ import { CalendarView } from '@/components/open-houses/calendar-view'
 import { FilterTabs } from '@/components/open-houses/filter-tabs'
 import { ViewToggle } from '@/components/open-houses/view-toggle'
 import { authClient } from '@/lib/auth-client'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 export const Route = createFileRoute('/open-houses/')({ component: OpenHousesPage })
 
@@ -17,11 +18,13 @@ interface OpenHouseApi {
   id: string
   title: string
   description: string | null
+  descriptionEn: string | null
   date: string
   location: string | null
   isOnline: boolean
   registrationUrl: string | null
   school: string
+  schoolImageUrl: string | null
   registered: boolean
   registrationCount: number
 }
@@ -32,7 +35,7 @@ interface FavoritesIds {
   openhouses: string[]
 }
 
-function addToGoogleCalendar(event: OpenHouseApi) {
+function addToGoogleCalendar(event: OpenHouseApi, titlePrefix: string, details: string) {
   const start = new Date(event.date)
   const end = new Date(start.getTime() + 60 * 60 * 1000)
   const toGCal = (d: Date) => d.toISOString().replace(/[-:]|\.\d{3}/g, '')
@@ -40,9 +43,9 @@ function addToGoogleCalendar(event: OpenHouseApi) {
   const url =
     'https://calendar.google.com/calendar/render' +
     '?action=TEMPLATE' +
-    `&text=${encodeURIComponent('Open Dag – ' + event.school)}` +
+    `&text=${encodeURIComponent(titlePrefix + event.school)}` +
     `&dates=${toGCal(start)}/${toGCal(end)}` +
-    `&details=${encodeURIComponent('Toegevoegd via Studie4SU')}` +
+    `&details=${encodeURIComponent(details)}` +
     `&location=${encodeURIComponent(event.location ?? '')}` +
     '&sf=true'
 
@@ -60,6 +63,7 @@ function OpenHousesPage() {
   const { data: session } = authClient.useSession()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const { t } = useLanguage()
 
   const {
     data: events,
@@ -97,7 +101,7 @@ function OpenHousesPage() {
   function handleFavoriteToggle(id: string, favorited: boolean) {
     setFavOverrides((prev) => ({ ...prev, [id]: favorited }))
     setToast({
-      message: favorited ? 'Toegevoegd aan favorieten' : 'Verwijderd uit favorieten',
+      message: favorited ? t('openHouses.addedToFavorites') : t('openHouses.removedFromFavorites'),
       visible: true,
       linkTo: favorited ? '/favorites' : undefined,
     })
@@ -115,7 +119,9 @@ function OpenHousesPage() {
     onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: ['openhouses'] })
       const event = events?.find((e) => e.id === id)
-      if (event) addToGoogleCalendar(event)
+      if (event) {
+        addToGoogleCalendar(event, t('openHouses.calendarEventTitlePrefix'), t('openHouses.addedViaStudie4su'))
+      }
     },
   })
 
@@ -159,10 +165,10 @@ function OpenHousesPage() {
         <div className="mx-auto max-w-[80rem]">
           <div className="mb-12 px-4 text-center sm:px-[90px]">
             <h1 className="font-display mb-3 text-4xl font-bold leading-tight text-[#111827] md:text-5xl">
-              Open Dagen
+              {t('openHouses.pageTitle')}
             </h1>
             <p className="text-lg text-[#4b5563]">
-              Bezoek scholen en maak kennis met de opleidingen
+              {t('openHouses.pageSubtitle')}
             </p>
           </div>
 
@@ -173,9 +179,9 @@ function OpenHousesPage() {
                 search={{ redirect: '/open-houses' }}
                 className="font-semibold text-[#15803d]"
               >
-                Log in
+                {t('openHouses.loginLink')}
               </Link>{' '}
-              om je aan te melden voor een open dag.
+              {t('openHouses.loginPrompt')}
             </div>
           )}
 
@@ -185,10 +191,10 @@ function OpenHousesPage() {
             <ViewToggle value={view} onChange={setView} />
           </div>
 
-          {isLoading && <StateAnimation kind="loading" message="Open dagen laden..." />}
-          {isError && <StateAnimation kind="empty" message="Kon open dagen niet laden" />}
+          {isLoading && <StateAnimation kind="loading" message={t('openHouses.loading')} />}
+          {isError && <StateAnimation kind="empty" message={t('openHouses.couldNotLoad')} />}
           {!isLoading && !isError && filtered.length === 0 && (
-            <StateAnimation kind="empty" message="Geen open dagen gevonden" />
+            <StateAnimation kind="empty" message={t('openHouses.noResults')} />
           )}
 
           {!isLoading && !isError && filtered.length > 0 && view === 'list' && (
@@ -223,10 +229,11 @@ function OpenHousesPage() {
       <Toast
         message={toast.message}
         visible={toast.visible}
-        onDismiss={() => setToast((t) => ({ ...t, visible: false }))}
+        onDismiss={() => setToast((prev) => ({ ...prev, visible: false }))}
         variant="favorite"
         durationMs={3500}
         linkTo={toast.linkTo}
+        linkLabel={t('openHouses.viewFavorites')}
       />
     </div>
   )

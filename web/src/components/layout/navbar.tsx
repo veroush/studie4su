@@ -3,18 +3,19 @@ import { Link } from '@tanstack/react-router'
 import { useRouteContext } from '@tanstack/react-router'
 import { ProfileDropdown } from './profile-dropdown'
 import { MobileNav } from './mobile-nav'
-
-const NAV_LINKS = [
-  { to: '/schools', label: 'Scholen' },
-  { to: '/quiz', label: 'Quiz' },
-  { to: '/open-houses', label: 'Open Dagen' },
-  { to: '/about', label: 'Over Ons' },
-]
+import { useLanguage } from '@/lib/i18n/language-context'
 
 export function Navbar() {
   const { session } = useRouteContext({ from: '__root__' })
-  const [lang, setLang] = useState<'nl' | 'en'>('nl')
+  const { lang, toggleLang, t } = useLanguage()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+
+  const NAV_LINKS = [
+    { to: '/schools', label: t('nav.schools') },
+    { to: '/quiz', label: t('nav.quiz') },
+    { to: '/open-houses', label: t('nav.openHouses') },
+    { to: '/about', label: t('nav.about') },
+  ]
 
   return (
     <header className="sticky top-0 z-[100] bg-[var(--bg-dark)] border-b border-[var(--gold)]/20">
@@ -23,12 +24,12 @@ export function Navbar() {
           Studie<span className="text-white">4SU</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+        <nav className="hidden md:flex items-center gap-4 absolute left-1/2 -translate-x-1/2">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.to}
               to={link.to}
-              className="px-3.5 py-2 rounded-lg text-sm font-medium text-white/75 hover:text-white hover:bg-white/8 transition-colors"
+              className="px-3.5 py-2 rounded-lg text-sm font-medium text-white/75 hover:text-[var(--gold)] hover:bg-white/8 transition-colors"
               activeProps={{ className: 'text-[var(--gold)]' }}
             >
               {link.label}
@@ -39,8 +40,8 @@ export function Navbar() {
         <div className="flex items-center gap-2.5">
           <button
             type="button"
-            onClick={() => setLang(lang === 'nl' ? 'en' : 'nl')}
-            aria-label="Toggle language"
+            onClick={toggleLang}
+            aria-label={t('nav.toggleLanguage')}
             className="border border-white/25 text-white/75 hover:border-[var(--gold)] hover:text-[var(--gold)] rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors"
           >
             {lang.toUpperCase()}
@@ -53,7 +54,7 @@ export function Navbar() {
               to="/login"
               className="bg-[var(--gold)] text-[var(--bg-dark)] rounded-lg px-4.5 py-2 text-sm font-semibold hover:opacity-85 transition-opacity"
             >
-              Inloggen
+              {t('nav.login')}
             </Link>
           )}
 
