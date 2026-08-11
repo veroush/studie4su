@@ -1,5 +1,3 @@
-# web/README.md
-
 # Studie4SU — Web Application
 
 Studie4SU is a web platform for students in Suriname to discover schools, compare study programs, take a study-choice quiz, browse and register for open house events, and save favorites. This package contains the full-stack application: a TanStack Start (React) frontend, a Hono API backend, and a Prisma/PostgreSQL database, along with an admin dashboard for managing platform content.

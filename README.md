@@ -1,5 +1,3 @@
-# Root README.md
-
 # Studie4SU
 
 Studie4SU is a web platform that helps students in Suriname explore higher-education options. It lets users browse schools and study programs, compare programs side by side, take a study-choice quiz that recommends programs based on their interests, view and register for open house events, save favorites, and manage their account — all backed by an admin panel for managing schools, programs, quiz content, open houses, users, and platform settings.
