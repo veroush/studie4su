@@ -1,49 +1,25 @@
-# Starlight Starter Kit: Basics
+# Studie4SU Documentatie
+Welkom bij de officiële documentatie van het Studie4SU platform.
+ 
+Deze documentatie is gebouwd met [Astro](https://astro.build) en het [Starlight](https://starlight.astro.build/) thema. Hierin bevinden zich onder andere onze QA-testing rapporten, API-referenties en onze setup-guides.
+ 
+## Lokaal opstarten
+Om deze documentatie lokaal te bekijken:
+1. Open de terminal in deze map.
+2. Voer `pnpm install` uit.
+3. Start de server met `pnpm dev`.
+ 
+## QA & API Testing
+This project uses the REST Client extension for VS Code to perform API verifications and QA testing.
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+**To run the API tests:**
 
-```
-pnpm create astro@latest -- --template starlight
-```
+1. Ensure you have the REST Client extension installed in VS Code.
+2. Make sure the Studie4SU backend API server is running locally (e.g., on port 3000).
+3. Navigate to the test/ folder and open the api-tests.http file.
+4. Click the Send Request text that appears directly above the API endpoints to execute the tests and view the database responses.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Project Structure
+**src/content/docs/:** Contains all the Markdown (.md and .mdx) files for the documentation pages.
 
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
-```
-
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
-
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
-
-Static assets, like favicons, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+**test/:** Contains the HTTP request files used for API testing.
