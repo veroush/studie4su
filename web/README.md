@@ -1,47 +1,127 @@
-Welcome to your new TanStack Start app! 
+# web/README.md
 
-# Getting Started
+# Studie4SU — Web Application
 
-To run this application:
+Studie4SU is a web platform for students in Suriname to discover schools, compare study programs, take a study-choice quiz, browse and register for open house events, and save favorites. This package contains the full-stack application: a TanStack Start (React) frontend, a Hono API backend, and a Prisma/PostgreSQL database, along with an admin dashboard for managing platform content.
+
+## Tech Stack
+
+**Frontend**
+- [TanStack Start](https://tanstack.com/start) (React, file-based routing via TanStack Router)
+- [TanStack Query](https://tanstack.com/query) for data fetching
+- React 19
+- Tailwind CSS
+- Recharts (admin statistics charts)
+- Lucide React (icons)
+
+**Backend**
+- [Hono](https://hono.dev/) API, mounted inside the TanStack Start server routes
+- [Prisma ORM](https://www.prisma.io/) with the PostgreSQL driver adapter (`@prisma/adapter-pg`)
+- PostgreSQL (hosted on Railway)
+- [Better Auth](https://www.better-auth.com/) for authentication (email/password, sessions, password reset)
+- Nodemailer for transactional (password reset) emails
+
+**Tooling**
+- Vite
+- Biome (linting and formatting)
+- Vitest (testing)
+- Wrangler / Cloudflare Vite plugin (available for Cloudflare Workers deployment, not used in the Railway deployment)
+- pnpm (package manager)
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) (LTS recommended)
+- [pnpm](https://pnpm.io/)
+- A PostgreSQL database (locally via Docker, or a hosted instance such as [Railway](https://railway.app/))
+- (Optional, for local DB) [Docker](https://www.docker.com/) and Docker Compose
+
+## Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/<your-org>/studie4su.git
+cd studie4su/web
+```
+
+### 2. Install dependencies
 
 ```bash
 pnpm install
+```
+
+### 3. Configure environment variables
+
+Copy the example environment file and fill in real values:
+
+```bash
+cp .env.example .env.local
+```
+
+At minimum, set:
+
+```env
+# PostgreSQL connection string (local Docker service or Railway database URL)
+DATABASE_URL="postgresql://studie4su:studie4su@localhost:5432/studie4su?schema=public"
+
+# Better Auth
+BETTER_AUTH_SECRET="replace-with-a-long-random-string"
+WEB_URL="http://localhost:3000"
+```
+
+You can generate a secure `BETTER_AUTH_SECRET` with:
+
+```bash
+pnpm dlx @better-auth/cli secret
+```
+
+If you need email delivery for password resets, also configure SMTP variables (`SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`).
+
+### 4. Start a local database (optional)
+
+If you don't already have a PostgreSQL instance (e.g. on Railway) to point `DATABASE_URL` at, you can spin one up locally with Docker:
+
+```bash
+docker compose up -d
+```
+
+### 5. Set up the database schema and seed data
+
+```bash
+pnpm db:generate   # generate the Prisma client
+pnpm db:migrate     # create and apply migrations
+pnpm db:seed        # seed schools, programs, quiz questions, and open houses
+```
+
+You can inspect the database at any time with:
+
+```bash
+pnpm db:studio
+```
+
+## Usage
+
+### Running in development
+
+```bash
 pnpm dev
 ```
 
-# Building For Production
+The app will be available at `http://localhost:3000`.
 
-To build this application for production:
+### Building for production
 
 ```bash
 pnpm build
 ```
 
-## Testing
-
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+### Running the production build
 
 ```bash
-pnpm test
+pnpm start
 ```
 
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `pnpm add @tailwindcss/vite tailwindcss --dev`
-
-## Linting & Formatting
-
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
-
+### Linting and formatting
 
 ```bash
 pnpm lint
@@ -49,203 +129,39 @@ pnpm format
 pnpm check
 ```
 
-
-## Deploy to Cloudflare Workers
-
-This project uses the Cloudflare Vite plugin (configured in `vite.config.ts`) and `wrangler.jsonc`:
-
-1. Install Wrangler: `npm install -g wrangler`
-2. Authenticate: `wrangler login`
-3. Deploy: `npx wrangler deploy`
-
-For production env vars, run `wrangler secret put MY_VAR` for each secret listed in `.env.example`. Public (non-secret) vars go in `wrangler.jsonc` under `vars`.
-
-KV, D1, R2, and Durable Object bindings are configured in `wrangler.jsonc` — see https://developers.cloudflare.com/workers/wrangler/configuration/.
-
-
-## Setting up Better Auth
-
-1. Generate and set the `BETTER_AUTH_SECRET` environment variable in your `.env.local`:
-
-   ```bash
-   pnpm dlx @better-auth/cli secret
-   ```
-
-2. Visit the [Better Auth documentation](https://www.better-auth.com) to unlock the full potential of authentication in your app.
-
-### Adding a Database (Optional)
-
-Better Auth can work in stateless mode, but to persist user data, add a database:
-
-```typescript
-// src/lib/auth.ts
-import { betterAuth } from "better-auth";
-import { Pool } from "pg";
-
-export const auth = betterAuth({
-  database: new Pool({
-    connectionString: process.env.DATABASE_URL,
-  }),
-  // ... rest of config
-});
-```
-
-Then run migrations:
+### Running tests
 
 ```bash
-pnpm dlx @better-auth/cli migrate
+pnpm test
 ```
 
+### Key application routes
 
+- `/` — home page
+- `/schools` — school directory
+- `/schools/$schoolId` — school detail page with programs and open houses
+- `/programs/$programId` — study program detail page
+- `/program-compare` — side-by-side program comparison
+- `/quiz` — interactive study-choice quiz with recommendations
+- `/open-houses` — open house listings and registration
+- `/favorites` — saved schools, programs, and open houses
+- `/about` — about page (content editable from admin settings)
+- `/login`, `/forgot-password`, `/reset-password` — authentication flow
+- `/settings` — user account settings
 
-## Routing
+### Admin dashboard
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+Accessible under `/admin` (requires an authenticated user with the `admin` role):
 
-### Adding A Route
+- `/admin/dashboard` — overview and quick stats
+- `/admin/schools` — manage schools
+- `/admin/programs` — manage study programs
+- `/admin/quiz` — manage quiz questions and answers
+- `/admin/openhouses` — manage open house events
+- `/admin/users` — manage user roles
+- `/admin/settings` — platform and About page content settings
+- `/admin/statistics` — quiz submission and engagement statistics
 
-To add a new route to your application just add a new file in the `./src/routes` directory.
+### Deployment
 
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+This application's database and web app are both deployed on [Railway](https://railway.app/). Set the environment variables listed above (`DATABASE_URL`, `BETTER_AUTH_SECRET`, `WEB_URL`, and SMTP settings if needed) in your Railway project, then use `pnpm build` and `pnpm start` as the build/start commands.

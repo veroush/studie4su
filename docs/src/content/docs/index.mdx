@@ -25,10 +25,10 @@ The application is currently undergoing a structural modernization to improve pe
 ## Systeem Architectuur
 Hieronder ziet u het architectuurschema van Studie4SU:
 
-+-------------------------+           +-------------------------+           +-------------------------+
+<pre>+-------------------------+           +-------------------------+           +-------------------------+
 |      CLIENT ZIJDE       |           |      SERVER ZIJDE       |           |        DATABASE         |
 |                         |           |                         |           |                         |
 |   TanStack Start (UI)   |   HTTP    |       Hono API          |  Prisma   |   PostgreSQL Database   |
 |                         | < ===== > |   (Backend Logica &     | < ===== > |    (Gegevensopslag)     |
 |   Astro (Documentatie)  |   REST    |    Authenticatie)       |    ORM    |                         |
-+-------------------------+           +-------------------------+           +-------------------------+
++-------------------------+           +-------------------------+           +-------------------------+</pre>
