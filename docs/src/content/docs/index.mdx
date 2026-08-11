@@ -1,0 +1,34 @@
+---
+title: Project Overview & Architecture
+description: A high-level overview of the Studie4SU platform and its technical architecture.
+---
+
+## Inleiding / Introduction
+
+Studie4SU is a comprehensive web application designed to help Surinamese students navigate their educational options. The platform allows users to explore various schools, attend virtual open houses, review academic programs, and utilize an interactive quiz to aid in their decision-making process.
+
+## Technical Architecture
+
+The application is currently undergoing a structural modernization to improve performance, scalability, and maintainability. The updated architecture consists of three main pillars:
+
+*   **Frontend (User Interface):** Built with **TanStack Start UI** and styled using **Tailwind CSS**. This ensures a highly responsive and fast user experience across desktop and mobile devices.
+*   **Backend (API Layer):** Powered by **Hono**, replacing the legacy Express.js framework to provide a faster, more lightweight routing system for our endpoints (`/schools`, `/users`, `/auth`).
+*   **Database & Authentication:** Managed via **PostgreSQL** and accessed through **Prisma ORM**. Authentication flows and route protection are handled securely by **Better Auth**.
+
+## Team Responsibilities
+*   **Valentino Amasaleh:** Backend + Architecture Lead (Hono + Prisma)
+*   **Veroushka Ramjiawan:** Frontend Lead (TanStack Start UI)
+*   **Manish Bhawan:** UI/UX + Styling & Polishing (Tailwind + Design System)
+*   **Raksha Doerga:** Database + Auth Engineer (Prisma + Better Auth)
+*   **Shaquille Kempes:** Documentation + QA Engineer (Astro + Testing)
+
+## Systeem Architectuur
+Hieronder ziet u het architectuurschema van Studie4SU:
+
++-------------------------+           +-------------------------+           +-------------------------+
+|      CLIENT ZIJDE       |           |      SERVER ZIJDE       |           |        DATABASE         |
+|                         |           |                         |           |                         |
+|   TanStack Start (UI)   |   HTTP    |       Hono API          |  Prisma   |   PostgreSQL Database   |
+|                         | <=======> |   (Backend Logica &     | <=======> |    (Gegevensopslag)     |
+|   Astro (Documentatie)  |   REST    |    Authenticatie)       |    ORM    |                         |
++-------------------------+           +-------------------------+           +-------------------------+
