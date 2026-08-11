@@ -1,3 +1,6 @@
+---
+title: Gebruikershandleiding
+---
 # Gebruikershandleiding Studie4SU
 
 Studie4SU is hefv  t webplatform voor studenten in Suriname om hoger onderwijs te ontdekken, opleidingen te vergelijken en open dagen te bekijken. Deze handleiding beschrijft hoe de applicatie werkt voor zowel studenten als beheerders.
