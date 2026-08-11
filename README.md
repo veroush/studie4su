@@ -1,196 +1,251 @@
-# Studie4SU
+Welcome to your new TanStack Start app! 
 
-Studie4SU is a web platform for students in Suriname to explore higher-education options, compare study programs, view open house events, and take a study-choice quiz that recommends programs based on their interests and profile.
+# Getting Started
 
-The project combines a static multi-page frontend with an Express API and a Prisma/MySQL database. It also includes an admin area for managing schools, programs, quiz content, open houses, users, platform settings, and quiz statistics.
-
-## Features
-
-- Browse schools and view school detail pages with linked study programs.
-- Browse study programs and open detailed program pages.
-- Take a study-choice quiz and receive stored recommendations.
-- Compare programs on a dedicated comparison page.
-- Save favorite schools, programs, and open houses.
-- Register and log in with JWT-based authentication.
-- Request password reset emails and complete password resets.
-- Browse upcoming open houses and register for events when logged in.
-- View an About page whose content can be managed from admin settings.
-- Access an admin dashboard to manage:
-  - schools
-  - programs
-  - quiz questions and answers
-  - open houses
-  - users
-  - platform settings
-  - quiz result statistics
-
-
-## IMPORTANT NOTE:
-Unfortunately, our online database has since been shut down, which means some features are no longer functional and certain pages can no longer be accessed. The screenshots below only display the pages and features that are still available. As a result, some parts of the application cannot be demonstrated anymore.
-
-We appreciate your understanding.
-## Screenshots
-
-<img width="1916" height="908" alt="Studie4SU-registrationpage" src="https://github.com/user-attachments/assets/49eff884-6fec-40f6-9b56-de18fe335c55" />
-<img width="1918" height="911" alt="Studie4SU-loginpage" src="https://github.com/user-attachments/assets/930beedf-7b5d-4517-8bf0-60d2abcf6155" />
-<img width="1896" height="8108" alt="Studie4SU-homepage" src="https://github.com/user-attachments/assets/b18888cf-a94e-45fe-9735-730c3749f5ba" />
-<img width="1905" height="911" alt="Studie4SU-scholenpage" src="https://github.com/user-attachments/assets/8a7ae8a9-a287-46aa-bb06-78a6217baa50" />
-<img width="1918" height="662" alt="Studie4SU-quizpage" src="https://github.com/user-attachments/assets/37bd7299-037c-4c63-b177-8208dd9f2493" />
-<img width="1905" height="912" alt="Studie4SU-opendagenpage" src="https://github.com/user-attachments/assets/1ffbbc8e-d043-453c-aba0-21e6f487dd2e" />
-<img width="1896" height="5950" alt="Studie4SU-aboutpage" src="https://github.com/user-attachments/assets/125a1fbf-1e63-48f1-acc3-e7e49d98bcd1" />
-
-
-## Tech Stack
-
-**Backend**
-- Node.js
-- Express
-- Prisma ORM
-- MySQL
-- JWT authentication
-- bcrypt for password hashing
-- Nodemailer for password reset email delivery
-
-**Frontend**
-- HTML
-- CSS
-- Vanilla JavaScript
-
-**Development tools**
-- Nodemon
-
-## Installation
-
-### Prerequisites
-
-- Node.js and npm
-- A MySQL database
-
-### 1. Clone the repository
+To run this application:
 
 ```bash
-git clone https://github.com/Veroush/studie4su.git
-cd studie4su
+pnpm install
+pnpm dev
 ```
 
-### 2. Install dependencies
+# Building For Production
+
+To build this application for production:
 
 ```bash
-npm install
+pnpm build
 ```
 
-### 3. Create a `.env` file
+## Testing
 
-Create a `.env` file in the project root and configure the variables used by the app:
-
-```env
-PORT=3000
-DATABASE_URL="mysql://USER:PASSWORD@HOST:3306/DATABASE"
-JWT_SECRET="your_jwt_secret"
-APP_URL="http://localhost:3000"
-
-SMTP_HOST="your_smtp_host"
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER="your_smtp_user"
-SMTP_PASS="your_smtp_password"
-SMTP_FROM="studiesu <no-reply@example.com>"
-```
-
-### 4. Set up the database
-
-Generate the Prisma client, apply migrations, and optionally seed the database:
+This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
 
 ```bash
-npx prisma generate
-npx prisma migrate deploy
-npx prisma db seed
+pnpm test
 ```
 
-If you are developing locally and want to create/update the schema interactively, you can use `npx prisma migrate dev` instead of `npx prisma migrate deploy`.
+## Styling
 
-### 5. Start the development server
+This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+
+### Removing Tailwind CSS
+
+If you prefer not to use Tailwind CSS:
+
+1. Remove the demo pages in `src/routes/demo/`
+2. Replace the Tailwind import in `src/styles.css` with your own styles
+3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
+4. Uninstall the packages: `pnpm add @tailwindcss/vite tailwindcss --dev`
+
+## Linting & Formatting
+
+This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
+
 
 ```bash
-npm run dev
+pnpm lint
+pnpm format
+pnpm check
 ```
 
-The app runs on `http://localhost:3000` by default.
 
-## Usage
+## Deploy to Cloudflare Workers
 
-After starting the server, the frontend pages are served from the `public/` directory.
+This project uses the Cloudflare Vite plugin (configured in `vite.config.ts`) and `wrangler.jsonc`:
 
-### Main pages
+1. Install Wrangler: `npm install -g wrangler`
+2. Authenticate: `wrangler login`
+3. Deploy: `npx wrangler deploy`
 
-- `/` - home page
-- `/schools.html` - school directory
-- `/school-detail.html` - school detail page
-- `/program-detail.html` - program detail page
-- `/program-compare.html` - program comparison page
-- `/quiz.html` - study-choice quiz
-- `/open-houses.html` - open house overview
-- `/favorites.html` - saved favorites
-- `/about.html` - about page
-- `/login.html` - login and registration entry point
-- `/forgot-password.html` and `/reset-password.html` - password recovery flow
-- `/settings.html` - user settings page
+For production env vars, run `wrangler secret put MY_VAR` for each secret listed in `.env.example`. Public (non-secret) vars go in `wrangler.jsonc` under `vars`.
 
-### Admin pages
+KV, D1, R2, and Durable Object bindings are configured in `wrangler.jsonc` — see https://developers.cloudflare.com/workers/wrangler/configuration/.
 
-Admin-facing screens are available as static pages such as:
 
-- `/admin-dashboard.html`
-- `/admin-schools.html`
-- `/admin-programs.html`
-- `/admin-quiz.html`
-- `/admin-openhouses.html`
-- `/admin-users.html`
-- `/admin-settings.html`
-- `/admin-statistics.html`
+## Setting up Better Auth
 
-The corresponding API routes are protected with JWT authentication, and admin-only routes also require the authenticated user to have the `admin` role.
+1. Generate and set the `BETTER_AUTH_SECRET` environment variable in your `.env.local`:
 
-### API overview
+   ```bash
+   pnpm dlx @better-auth/cli secret
+   ```
 
-The Express app exposes route groups for:
+2. Visit the [Better Auth documentation](https://www.better-auth.com) to unlock the full potential of authentication in your app.
 
-- `/auth` - registration, login, password reset flow
-- `/api/quiz` - quiz recommendation and quiz result submission
-- `/schools` - public school data
-- `/programs` - public study program data
-- `/openhouses` - public open house data and event registration
-- `/favorites` - favorite schools, programs, and open houses
-- `/admin` - admin CRUD and reporting routes
-- `/admin/settings` - admin platform settings
-- `/api/about` - public about-page content from admin settings
+### Adding a Database (Optional)
 
-## Project Structure
+Better Auth can work in stateless mode, but to persist user data, add a database:
 
-```text
-studie4su/
-├── controllers/        # Auth, favorites, open house, and admin settings handlers
-├── middleware/         # JWT auth and admin access middleware
-├── prisma/             # Prisma schema, migrations, and seed script
-├── public/             # Static frontend pages, CSS, JavaScript, and images
-├── routes/             # Express route modules for public and admin APIs
-├── src/                # App bootstrap, Express setup, shared constants
-├── package.json        # Dependencies and npm scripts
-└── README.md
+```typescript
+// src/lib/auth.ts
+import { betterAuth } from "better-auth";
+import { Pool } from "pg";
+
+export const auth = betterAuth({
+  database: new Pool({
+    connectionString: process.env.DATABASE_URL,
+  }),
+  // ... rest of config
+});
 ```
 
-## UI Description
+Then run migrations:
 
-Studie4SU is a multi-page website rather than a single-page app. The public side includes a landing page, school and program browsing pages, a quiz flow, open house listings, favorites, and an about page. The admin side provides dedicated management pages for content and reporting. Styling and page behavior are implemented with page-specific CSS and vanilla JavaScript files inside `public/css` and `public/js`.
+```bash
+pnpm dlx @better-auth/cli migrate
+```
 
-## Future Improvements
 
-- Add automated tests for API routes and frontend behavior.
-- Add a production-ready build and deployment guide.
-- Consolidate route/controller organization where overlapping open house logic exists.
-- Remove unused dependencies or document future integrations if they are kept.
 
-## Notes
+## Routing
 
-- The current `npm test` script is a placeholder and does not run a real test suite.
-- The app depends on a configured database and environment variables before most pages and API routes will work correctly.
+This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+
+### Adding A Route
+
+To add a new route to your application just add a new file in the `./src/routes` directory.
+
+TanStack will automatically generate the content of the route file for you.
+
+Now that you have two routes you can use a `Link` component to navigate between them.
+
+### Adding Links
+
+To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
+
+```tsx
+import { Link } from "@tanstack/react-router";
+```
+
+Then anywhere in your JSX you can use it like so:
+
+```tsx
+<Link to="/about">About</Link>
+```
+
+This will create a link that will navigate to the `/about` route.
+
+More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
+
+### Using A Layout
+
+In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
+
+Here is an example layout that includes a header:
+
+```tsx
+import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+
+export const Route = createRootRoute({
+  head: () => ({
+    meta: [
+      { charSet: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { title: 'My App' },
+    ],
+  }),
+  shellComponent: ({ children }) => (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        <header>
+          <nav>
+            <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
+          </nav>
+        </header>
+        {children}
+        <Scripts />
+      </body>
+    </html>
+  ),
+})
+```
+
+More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
+
+## Server Functions
+
+TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
+
+```tsx
+import { createServerFn } from '@tanstack/react-start'
+
+const getServerTime = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  return new Date().toISOString()
+})
+
+// Use in a component
+function MyComponent() {
+  const [time, setTime] = useState('')
+  
+  useEffect(() => {
+    getServerTime().then(setTime)
+  }, [])
+  
+  return <div>Server time: {time}</div>
+}
+```
+
+## API Routes
+
+You can create API routes by using the `server` property in your route definitions:
+
+```tsx
+import { createFileRoute } from '@tanstack/react-router'
+import { json } from '@tanstack/react-start'
+
+export const Route = createFileRoute('/api/hello')({
+  server: {
+    handlers: {
+      GET: () => json({ message: 'Hello, World!' }),
+    },
+  },
+})
+```
+
+## Data Fetching
+
+There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
+
+For example:
+
+```tsx
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/people')({
+  loader: async () => {
+    const response = await fetch('https://swapi.dev/api/people')
+    return response.json()
+  },
+  component: PeopleComponent,
+})
+
+function PeopleComponent() {
+  const data = Route.useLoaderData()
+  return (
+    <ul>
+      {data.results.map((person) => (
+        <li key={person.name}>{person.name}</li>
+      ))}
+    </ul>
+  )
+}
+```
+
+Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
+
+# Demo files
+
+Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
+
+# Learn More
+
+You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
+
+For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).

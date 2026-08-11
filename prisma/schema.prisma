@@ -1,25 +1,96 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+
+// ─────────────────────────────────────────────────────────────
+// Better Auth core tables
+// Shape matches what the Better Auth Prisma adapter expects —
+// String ids, no `password` column on User (credentials live in
+// Account instead). See AUTH-MIGRATION.md for what this replaces
+// and what it breaks in src/server/routes/*.ts.
+// https://www.better-auth.com/docs/adapters/prisma
+// ─────────────────────────────────────────────────────────────
+
 model User {
-  id                    Int                     @id @default(autoincrement())
-  email                 String                  @unique
-  password              String
-  createdAt             DateTime                @default(now())
-  name                  String
-  role                  String                  @default("student")
-  OpenHouseRegistration OpenHouseRegistration[]
-  PasswordResetToken    PasswordResetToken[]
-  favoriteSchools       FavoriteSchool[]
-  favoritePrograms      FavoriteProgram[]
-  favoriteOpenHouses    FavoriteOpenHouse[]
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  role String @default("student")
+
+  avatar              String  @default("graduate")
+  emailAnnouncements  Boolean @default(false)
+  emailResources      Boolean @default(false)
+  emailImportant      Boolean @default(true)
+  platformUpdates     Boolean @default(false)
+  platformAlerts      Boolean @default(true)
+
+  sessions Session[]
+  accounts Account[]
+
+  openHouseRegistrations OpenHouseRegistration[]
+  favoriteSchools        FavoriteSchool[]
+  favoritePrograms       FavoriteProgram[]
+  favoriteOpenHouses     FavoriteOpenHouse[]
 }
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+// Domain models — matched to the field names already used in
+// src/server/routes/*.ts so those stubs compile against this
+// schema as-is. Only real change vs the JWT-era version on main:
+// userId fields are now String to match Better Auth's User.id.
+// ─────────────────────────────────────────────────────────────
 
 model School {
   id         String           @id @default(cuid())
@@ -28,6 +99,7 @@ model School {
   type       String
   website    String?
   location   String?
+  imageUrl   String?
   createdAt  DateTime         @default(now())
   openHouses OpenHouse[]
   programs   StudyProgram[]
@@ -49,7 +121,7 @@ model StudyProgram {
   school        School            @relation(fields: [schoolId], references: [id])
   favoriteBy    FavoriteProgram[]
 
-  @@index([schoolId], map: "StudyProgram_schoolId_fkey")
+  @@index([schoolId])
 }
 
 model Question {
@@ -71,51 +143,7 @@ model AnswerOption {
   questionId String
   question   Question @relation(fields: [questionId], references: [id])
 
-  @@index([questionId], map: "AnswerOption_questionId_fkey")
-}
-
-model Student {
-  id          String       @id @default(cuid())
-  name        String?
-  email       String?      @unique
-  schoolYear  String?
-  createdAt   DateTime     @default(now())
-  quizResults QuizResult[]
-}
-
-model QuizResult {
-  id                 String       @id @default(cuid())
-  createdAt          DateTime     @default(now())
-  programId          String
-  scores             Json
-  studentId          String?
-  topCluster         String
-  // ADDED onDelete: Cascade — deleting a program now removes its quiz results
-  recommendedProgram StudyProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
-  student            Student?     @relation(fields: [studentId], references: [id])
-
-  @@index([programId], map: "QuizResult_programId_fkey")
-  @@index([studentId], map: "QuizResult_studentId_fkey")
-}
-
-model OpenHouse {
-  id                    String                  @id @default(cuid())
-  title                 String
-  description           String?                 @db.Text
-  date                  DateTime
-  location              String?
-  isOnline              Boolean                 @default(false)
-  registrationUrl       String?
-  isActive              Boolean                 @default(true)
-  createdAt             DateTime                @default(now())
-  updatedAt             DateTime                @updatedAt
-  schoolId              String
-  // ADDED onDelete: Cascade — deleting a school now removes its open houses
-  school                School                  @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  OpenHouseRegistration OpenHouseRegistration[]
-  favoriteBy            FavoriteOpenHouse[]
-
-  @@index([schoolId], map: "OpenHouse_schoolId_fkey")
+  @@index([questionId])
 }
 
 model QuizQuestion {
@@ -138,39 +166,67 @@ model QuizAnswer {
   updatedAt   DateTime     @updatedAt
   question    QuizQuestion @relation(fields: [questionId], references: [id])
 
-  @@index([questionId], map: "QuizAnswer_questionId_fkey")
+  @@index([questionId])
 }
 
-model PasswordResetToken {
-  id        String   @id
-  token     String   @unique
-  userId    Int
-  expiresAt DateTime
-  used      Boolean  @default(false)
-  createdAt DateTime @default(now())
-  // ADDED onDelete: Cascade — deleting a user removes their reset tokens
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Student {
+  id          String       @id @default(cuid())
+  name        String?
+  email       String?      @unique
+  schoolYear  String?
+  createdAt   DateTime     @default(now())
+  quizResults QuizResult[]
+}
 
-  @@index([userId], map: "PasswordResetToken_userId_fkey")
+model QuizResult {
+  id                 String       @id @default(cuid())
+  createdAt          DateTime     @default(now())
+  programId          String
+  scores             Json
+  studentId          String?
+  topCluster         String
+  recommendedProgram StudyProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  student            Student?     @relation(fields: [studentId], references: [id])
+
+  @@index([programId])
+  @@index([studentId])
+}
+
+model OpenHouse {
+  id                    String                  @id @default(cuid())
+  title                 String
+  description           String?                 @db.Text
+  descriptionEn         String?                 @db.Text
+  date                  DateTime
+  location              String?
+  isOnline              Boolean                 @default(false)
+  registrationUrl       String?
+  isActive              Boolean                 @default(true)
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  schoolId              String
+  school                School                  @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  OpenHouseRegistration OpenHouseRegistration[]
+  favoriteBy            FavoriteOpenHouse[]
+
+  @@index([schoolId])
 }
 
 model OpenHouseRegistration {
   id          String    @id @default(cuid())
-  userId      Int
+  userId      String
   openHouseId String
   createdAt   DateTime  @default(now())
-  // ADDED onDelete: Cascade — deleting an open house removes its registrations
   OpenHouse   OpenHouse @relation(fields: [openHouseId], references: [id], onDelete: Cascade)
-  // ADDED onDelete: Cascade — deleting a user removes their registrations
   User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, openHouseId])
-  @@index([openHouseId], map: "OpenHouseRegistration_openHouseId_fkey")
+  @@index([openHouseId])
 }
 
 model FavoriteSchool {
-  id        Int      @id @default(autoincrement())
-  userId    Int
+  id        String   @id @default(cuid())
+  userId    String
   schoolId  String
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -180,8 +236,8 @@ model FavoriteSchool {
 }
 
 model FavoriteProgram {
-  id        Int          @id @default(autoincrement())
-  userId    Int
+  id        String       @id @default(cuid())
+  userId    String
   programId String
   createdAt DateTime     @default(now())
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -191,8 +247,8 @@ model FavoriteProgram {
 }
 
 model FavoriteOpenHouse {
-  id          Int       @id @default(autoincrement())
-  userId      Int
+  id          String    @id @default(cuid())
+  userId      String
   openHouseId String
   createdAt   DateTime  @default(now())
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -208,7 +264,20 @@ model AdminSettings {
   features      Json     @default("{\"enableFavorites\":true,\"enableComparison\":true,\"enableQuiz\":true,\"enableOpenHouse\":true}")
   notifications Json     @default("{\"email\":false,\"dailySummary\":false}")
   data          Json     @default("{\"retentionPeriod\":\"90\"}")
-  // Added: stores about page content (hero paragraphs + team members) as JSON
   aboutUs       Json     @default("{}")
   updatedAt     DateTime @updatedAt
+}
+
+model ProgramComparison {
+  id         String   @id @default(cuid())
+  programIds Json     // array of 2-3 program IDs compared together
+  createdAt  DateTime @default(now())
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  type      String   // 'visit' | 'favorite'
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
 }

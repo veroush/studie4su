@@ -1,37 +1,82 @@
 {
-  "name": "studie4su",
-  "version": "1.0.0",
-  "description": "Studie4SU is a website that allows Surinamese students to navigate schools, open houses, programs and even offers a quiz to help them decide.",
-  "main": "src/server.js",
+  "name": "web",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node .output/server/index.mjs",
+    "dev": "vite dev --port 3000",
+    "generate-routes": "tsr generate",
+    "build": "vite build",
+    "postinstall": "prisma generate",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "format": "biome format",
+    "lint": "biome lint",
+    "check": "biome check",
+    "deploy": "pnpm run build && wrangler deploy",
+    "post-cta-init": "pnpm dlx create-db@latest --user-agent tanstack/tsrouter",
+    "db:generate": "dotenv -e .env.local -- prisma generate",
+    "db:push": "dotenv -e .env.local -- prisma db push",
+    "db:migrate": "dotenv -e .env.local -- prisma migrate dev",
+    "db:studio": "dotenv -e .env.local -- prisma studio",
+    "db:seed": "dotenv -e .env.local -- prisma db seed"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Veroush/Studie4SU.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Veroush/Studie4SU/issues"
-  },
-  "homepage": "https://github.com/Veroush/Studie4SU#readme",
   "dependencies": {
-    "@prisma/client": "^5.22.0",
-    "bcrypt": "^5.1.0",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.3",
-    "nodemailer": "^8.0.2",
-    "prisma": "^5.22.0",
-    "twilio": "^5.12.2"
+    "@cloudflare/vite-plugin": "^1.26.0",
+    "@hono/node-server": "^2.0.12",
+    "@prisma/adapter-pg": "6.19.0",
+    "@prisma/client": "6.19.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-devtools": "latest",
+    "@tanstack/react-query": "latest",
+    "@tanstack/react-query-devtools": "latest",
+    "@tanstack/react-router": "1.170.18",
+    "@tanstack/react-router-devtools": "latest",
+    "@tanstack/react-router-ssr-query": "latest",
+    "@tanstack/react-start": "1.168.34",
+    "@tanstack/router-plugin": "^1.132.0",
+    "better-auth": "^1.5.3",
+    "hono": "^4.12.27",
+    "lucide-react": "^0.545.0",
+    "nitro": "^2.2.28",
+    "nodemailer": "^7.0.9",
+    "pg": "^8.22.0",
+    "prisma": "6.19.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.10.1",
+    "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "@biomejs/biome": "2.4.5",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tanstack/devtools-vite": "latest",
+    "@tanstack/nitro-v2-vite-plugin": "^1.155.0",
+    "@tanstack/router-cli": "^1.132.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.10.2",
+    "@types/nodemailer": "^7.0.9",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "dotenv": "^17.4.2",
+    "dotenv-cli": "^11.0.0",
+    "jsdom": "^28.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.0",
+    "vitest": "^4.1.5",
+    "wrangler": "^4.70.0"
   },
-  "prisma": {
-    "seed": "node prisma/seed.js"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lightningcss"
+    ]
   }
 }
