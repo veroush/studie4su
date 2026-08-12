@@ -23,4 +23,9 @@ export default defineConfig({
 			],
 		}),
 	],
+	vite: {
+		preview: {
+			allowedHosts: ['studie4su-docs-production.up.railway.app'],
+		},
+	},
 });
