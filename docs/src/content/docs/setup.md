@@ -13,13 +13,11 @@ The documentation site is built using Astro (Starlight). To view or edit these d
    \`\`\`
 2. Install the necessary dependencies:
    \`\`\`bash
-   npm install
+   pnpm install
    \`\`\`
 3. Start the local development server:
    \`\`\`bash
-   npm run dev
+   pnpm run dev
    \`\`\`
 4. Open your browser and navigate to `http://localhost:4321`.
 
-## Running the Main Web Application
-*(Note: Complete setup instructions for the Hono backend and TanStack frontend will be finalized once the migration from Express is complete and the Prisma database is seeded.)*
