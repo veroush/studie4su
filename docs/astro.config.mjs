@@ -10,11 +10,23 @@ export default defineConfig({
   customCss: [
     './src/styles/custom.css',
   ],
-  sidebar: [
-        {
-         label: 'Welkom bij Studie4SU', slug: 'gebruikers/welkom'
-        },
-      ],
+sidebar: [
+      {
+        label: 'Gebruikershandleiding',
+        items: [
+          { label: 'Welkom bij Studie4SU', slug: 'gebruikers/welkom' },
+        ],
+      },
+      {
+        label: 'Voor Developers',
+        items: [
+          { label: 'Project Overview', link: '/' }, // Dit linkt de index.mdx
+          { label: 'Setup & Installation', slug: 'setup' },
+          { label: 'API Documentatie', slug: 'api' },
+          { label: 'QA Testing', slug: 'qa-testing' },
+        ],
+      },
+    ],
     }),
   ],
 });

@@ -4,3 +4,6 @@
   --sl-color-bg: #0d2b1f;
   --sl-color-bg-nav: #092117;
 }
+:root, :root[data-theme='dark'] {
+  --sl-color-bg-sidebar: var(--sl-color-bg-nav) !important;
+}
