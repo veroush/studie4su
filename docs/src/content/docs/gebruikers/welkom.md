@@ -16,7 +16,7 @@ Op onze overzichtspagina vind je een compleet aanbod van de beschikbare scholen 
 * **Filteren:** Je kunt de resultaten filteren op niveau, locatie of type opleiding om precies te vinden wat bij jouw profiel past.
 * **Details bekijken:** Klik op een opleiding om alle belangrijke informatie te lezen, zoals de toelatingseisen, de vakken en de toekomstmogelijkheden.
 
-![Overzicht van Opleidingen](../../assets/scholen-overzicht.png)
+![Overzicht van Opleidingen](../../../assets/scholen-overzicht.png)
 
 ---
 
@@ -38,7 +38,7 @@ Je hoeft de deur niet meer uit om de sfeer van een school te proeven. Via Studie
 * **Registreren:** Maak een account aan en meld je met één druk op de knop aan voor een virtuele sessie.
 * **Herinneringen:** Je krijgt vanzelf een melding wanneer de open dag bijna begint.
 
-![Open Dagen Agenda](../../assets/open-dagen.png)
+![Open Dagen Agenda](../../../assets/open-dagen.png)
 
 ---
 
@@ -52,7 +52,7 @@ Om het maximale uit Studie4SU te halen, raden we je aan om een gratis account aa
 
 Klik rechtsboven op **Inloggen / Registreren** om direct te beginnen!
 
-![Inloggen op Studie4SU](../../assets/login-scherm.png)
+![Inloggen op Studie4SU](../../../assets/login-scherm.png)
 
 ---
 

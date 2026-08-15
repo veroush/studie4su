@@ -1,3 +1,7 @@
+---
+title: API Documentatie
+description: Documentatie van de Studie4SU API endpoints.
+---
 # API Documentatie
 
 Welkom bij de API-documentatie van Studie4SU. De frontend communiceert met onze backend via RESTful API endpoints. Alle data wordt verzonden en ontvangen in JSON-formaat.
