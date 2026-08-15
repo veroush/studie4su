@@ -11,12 +11,12 @@ export default defineConfig({
     './src/styles/custom.css',
   ],
 sidebar: [
-      {
-        label: 'Gebruikershandleiding',
-        items: [
-          { label: 'Welkom bij Studie4SU', slug: 'gebruikers/welkom' },
-        ],
-      },
+    {
+      label: 'Gebruikershandleiding',
+      items: [
+        { label: 'Welkom bij Studie4SU', slug: 'handleiding' },
+      ],
+    },
       {
         label: 'Voor Developers',
         items: [
