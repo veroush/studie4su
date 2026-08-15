@@ -29,4 +29,9 @@ sidebar: [
     ],
     }),
   ],
+vite: {
+    preview: {
+      allowedHosts: true
+    }
+  }
 });
