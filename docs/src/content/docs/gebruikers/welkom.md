@@ -17,7 +17,7 @@ Op onze overzichtspagina vind je een compleet aanbod van de beschikbare scholen 
 * **Details bekijken:** Klik op een opleiding om alle belangrijke informatie te lezen, zoals de toelatingseisen, de vakken en de toekomstmogelijkheden.
 
 > 📸 **[PLAATS HIER EEN SCREENSHOT VAN DE OPLEIDINGEN-OVERZICHTSPAGINA]**
-![Overzicht van Opleidingen](../../assets/scholen-overzicht.png)
+![Overzicht van Opleidingen](../../../assets/scholen-overzicht.png)
 
 ---
 
@@ -29,7 +29,7 @@ Weet je nog niet zeker welke richting het beste bij je past? Geen probleem! Onze
 3. Aan het einde analyseert ons systeem jouw antwoorden en krijg je direct een gepersonaliseerde top 3 van opleidingen die perfect bij jouw persoonlijkheid passen.
 
 > 📸 **[PLAATS HIER EEN SCREENSHOT VAN DE STUDIE-KEUZE QUIZ RESULTATEN]**
-> ![Resultaat van de Quiz](../../assets/quiz-resultaat.png)
+> ![Resultaat van de Quiz](../../../assets/quiz-resultaat.png)
 
 ---
 
@@ -41,7 +41,7 @@ Je hoeft de deur niet meer uit om de sfeer van een school te proeven. Via Studie
 * **Herinneringen:** Je krijgt vanzelf een melding wanneer de open dag bijna begint.
 
 > 📸 **[PLAATS HIER EEN SCREENSHOT VAN DE VIRTUELE OPEN DAGEN KALENDER]**
-> ![Open Dagen Agenda](../../assets/open-dagen.png)`
+> ![Open Dagen Agenda](../../../assets/open-dagen.png)`
 
 ---
 
@@ -56,7 +56,7 @@ Om het maximale uit Studie4SU te halen, raden we je aan om een gratis account aa
 Klik rechtsboven op **Inloggen / Registreren** om direct te beginnen!
 
 > 📸 **[PLAATS HIER EEN SCREENSHOT VAN HET INLOG/REGISTRATIESCHERM]**
-> ![Inloggen op Studie4SU](../../assets/login-scherm.png)`
+> ![Inloggen op Studie4SU](../../../assets/login-scherm.png)`
 
 ---
 
