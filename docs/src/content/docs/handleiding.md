@@ -27,7 +27,7 @@ Weet je nog niet zeker welke richting het beste bij je past? Geen probleem! Onze
 2. Beantwoord een reeks korte, leuke vragen over jouw interesses, sterke punten en wat je belangrijk vindt in je toekomstige werk.
 3. Aan het einde analyseert ons systeem jouw antwoorden en krijg je direct een gepersonaliseerde top 3 van opleidingen die perfect bij jouw persoonlijkheid passen.
 
-*(Picture Quiz)*
+![studie-keuze quiz](../../assets/quiz.png)
 
 ---
 
